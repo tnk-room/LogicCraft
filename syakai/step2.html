@@ -12,26 +12,35 @@
 
 <body>
         <div class="container">
-            <h1>論理回路シミュレーション2</h1>
-            <h2>論理素子の関数をコーディングしていこう！</h2>
-            <div id = "editor" style="height: 600px;"></div>
-            <script>
-                //エディターをタグにセット
-                var editor = ace.edit("editor");
+            <aside>
+                サイドバー
+            </aside>
+            <main>
+                <h1>論理回路シミュレーション2</h1>
+                <h2>論理素子の関数をコーディングしていこう！</h2>
+                <div id = "editor" style="height: 600px;"></div>
+                <script>
+                    //エディターをタグにセット
+                    var editor = ace.edit("editor");
 
-                //初期化用の関数
-                editor.$blockScrolling = Infinity;
-                editor.setOptions({
-                    enableBasicAutocompletion: true,
-                    enableSnippets: true,
-                    enableLiveAutocompletion: true
-                });
-                editor.setTheme("ace/theme/monokai");
-                editor.setFontSize(14);
-                editor.getSession().setMode("ace/mode/python");
-                editor.getSession().setUseWrapMode(true);
-                editor.getSession().setTabSize(2);
-            </script>
+                    //初期化用の関数
+                    editor.$blockScrolling = Infinity;
+                    editor.setOptions({
+                        enableBasicAutocompletion: true,
+                        enableSnippets: true,
+                        enableLiveAutocompletion: true
+                    });
+                    editor.setTheme("ace/theme/monokai");
+                    editor.setFontSize(14);
+                    editor.getSession().setMode("ace/mode/python");
+                    editor.getSession().setUseWrapMode(true);
+                    editor.getSession().setTabSize(2);
+                </script>
+            </main>
+            <aside>
+                サイドバー
+            </aside>
+            
         </div>
 </body>
 
