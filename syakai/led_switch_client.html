@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>LEDテスト</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
+    <link href="css/style.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+</head>
+
+<body>
+        <div class="container">
+            <h1>LEDテスト</h1>
+            <button id="btn">OFF</button>
+
+            <script>
+                $(function () {
+                    var ws = new WebSocket("ws://172.20.10.2:5555/");
+        
+                    $('#btn').on('click', function () {
+                        if($('#btn').text() == "OFF") {
+                            $('#btn').text("ON")
+                            ws.send('led_on');
+                        } else {
+                            $('#btn').text("OFF")
+                            ws.send('led_off');
+                        }
+                    });
+                    
+                })
+            </script>
+        </div>
+</body>
+
+</html>

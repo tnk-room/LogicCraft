@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>論理回路シミュレーション</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+        }
+
+        .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .custom-checkbox .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: #ccc;
+            border: 1px solid #999;
+            border-radius: 3px;
+        }
+
+        .custom-checkbox input:checked + .checkmark {
+            background-color: #2196F3;
+            border: 1px solid #2196F3;
+        }
+
+        .custom-checkbox .checkmark:after {
+            content: "\f00c";
+            font-family: FontAwesome;
+            color: white;
+            font-size: 16px;
+            position: absolute;
+            top: 4px;
+            left: 4px;
+        }
+
+        label {
+            display: inline-block;
+            width: 60px;
+            margin-right: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>論理回路シミュレーション</h1>
+        
+        <label for="input1" class="custom-checkbox">
+            <input type="checkbox" id="input1">
+            <span class="checkmark"></span>
+            入力1
+        </label>
+        
+        <label for="input2" class="custom-checkbox">
+            <input type="checkbox" id="input2">
+            <span class="checkmark"></span>
+            入力2
+        </label>
+        
+        <!-- <p>NOTゲート出力: <span id="not-output">0</span></p> 
+        <p>ANDゲート出力: <span id="and-output">0</span></p>
+        <p>ORゲート出力: <span id="or-output">0</span></p>
+        <p>XORゲート出力: <span id="xor-output">0</span></p>
+        <p>NANDゲート出力: <span id="nand-output">1</span></p>
+        <p>NORゲート出力: <span id="nor-output">1</span></p> -->
+
+        <select name="gates">
+            <!-- <option value="not">not</option> -->
+            <option value="and">and</option>
+            <option value="or">or</option>
+            <option value="xor">xor</option>
+            <option value="nand">nand</option>
+            <option value="nor">nor</option>
+        </select>
+        
+        <p>選択素子出力: <span id="gates-output">0</span></p>
+
+        <script>
+            const input1 = document.getElementById("input1");
+            const input2 = document.getElementById("input2");
+            // const notOutput = document.getElementById("not-output");
+            const andOutput = document.getElementById("and-output");
+            const orOutput = document.getElementById("or-output");
+            const xorOutput = document.getElementById("xor-output");
+            const nandOutput = document.getElementById("nand-output");
+            const norOutput = document.getElementById("nor-output");
+            const gatesOutput = document.getElementById("gates-output");
+            
+            
+            
+            function simulateLogicGates() {
+                const isInput1Checked = input1.checked;
+                const isInput2Checked = input2.checked;
+
+                const gatesGet = document.getElementsByName("gates")[0];
+                const num = gatesGet.selectedIndex;
+                const value = gatesGet.options[num].value;
+                
+                switch(value){
+                    /*case 'not':
+                        const notResult = !isInput1Checked; // NOTゲートの計算
+                        gatesOutput.innerText = notResult ? "1" : "0"; */
+                    case 'and':
+                        const andResult = isInput1Checked && isInput2Checked;
+                        gatesOutput.innerText = andResult ? "1" : "0";
+                        break;
+                    case 'or':
+                        const orResult = isInput1Checked || isInput2Checked;
+                        gatesOutput.innerText = orResult ? "1" : "0";
+                        break;
+                    case 'xor':
+                        const xorResult = (isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked); // XORゲートの計算
+                        gatesOutput.innerText = xorResult ? "1" : "0";
+                        break;
+                    case 'nand':
+                        const nandResult = !(isInput1Checked && isInput2Checked); // NANDゲートの計算
+                        gatesOutput.innerText = nandResult ? "1" : "0";
+                        break;
+                    case 'nor':
+                        const norResult = !(isInput1Checked || isInput2Checked); // NORゲートの計算
+                        gatesOutput.innerText = norResult ? "1" : "0";
+                        break;
+                }
+            }
+            
+            input1.addEventListener("change", simulateLogicGates);
+            input2.addEventListener("change", simulateLogicGates);
+            
+            simulateLogicGates();
+        </script>
+    </div>
+</body>
+</html>

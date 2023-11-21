@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>step1 ー 論理回路を知ろう！ ー</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
+    <link href="css/style.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+</head>
+
+<body>
+
+        <div class="container">
+                <h1>論理回路シミュレーション</h1>
+            
+            <label for="input1" class="custom-checkbox">
+                <input type="checkbox" id="input1">
+                <span class="checkmark"></span>
+                X
+            </label>
+            
+            <label for="input2" class="custom-checkbox">
+                <input type="checkbox" id="input2">
+                <span class="checkmark"></span>
+                Y
+            </label>
+
+            <select name="gates" id="gates-select">
+                <option value="and">AND</option>
+                <option value="or">OR</option>
+                <option value="xor">XOR</option>
+                <option value="nand">NAND</option>
+                <option value="nor">NOR</option>
+            </select>
+            
+            <p>選択素子出力: <span id="gates-output">0</span></p>
+
+            <script>
+                const input1 = document.getElementById("input1");
+                const input2 = document.getElementById("input2");
+                const gatesSelect = document.getElementById("gates-select");
+                const gatesOutput = document.getElementById("gates-output");
+                var ws = new WebSocket("ws://192.168.11.2:5555/");
+                
+                function simulateLogicGates() {
+                    const isInput1Checked = input1.checked;
+                    const isInput2Checked = input2.checked;
+                    const selectedGate = gatesSelect.value;
+                    
+                    switch (selectedGate) {
+                        case 'and':
+                            const andResult = isInput1Checked && isInput2Checked;
+                            gatesOutput.innerText = andResult ? "1" : "0";
+                            break;
+                        case 'or':
+                            const orResult = isInput1Checked || isInput2Checked;
+                            gatesOutput.innerText = orResult ? "1" : "0";
+                            break;
+                        case 'xor':
+                            const xorResult = (isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked);
+                            gatesOutput.innerText = xorResult ? "1" : "0";
+                            break;
+                        case 'nand':
+                            const nandResult = !(isInput1Checked && isInput2Checked);
+                            gatesOutput.innerText = nandResult ? "1" : "0";
+                            break;
+                        case 'nor':
+                            const norResult = !(isInput1Checked || isInput2Checked);
+                            gatesOutput.innerText = norResult ? "1" : "0";
+                            break;
+                    }
+
+                    if(input1.innerText == "1"){
+                        ws.send('input1_on');
+                    }else{
+                        ws.send('input1_off');
+                    }
+
+                    if(input2.innerText == "1"){
+                        ws.send('input2_on');
+                    }else{
+                        ws.send('input2_off');
+                    }
+
+                    if(gatesOutput.innerText == "1"){
+                        ws.send('output_on');
+                    }else{
+                        ws.send('output_off');
+                    }
+                }
+                
+                input1.addEventListener("change", simulateLogicGates);
+                input2.addEventListener("change", simulateLogicGates);
+                gatesSelect.addEventListener("change", simulateLogicGates);                
+                simulateLogicGates();
+            </script>
+        </div>
+
+</body>
+</html>

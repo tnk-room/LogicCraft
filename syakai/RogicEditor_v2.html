@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>論理回路シミュレーション</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
+    <link href="css/style.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="side">
+        <p>サイドバー</p>
+        <input id="tab_1" type="radio" name="tab_item" checked>
+        <label class="tab_item" for="tab_1">タブ1</label>
+        <input id="tab_2" type="radio" name="tab_item">
+        <label class="tab_item" for="tab_2">タブ2</label>
+        <input id="tab_3" type="radio" name="tab_item">
+        <label class="tab_item" for="tab_3">タブ3</label>
+    </div>
+
+    <div class="tabs">
+        <div class="tab_content" id="tab_1_content">
+                <h1>論理回路シミュレーション</h1>
+            
+            <label for="input1" class="custom-checkbox">
+                <input type="checkbox" id="input1">
+                <span class="checkmark"></span>
+                X
+            </label>
+            
+            <label for="input2" class="custom-checkbox">
+                <input type="checkbox" id="input2">
+                <span class="checkmark"></span>
+                Y
+            </label>
+
+            <select name="gates" id="gates-select">
+                <option value="and">AND</option>
+                <option value="or">OR</option>
+                <option value="xor">XOR</option>
+                <option value="nand">NAND</option>
+                <option value="nor">NOR</option>
+            </select>
+            
+            <p>選択素子出力: <span id="gates-output">0</span></p>
+
+            <script>
+                const input1 = document.getElementById("input1");
+                const input2 = document.getElementById("input2");
+                const gatesSelect = document.getElementById("gates-select");
+                const gatesOutput = document.getElementById("gates-output");
+                var ws = new WebSocket("ws://172.20.10.2:5555/");
+                
+                function simulateLogicGates() {
+                    const isInput1Checked = input1.checked;
+                    const isInput2Checked = input2.checked;
+                    const selectedGate = gatesSelect.value;
+                    
+                    switch (selectedGate) {
+                        case 'and':
+                            const andResult = isInput1Checked && isInput2Checked;
+                            gatesOutput.innerText = andResult ? "1" : "0";
+                            break;
+                        case 'or':
+                            const orResult = isInput1Checked || isInput2Checked;
+                            gatesOutput.innerText = orResult ? "1" : "0";
+                            break;
+                        case 'xor':
+                            const xorResult = (isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked);
+                            gatesOutput.innerText = xorResult ? "1" : "0";
+                            break;
+                        case 'nand':
+                            const nandResult = !(isInput1Checked && isInput2Checked);
+                            gatesOutput.innerText = nandResult ? "1" : "0";
+                            break;
+                        case 'nor':
+                            const norResult = !(isInput1Checked || isInput2Checked);
+                            gatesOutput.innerText = norResult ? "1" : "0";
+                            break;
+                    }
+
+                    if(gatesOutput.innerText == "1"){
+                        ws.send('led_on');
+                    }else{
+                        ws.send('led_off');
+                    }
+                }
+                
+                input1.addEventListener("change", simulateLogicGates);
+                input2.addEventListener("change", simulateLogicGates);
+                gatesSelect.addEventListener("change", simulateLogicGates);                
+                simulateLogicGates();
+            </script>
+
+            <script>
+                $(function () {
+                    var ws = new WebSocket("ws://172.20.10.2:5555/");
+        
+                    $('#btn').on('click', function () {
+                        if($('#btn').text() == "OFF") {
+                            $('#btn').text("ON")
+                            ws.send('led_on');
+                        } else {
+                            $('#btn').text("OFF")
+                            ws.send('led_off');
+                        }
+                    });
+                    
+                })
+            </script>
+
+        </div>
+        <div class="tab_content" id="tab_2_content">
+            <h1>論理回路シミュレーション2</h1>
+            <button id="btn">OFF</button>
+
+        </div>
+        <div class="tab_content" id="tab_3_content">
+            <h1>論理回路シミュレーション3</h1>
+        </div>
+    </div>
+
+</body>
+</html>

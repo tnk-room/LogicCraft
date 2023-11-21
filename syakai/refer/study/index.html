@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>HTMLとJavaScriptを使いこなす</title>
+    <script>
+      function DisplayDate() {
+        let now = new Date();
+        //年を取得する
+        let YYYY = now.getFullYear();
+        //月を取得する
+        let MM = now.getMonth()+1;
+        //日を取得する
+        let DD = now.getDate();
+        
+        alert(YYYY + "/" + MM + "/" + DD);
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>HTMLとJavaScriptを使いこなす</h1>
+    <button type="button" onclick="DisplayDate()">
+      本日の日付を表示します。
+    </button>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>step2 ー プログラミングで論理回路を設計しよう！ ー</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
+    <link href="css/style.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ext-language_tools.js"></script>
+
+</head>
+
+<body>
+        <div class="container">
+            <h1>論理回路シミュレーション2</h1>
+            <h2>論理素子の関数をコーディングしていこう！</h2>
+            <div id = "editor" style="height: 600px;"></div>
+            <script>
+                //エディターをタグにセット
+                var editor = ace.edit("editor");
+
+                //初期化用の関数
+                editor.$blockScrolling = Infinity;
+                editor.setOptions({
+                    enableBasicAutocompletion: true,
+                    enableSnippets: true,
+                    enableLiveAutocompletion: true
+                });
+                editor.setTheme("ace/theme/monokai");
+                editor.setFontSize(14);
+                editor.getSession().setMode("ace/mode/python");
+                editor.getSession().setUseWrapMode(true);
+                editor.getSession().setTabSize(2);
+            </script>
+        </div>
+</body>
+
+</html>

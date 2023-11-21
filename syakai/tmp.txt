@@ -1,0 +1,27 @@
+body{
+    font-family: "Avenir Next";
+}
+
+h1 {
+    font-size: 40px;
+    font-family: 'Verdana';
+}
+
+li {
+    list-style: none;
+}
+
+.header{
+    background-color: #f7f2b2;
+    height: 90px;
+}
+
+.main{
+    background-color: #bdf7f1;
+    height: 600px;
+}
+
+.footer{
+    background-color: #ceccf3;
+    height: 270px;
+}

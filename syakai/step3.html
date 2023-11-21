@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>step2 ー プログラミングで論理回路を設計しよう！ ー</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
+    <link href="css/style.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+</head>
+
+<body>
+        <div class="container">
+            <h1>論理回路シミュレーション2</h1>
+
+            <label for="seg0" class="custom-checkbox">
+                <input type="checkbox" id="seg0">
+                <span class="checkmark"></span>
+                seg0
+            </label>
+
+            <label for="seg1" class="custom-checkbox">
+                <input type="checkbox" id="seg1">
+                <span class="checkmark"></span>
+                seg1
+            </label>
+
+            <label for="seg2" class="custom-checkbox">
+                <input type="checkbox" id="seg2">
+                <span class="checkmark"></span>
+                seg2
+            </label>
+
+            <script>
+                const seg0 = document.getElementById("seg0");
+                const seg1 = document.getElementById("seg1");
+                const seg2 = document.getElementById("seg2");
+                var ws = new WebSocket("ws://172.20.10.10:5555/");
+
+                function simulateLogicGates() {
+                    if(seg0.innerText == "1"){
+                        ws.send('seg_0');
+                        alert(seg0.innerText);
+                    }
+
+                    if(seg1.innerText == "1"){
+                        ws.send('seg_1');
+                    }
+
+                    if(seg2.innerText == "1"){
+                        ws.send('seg_2');
+                    }
+                }
+
+                seg0.addEventListener("change", simulateLogicGates);
+                seg1.addEventListener("change", simulateLogicGates);
+                seg2.addEventListener("change", simulateLogicGates);
+                simulateLogicGates();
+            </script>
+        </div>
+</body>
+
+</html>
