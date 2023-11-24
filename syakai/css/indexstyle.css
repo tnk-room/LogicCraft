@@ -15,12 +15,12 @@ html {
 
 .btn,
 a.btn,
-button.btn {
+li.btn,
+button.btn{
     font-size: 1.6rem;
     font-weight: 700;
     line-height: 1.5;
     position: relative;
-    right: 30%;
     display: inline-block;
     padding: 1rem 4rem;
     cursor: pointer;
@@ -41,10 +41,18 @@ button.btn {
 a.btn-custom01 {
     margin-bottom: 0.5rem;
     padding: 0;
+    right: 30%;
     border-radius: 0.75rem;
 }
 
-a.btn-custom01:before {
+li.btn-custom02{
+    margin-bottom: 0.5rem;
+    padding: 0;
+    border-radius: 0.75rem;
+}
+
+a.btn-custom01:before,
+li.btn-custom02:before {
     position: absolute;
     top: 0;
     right: 0;
@@ -67,7 +75,7 @@ a.btn-custom01:before {
     box-shadow: 0 0.6rem 0 0 rgba(0, 0, 0, 0.2);
 }
 
-a.btn-custom01:after {
+a.btn-custom01:after{
     font-family: "Font Awesome 5 Free";
     font-size: 2rem;
     font-weight: normal;
@@ -80,7 +88,20 @@ a.btn-custom01:after {
     content: "\f0eb";
 }
 
-.btn-custom01-front {
+li.btn-custom02:after{
+    font-family: "Font Awesome 5 Free";
+    font-size: 2rem;
+    font-weight: normal;
+    line-height: 1;
+    position: absolute;
+    top: calc(50% - 1rem);
+    left: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.btn-custom01-front,
+.btn-custom02-front {
     position: relative;
     display: block;
     padding: 1.5rem 5rem 1.5rem 5rem;
@@ -104,29 +125,33 @@ a.btn-custom01:after {
     right: 1rem; 
 }
 
-a.btn-custom01:hover {
+a.btn-custom01:hover,
+li.btn-custom02:hover{
     -webkit-transform: translate(0, 0.25rem);
     transform: translate(0, 0.25rem);
     background: #fff100;
 }
 
-a.btn-custom01:hover:before {
+a.btn-custom01:hover:before,
+li.btn-custom02:hover:before{
     -webkit-transform: translate3d(0, 0.5rem, -1rem);
     transform: translate3d(0, 0.5rem, -1rem);
     -webkit-box-shadow: 0 0.35rem 0 0 rgba(0, 0, 0, 0.2);
     box-shadow: 0 0.35rem 0 0 rgba(0, 0, 0, 0.2);
 }
 
-a.btn-custom01:hover:after {
+a.btn-custom01:hover:after{
     content: "\f0eb";
 }
 
-a.btn-custom01:active {
+a.btn-custom01:active,
+li.btn-custom02:active {
     -webkit-transform: translate(0rem, 0.75rem);
     transform: translate(0rem, 0.75rem);
 }
 
-a.btn-custom01:active:before {
+a.btn-custom01:active:before,
+li.btn-custom02:active:before {
     -webkit-transform: translate3d(0, 0, -1rem);
     transform: translate3d(0, 0, -1rem);
     -webkit-box-shadow: 0 0.35rem 0 0 rgba(0, 0, 0, 0.2);
@@ -183,7 +208,7 @@ li {
 
 .main {
     background-color: #4545458c;
-    height: 600px;
+    height: 660px;
     padding: 20px;
     text-align: center;
 }
@@ -199,7 +224,7 @@ li {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content:space-evenly;
     font-size: xx-large;
 }
 
@@ -222,12 +247,13 @@ li {
 
 h2, h3 {
     color: #333;
+    font-size: x-large;
 }
 
 .footer {
     background-color: #000000;
     color: #fff;
-    padding: 15px;
+    padding: 60px;
     text-align: center;
 }
 
