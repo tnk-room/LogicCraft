@@ -9,6 +9,13 @@
 </head>
 
 <body>
+    <div class="contain">
+        <header>
+            <a href="index.html">TOP</a>
+            <a href="step1.html">step1</a>
+            <a href="step2.html">step2</a>
+            <a href="step3.html">step3</a>
+        </header>
         <div class="container">
             <h1>論理回路シミュレーション2</h1>
 
@@ -34,7 +41,7 @@
                 const seg0 = document.getElementById("seg0");
                 const seg1 = document.getElementById("seg1");
                 const seg2 = document.getElementById("seg2");
-                var ws = new WebSocket("ws://172.20.10.10:5555/");
+                var ws = new WebSocket("ws://172.20.10.5:5555/");
 
                 function simulateLogicGates() {
                     if(seg0.innerText == "1"){
@@ -57,6 +64,7 @@
                 simulateLogicGates();
             </script>
         </div>
+    </div>
 </body>
 
 </html>

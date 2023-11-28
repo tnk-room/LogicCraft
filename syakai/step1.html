@@ -9,10 +9,16 @@
 </head>
 
 <body>
+    <div class="contain">
+        <header>
+            <a href="index.html">TOP</a>
+            <a href="step1.html">step1</a>
+            <a href="step2.html">step2</a>
+            <a href="step3.html">step3</a>
+        </header>
+            <h1>論理回路シミュレーション</h1>
 
         <div class="container">
-                <h1>論理回路シミュレーション</h1>
-            
             <label for="input1" class="custom-checkbox">
                 <input type="checkbox" id="input1">
                 <span class="checkmark"></span>
@@ -32,7 +38,28 @@
                 <option value="nand">NAND</option>
                 <option value="nor">NOR</option>
             </select>
-            
+
+            <div class="simcir">
+                <div class="simcir-body">
+                    <svg version="1.1" width="1200" height="800" viewbox="0 0 1200 800" class="simcir-workspace" style="user-select: none; display: inline;">
+                        <defs>
+                            <pattern id="simcir_pattern_grid_0" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#CCCCCC" stroke-width="1"></path>
+                            </pattern>
+                        </defs>
+                            <g class="simcir-layer simcir-layer-active">
+                                <g class="simcir-workarea-background"></g>
+                                <g class="simcir-workarea">
+                                    <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-1 simcir-node-input" transform="translate(0, 0)"></g>
+                                    <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-2 simcir-node-input" transform="translate(0, 0)"></g>
+                                    <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-3 simcir-node-input" transform="translate(0, 0)"></g>
+                                    <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-4 simcir-node-input" transform="translate(0, 0)"></g>
+                                    <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-5 simcir-node-input" transform="translate(0, 0)"></g>
+                                </g>
+                    </svg>
+                </div>
+            </div>
+                
             <p>選択素子出力: <span id="gates-output">0</span></p>
 
             <script>
@@ -40,7 +67,7 @@
                 const input2 = document.getElementById("input2");
                 const gatesSelect = document.getElementById("gates-select");
                 const gatesOutput = document.getElementById("gates-output");
-                var ws = new WebSocket("ws://192.168.11.2:5555/");
+                var ws = new WebSocket("ws://172.20.10.5:5555/");
                 
                 function simulateLogicGates() {
                     const isInput1Checked = input1.checked;
@@ -70,6 +97,8 @@
                             break;
                     }
 
+
+
                     if(input1.innerText == "1"){
                         ws.send('input1_on');
                     }else{
@@ -95,6 +124,6 @@
                 simulateLogicGates();
             </script>
         </div>
-
+    </div>
 </body>
 </html>
