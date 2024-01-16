@@ -4,7 +4,12 @@
     <title>step1 ー 論理回路を知ろう！ ー</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
     <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/simcir.css">
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        var ws = new WebSocket("ws://172.20.10.5:5555/");
+        ws.send('step1');
+    </script>
 
 </head>
 
@@ -18,48 +23,36 @@
         </header>
         <div class="container">
             <main>
-              <h1>論理回路シミュレーション1</h1>
-              <label for="input1" class="custom-checkbox">
-                  <input type="checkbox" id="input1">
-                  <span class="checkmark"></span>
-                  X
-              </label>
-              
-              <label for="input2" class="custom-checkbox">
-                  <input type="checkbox" id="input2">
-                  <span class="checkmark"></span>
-                  Y
-              </label>
+                <h1>論理回路シミュレーション1</h1>
+                <label for="input1" class="custom-checkbox">
+                    <input type="checkbox" id="input1">
+                    <span class="checkmark"></span>
+                    X
+                </label>
+                
+                <label for="input2" class="custom-checkbox">
+                    <input type="checkbox" id="input2">
+                    <span class="checkmark"></span>
+                    Y
+                </label>
 
-              <select name="gates" id="gates-select">
-                  <option value="and">AND</option>
-                  <option value="or">OR</option>
-                  <option value="xor">XOR</option>
-                  <option value="nand">NAND</option>
-                  <option value="nor">NOR</option>
-              </select>
+                <select name="gates" id="gates-select">
+                    <option value="and">AND</option>
+                    <option value="or">OR</option>
+                    <option value="xor">XOR</option>
+                    <option value="nand">NAND</option>
+                    <option value="nor">NOR</option>
+                </select>
 
-              <div class="simcir">
-                  <div class="simcir-body">
-                      <svg version="1.1" width="1200" height="800" viewbox="0 0 1200 800" class="simcir-workspace" style="user-select: none; display: inline;">
-                          <defs>
-                              <pattern id="simcir_pattern_grid_0" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#CCCCCC" stroke-width="1"></path>
-                              </pattern>
-                          </defs>
-                              <g class="simcir-layer simcir-layer-active">
-                                  <g class="simcir-workarea-background"></g>
-                                  <g class="simcir-workarea">
-                                      <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-1 simcir-node-input" transform="translate(0, 0)"></g>
-                                      <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-2 simcir-node-input" transform="translate(0, 0)"></g>
-                                      <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-3 simcir-node-input" transform="translate(0, 0)"></g>
-                                      <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-4 simcir-node-input" transform="translate(0, 0)"></g>
-                                      <g class="simcir-element simcir-node simcir-node-0 simcir-node-output simcir-node-5 simcir-node-input" transform="translate(0, 0)"></g>
-                                  </g>
-                      </svg>
-                  </div>
-              </div>
-              <p>選択素子出力: <span id="gates-output">0</span></p>
+                <div class="simcir">
+                    <div class="simcir-body">
+                        <svg version="1.1" width="1000" height="600" viewbox="0 0 1200 500" class="simcir-workspace" style="user-select: none; display: inline;">
+                            <defs><pattern id="simcir-id0" x="0" y="0" width="0.008" height="0.01"><rect class="simcir-pin-hole" x="0" y="0" width="2" height="2"></rect></pattern></defs>
+                            <rect x="0" y="-111" width="1222" height="800" style="fill: url(&quot;#simcir-id0&quot;);"></rect>
+                        </svg>
+                    </div>
+                </div>
+                <p>選択素子出力: <span id="gates-output">0</span></p>
             </main>
 
             <script>

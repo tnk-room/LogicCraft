@@ -7,6 +7,10 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ext-language_tools.js"></script>
+    <script>
+        var ws = new WebSocket("ws://172.20.10.5:5555/");
+        ws.send('step2');
+    </script>
 
 </head>
 
