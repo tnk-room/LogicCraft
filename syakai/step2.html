@@ -11,21 +11,46 @@
 </head>
 
 <body>
+
+  
   <div class="contain">
-    <header>
-      <a href="index.html">TOP</a>
-      <a href="step1.html">step1</a>
-      <a href="step2.html">step2</a>
-      <a href="step3.html">step3</a>
-    </header>
-    <div class="container">
+      <header>
+        <a href="index.html">TOP</a>
+        <a href="step1.html">step1</a>
+        <a href="step2.html">step2</a>
+        <a href="step3.html">step3</a>
+      </header>
+      <div class="container">
         <aside>
             サイドバー
         </aside>
         <main>
             <h1>論理回路シミュレーション2</h1>
             <h2>論理素子の関数をコーディングしていこう！</h2>
-            <div id = "editor" style="height: 600px;"></div>
+            <div id = "editor" style="height: 600px;">var input1=0,input2=0
+
+def and(input1,input2):
+  #ここに入力
+
+
+def or(input1,input2):
+  #ここに入力
+
+
+def xor(input1,input2):
+  #ここに入力
+
+
+def nand(input1,input2):
+  #ここに入力
+
+
+def nor(input1,input2):
+  #ここに入力
+  
+
+<div class="output_rapper"></div>
+            </div>
             <script>
                 //エディターをタグにセット
                 var editor = ace.edit("editor");
@@ -35,7 +60,8 @@
                 editor.setOptions({
                     enableBasicAutocompletion: true,
                     enableSnippets: true,
-                    enableLiveAutocompletion: true
+                    enableLiveAutocompletion: true,
+                    displayIndentGuides: false
                 });
                 editor.setTheme("ace/theme/monokai");
                 editor.setFontSize(14);
@@ -45,14 +71,15 @@
             </script>
         </main>
         <aside>
-            <form id="chat-form" autocomplete="off">
-                <input type="text" id="chat-input" placeholder="質問を入力してEnterで送信" />
-                <div id="chat-window">
-                <pre id="chat-history"></pre>
-                </div>  
-            </form>
+          <form id="chat-form" autocomplete="off">
+            <div class="title">チャットボット</div>
+            <input type="text" id="chat-input" placeholder="質問を入力してEnterで送信" />
+            <div id="chat-window">
+              <pre id="chat-history"></pre>
+            </div>
+            
+          </form>
         </aside>
-        
     </div>
   </div>
   <script>
@@ -75,7 +102,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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',
+          'Authorization': 'Bearer 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',
         },
         body: JSON.stringify({
           'model': 'gpt-3.5-turbo',
