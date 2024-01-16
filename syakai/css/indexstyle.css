@@ -41,8 +41,9 @@ button.btn{
 a.btn-custom01 {
     margin-bottom: 0.5rem;
     padding: 0;
-    right: 30%;
+    left: 5%;
     border-radius: 0.75rem;
+    position: absolute;
 }
 
 li.btn-custom02{
@@ -208,7 +209,7 @@ li {
 
 .main {
     background-color: #4545458c;
-    height: 660px;
+    height: 600px;
     padding: 20px;
     text-align: center;
 }
@@ -243,6 +244,10 @@ li {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h3{
+    margin: 30px;
 }
 
 h2, h3 {
