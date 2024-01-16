@@ -1,25 +1,25 @@
 body {
     font-family: Arial, sans-serif;
     text-align: left;
-    background-color: #f0f0f0;
+    background-color: #4545458c;
     margin: 0;
     padding: 0;
 }
 
 .contain {
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 header{
-    background-color: lightblue;
+    background-color: #ffd100;
     overflow: hidden;
 }
 
 header a{
     display: inline-block;
     font-size: 1.3rem;
-    padding: 10px 30px;
+    padding: 20px 30px;
     text-decoration: none;
     color: black;
 }
@@ -30,12 +30,11 @@ header a:hover{
 
 .container {
     display: flex;
-    padding: 20px;
+    padding: 40px;  
     margin: 0 auto;
 }
 
 main{
-    background-color: #f4efef;
     flex: 1 1 70%;
     height: 100%;
 }
