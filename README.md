@@ -1,6 +1,8 @@
 # 社会実装プロジェクト　ロジッククラフト
 Webアプリケーション、ハードウェア、AIを活用した論理回路教材です。
 
+**※まだ現在は制作途中の段階となります。**
+
 ## 実装方法
 <img src="https://github.com/tnk-room/LogicCraft/assets/45323537/d4c67885-2d17-41d9-88a5-34a63adffa0c" width="700px">
 
