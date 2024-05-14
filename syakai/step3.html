@@ -41,14 +41,109 @@
                     <span class="checkmark"></span>
                     seg2
                 </label>
+
+                <label for="input1" class="custom-checkbox">
+                    <input type="checkbox" id="input1">
+                    <span class="checkmark"></span>
+                </label>
+
+                <label for="input2" class="custom-checkbox">
+                    <input type="checkbox" id="input2">
+                    <span class="checkmark"></span>
+                </label>
+
+
+
+                <!--以下変更済み-->
+                <div class="circuit">
+                    <!-- 画像を配置 -->
+                    <p><img src="AND.jpg" width="120" height="120" id="program1" alt=""></p>
+                    <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                    <p>
+                        <select name="channel" size="1" onchange="imgChange1(this, 'program1')">
+                            <option value="0">AND</option>
+                            <option value="1">OR</option>
+                            <option value="2">XOR</option>
+                            <option value="3">NAND</option>
+                            <option value="4">NOR</option>
+                            <option value="5">XNOR</option>
+                            <option value="6">NOT</option>
+                        </select>
+                    </p>
+
+                    <!-- 画像を配置 -->
+                    <p><img src="AND.jpg" width="120" height="120" id="program2" alt=""></p>
+                    <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                    <p>
+                        <select name="channel" size="1" onchange="imgChange2(this, 'program2')">
+                            <option value="0">AND</option>
+                            <option value="1">OR</option>
+                            <option value="2">XOR</option>
+                            <option value="3">NAND</option>
+                            <option value="4">NOR</option>
+                            <option value="5">XNOR</option>
+                            <option value="6">NOT</option>
+                        </select>
+                    </p>
+
+                    <div id="simcir">
+                        <div id="green-circle" class="green-circle" style="display:none;"></div> <!-- Display none initially -->
+                        <div id="yellow-circle" class="yellow-circle" style="display:none;"></div> <!-- Display none initially -->
+                        <div id="red-circle" class="red-circle" style="display:none;"></div> <!-- Display none initially -->
+                        <div id="black-circle" class="black-circle" style="display:none;"></div> <!-- Display none initially -->
+                    </div>
+                <!--以上変更済み-->
+
+
+                </div>
+
+
+
             </main>
             
             <script>
+                const input1 = document.getElementById("input1");
+                const input2 = document.getElementById("input2");
+                const isInput1Checked = input1.checked;
+                const isInput2Checked = input2.checked;
                 const seg0 = document.getElementById("seg0");
                 const seg1 = document.getElementById("seg1");
                 const seg2 = document.getElementById("seg2");
+                const redCircle = document.getElementById("red-circle");
+                const yellowCircle = document.getElementById("yellow-circle");
+                const greenCircle = document.getElementById("green-circle");
+                const blackCircle = document.getElementById("black-circle");
+
+                var num1;
+                var num2;
 
                 function simulateLogicGates() {
+
+                    if(input1.checked){
+                        greenCircle.style.display = 'block';
+                    } else {
+                        greenCircle.style.display = 'none';
+                    }
+
+                    if(input2.checked){
+                        yellowCircle.style.display = 'block';
+                    } else {
+                        yellowCircle.style.display = 'none';
+                    }
+
+                    if(num1){
+                        redCircle.style.display = 'block';
+                    } else {
+                        redCircle.style.display = 'none';
+                    }
+
+                    if(num2){
+                        blackCircle.style.display = 'block';
+                    } else {
+                        blackCircle.style.display = 'none';
+                    }
+
+
                     if(seg0.innerText == "1"){
                         ws.send('seg_0');
                         alert(seg0.innerText);
@@ -62,6 +157,83 @@
                         ws.send('seg_2');
                     }
                 }
+
+                function imgChange1(parts, id) {
+                    const fname = parts.options[parts.selectedIndex].value;
+                    const isInput1Checked = input1.checked;
+                    const isInput2Checked = input2.checked;
+                    switch (fname) {
+                        case '0':
+                            document.getElementById(id).src = "AND.jpg";
+                            num1 = isInput1Checked && isInput2Checked;
+                            break;
+                        case '1':
+                            document.getElementById(id).src = "OR.jpg";
+                            num1 = isInput1Checked || isInput2Checked;
+                            break;
+                        case '2':
+                            document.getElementById(id).src = "XOR.jpg";
+                            num1 = (isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked);
+                            break;
+                        case '3':
+                            document.getElementById(id).src = "NAND.jpg";
+                            num1 = !(isInput1Checked && isInput2Checked);
+                            break;
+                        case '4':
+                            document.getElementById(id).src = "NOR.jpg";
+                            num1 = !(isInput1Checked || isInput2Checked);
+                            break;
+                        case '5':
+                            document.getElementById(id).src = "XNOR.jpg";
+                            num2 = !((isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked));
+                            break;
+                        case '6':
+                            document.getElementById(id).src = "NOT.jpg";
+                            num1 = isInput1Checked && isInput2Checked;
+                            break;
+                    }
+                    simulateLogicGates();
+                }
+
+                function imgChange2(parts, id) {
+                    const fname = parts.options[parts.selectedIndex].value;
+                    const isInput1Checked = input1.checked;
+                    const isInput2Checked = input2.checked;
+                    switch (fname) {
+                        case '0':
+                            document.getElementById(id).src = "AND.jpg";
+                            num2 = isInput1Checked && isInput2Checked;
+                            break;
+                        case '1':
+                            document.getElementById(id).src = "OR.jpg";
+                            num2 = isInput1Checked || isInput2Checked;
+                            break;
+                        case '2':
+                            document.getElementById(id).src = "XOR.jpg";
+                            num2 = (isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked);
+                            break;
+                        case '3':
+                            document.getElementById(id).src = "NAND.jpg";
+                            num2 = !(isInput1Checked && isInput2Checked);
+                            break;
+                        case '4':
+                            document.getElementById(id).src = "NOR.jpg";
+                            num2 = !(isInput1Checked || isInput2Checked);
+                            break;
+                        case '5':
+                            document.getElementById(id).src = "XNOR.jpg";
+                            num2 = !((isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked));
+                            break;
+                        case '6':
+                            document.getElementById(id).src = "NOT.jpg";
+                            break;
+                    }
+                    simulateLogicGates();
+                }
+
+
+
+
 
                 seg0.addEventListener("change", simulateLogicGates);
                 seg1.addEventListener("change", simulateLogicGates);

@@ -2,17 +2,17 @@
 <html lang="ja">
 <head>
     <title>step1 ー 論理回路を知ろう！ ー</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
         var ws = new WebSocket("ws://172.20.10.5:5555/");
-        ws.send('step1');
+        ws.onopen = function () {
+            ws.send('step1');
+        };
     </script>
-
 </head>
-
 <body>
     <div class="contain">
         <header>
@@ -23,12 +23,81 @@
         </header>
         <div class="container">
             <main>
+                <!--以下変更 (早渕壮真 05/14) -->
+                <p name="tab">
+                    <div class="tab_content"><a class="tab-link active" href="#circuit1">1</a></div>
+                    <div class="tab_content"><a class="tab-link" href="#circuit2">2</a></div>
+                </p>
+
+                <div class="circuit cir1">
+                    <!-- 画像を配置 -->
+                    <div class="element ele1">
+                        <p><img src="AND.jpg" width="120" height="120" id="program1" alt=""></p>
+                        <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                        <p>
+                            <select name="channel" size="1" onchange="imgChange1(this, 'program1')">
+                                <option value="0">AND</option>
+                                <option value="1">OR</option>
+                                <option value="2">XOR</option>
+                                <option value="3">NAND</option>
+                                <option value="4">NOR</option>
+                                <option value="5">XNOR</option>
+                                <option value="6">NOT</option>
+                            </select>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="circuit cir2">
+                    <!-- 画像を配置 -->
+                    <div class="element ele1">
+                        <p><img src="AND.jpg" width="120" height="120" id="program1" alt=""></p>
+                        <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                        <p>
+                            <select name="channel" size="1" onchange="imgChange1(this, 'program1')">
+                                <option value="0">AND</option>
+                                <option value="1">OR</option>
+                                <option value="2">XOR</option>
+                                <option value="3">NAND</option>
+                                <option value="4">NOR</option>
+                                <option value="5">XNOR</option>
+                                <option value="6">NOT</option>
+                            </select>
+                        </p>
+                    </div>
+
+                    <div class="element ele2">
+                        <!-- 画像を配置 -->
+                        <p><img src="AND.jpg" width="120" height="120" id="program2" alt=""></p>
+                        <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                        <p>
+                            <select name="channel" size="1" onchange="imgChange2(this, 'program2')">
+                                <option value="0">AND</option>
+                                <option value="1">OR</option>
+                                <option value="2">XOR</option>
+                                <option value="3">NAND</option>
+                                <option value="4">NOR</option>
+                                <option value="5">XNOR</option>
+                                <option value="6">NOT</option>
+                            </select>
+                        </p>
+
+                        <div id="simcir">
+                            <div id="green-circle" class="green-circle" style="display:none;"></div> <!-- Display none initially -->
+                            <div id="yellow-circle" class="yellow-circle" style="display:none;"></div> <!-- Display none initially -->
+                            <div id="red-circle" class="red-circle" style="display:none;"></div> <!-- Display none initially -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!--以上変更 (早渕壮真 05/14) -->
+
                 <h1>論理回路シミュレーション1</h1>
                 <label for="input1" class="custom-checkbox">
                     <input type="checkbox" id="input1">
                     <span class="checkmark"></span>
                 </label>
-                
+
                 <label for="input2" class="custom-checkbox">
                     <input type="checkbox" id="input2">
                     <span class="checkmark"></span>
@@ -45,8 +114,12 @@
                 <div class="simcir">
                     <div class="simcir-body">
                         <svg version="1.1" width="1000" height="600" viewbox="0 0 1200 500" class="simcir-workspace" style="user-select: none; display: inline;">
-                            <defs><pattern id="simcir-id0" x="0" y="0" width="0.008" height="0.01"><rect class="simcir-pin-hole" x="0" y="0" width="2" height="2"></rect></pattern></defs>
-                            <rect x="0" y="-111" width="1222" height="800" style="fill: url(&quot;#simcir-id0&quot;);"></rect>
+                            <defs>
+                                <pattern id="simcir-id0" x="0" y="0" width="0.008" height="0.01">
+                                    <rect class="simcir-pin-hole" x="0" y="0" width="2" height="2"></rect>
+                                </pattern>
+                            </defs>
+                            <rect x="0" y="-111" width="1222" height="800" style="fill: url(#simcir-id0);"></rect>
                         </svg>
                     </div>
                 </div>
@@ -58,60 +131,152 @@
                 const input2 = document.getElementById("input2");
                 const gatesSelect = document.getElementById("gates-select");
                 const gatesOutput = document.getElementById("gates-output");
+                const redCircle = document.getElementById("red-circle");
+                const yellowCircle = document.getElementById("yellow-circle");
+                const greenCircle = document.getElementById("green-circle");
+
                 var ws = new WebSocket("ws://172.20.10.5:5555/");
-                
+
                 function simulateLogicGates() {
                     const isInput1Checked = input1.checked;
                     const isInput2Checked = input2.checked;
                     const selectedGate = gatesSelect.value;
-                    
+
+                    if(isInput1Checked){
+                        greenCircle.style.display = 'block';
+                    } else {
+                        greenCircle.style.display = 'none';
+                    }
+
+                    if(isInput2Checked){
+                        yellowCircle.style.display = 'block';
+                    } else {
+                        yellowCircle.style.display = 'none';
+                    }
+
                     switch (selectedGate) {
                         case 'and':
                             const andResult = isInput1Checked && isInput2Checked;
                             gatesOutput.innerText = andResult ? "1" : "0";
+                            if(andResult){
+                                redCircle.style.display = 'block';
+                            } else {
+                                redCircle.style.display = 'none';
+                            }
                             break;
                         case 'or':
                             const orResult = isInput1Checked || isInput2Checked;
                             gatesOutput.innerText = orResult ? "1" : "0";
+                            if(orResult){
+                                redCircle.style.display = 'block';
+                            } else {
+                                redCircle.style.display = 'none';
+                            }
                             break;
                         case 'xor':
                             const xorResult = (isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked);
                             gatesOutput.innerText = xorResult ? "1" : "0";
+                            if(xorResult){
+                                redCircle.style.display = 'block';
+                            } else {
+                                redCircle.style.display = 'none';
+                            }
                             break;
                         case 'nand':
                             const nandResult = !(isInput1Checked && isInput2Checked);
                             gatesOutput.innerText = nandResult ? "1" : "0";
+                            if(nandResult){
+                                redCircle.style.display = 'block';
+                            } else {
+                                redCircle.style.display = 'none';
+                            }
                             break;
                         case 'nor':
                             const norResult = !(isInput1Checked || isInput2Checked);
                             gatesOutput.innerText = norResult ? "1" : "0";
+                            if(norResult){
+                                redCircle.style.display = 'block';
+                            } else {
+                                redCircle.style.display = 'none';
+                            }
                             break;
                     }
 
-
-
-                    if(input1.innerText == "1"){
-                        ws.send('input1_on');
-                    }else{
-                        ws.send('input1_off');
-                    }
-
-                    if(input2.innerText == "1"){
-                        ws.send('input2_on');
-                    }else{
-                        ws.send('input2_off');
-                    }
-
-                    if(gatesOutput.innerText == "1"){
-                        ws.send('output_on');
-                    }else{
-                        ws.send('output_off');
-                    }
+                    ws.send(isInput1Checked ? 'input1_on' : 'input1_off');
+                    ws.send(isInput2Checked ? 'input2_on' : 'input2_off');
+                    ws.send(gatesOutput.innerText === "1" ? 'output_on' : 'output_off');
                 }
-                
+
+                function imgChange1(parts, id) {
+                    const fname = parts.options[parts.selectedIndex].value;
+                    switch (fname) {
+                        case '0':
+                            document.getElementById(id).src = "AND.jpg";
+                            break;
+                        case '1':
+                            document.getElementById(id).src = "OR.jpg";
+                            break;
+                        case '2':
+                            document.getElementById(id).src = "XOR.jpg";
+                            break;
+                        case '3':
+                            document.getElementById(id).src = "NAND.jpg";
+                            break;
+                        case '4':
+                            document.getElementById(id).src = "NOR.jpg";
+                            break;
+                        case '5':
+                            document.getElementById(id).src = "XNOR.jpg";
+                            break;
+                        case '6':
+                            document.getElementById(id).src = "NOT.jpg";
+                            break;
+                    }
+                    simulateLogicGates();
+                }
+
+                function imgChange2(parts, id) {
+                    const fname = parts.options[parts.selectedIndex].value;
+                    switch (fname) {
+                        case '0':
+                            document.getElementById(id).src = "AND.jpg";
+                            break;
+                        case '1':
+                            document.getElementById(id).src = "OR.jpg";
+                            break;
+                        case '2':
+                            document.getElementById(id).src = "XOR.jpg";
+                            break;
+                        case '3':
+                            document.getElementById(id).src = "NAND.jpg";
+                            break;
+                        case '4':
+                            document.getElementById(id).src = "NOR.jpg";
+                            break;
+                        case '5':
+                            document.getElementById(id).src = "XNOR.jpg";
+                            break;
+                        case '6':
+                            document.getElementById(id).src = "NOT.jpg";
+                            break;
+                    }
+                    simulateLogicGates(); 
+                }
+
+                $(function() {
+                    let tabs = $(".tab");
+                    $(".tab").on("click", function() {
+                        $(".active").removeClass("active");
+                        $(this).addClass("active");
+                        const index = tabs.index(this);
+                        $(".content").removeClass("show").eq(index).addClass("show");
+                    })
+                })
+
+
                 input1.addEventListener("change", simulateLogicGates);
                 input2.addEventListener("change", simulateLogicGates);
-                gatesSelect.addEventListener("change", simulateLogicGates);                
+                gatesSelect.addEventListener("change", simulateLogicGates);
                 simulateLogicGates();
             </script>
         </div>
