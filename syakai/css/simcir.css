@@ -9,6 +9,22 @@
     *  http://www.opensource.org/licenses/mit-license.php
     */
 
+    .circuit {
+        background-image: 
+            radial-gradient(circle, gray 15%, transparent 15%),
+            radial-gradient(circle, gray 15%, transparent 15%);
+        background-size: 10px 10px;
+        margin: 0 150px 0 20px;
+        border: 3px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .element {
+        margin: 0 80px;
+    }
+
     .simcir-body {
         display: inline-block;
     }
@@ -207,3 +223,51 @@
         background-color: #f0f0f0;
     }
     
+    /* 以下変更箇所 */
+
+    .green-circle {
+        display: inline-block; /* センター寄せ用 */
+        background-color: rgb(0, 255, 0); /* ベースカラー */
+        height:20px; /* 円の大きさ */
+        width:20px;  /* 円の大きさ */
+        border-radius:50%; /* まるみ */
+        /* 以下はそろえるだけの為のmargin */
+        margin-right: 10px;
+        margin-bottom: 5px;
+        margin-top: 2px;
+    }
+
+    .yellow-circle {
+        display: inline-block;
+        background-color: rgb(255, 230, 0);
+        height:20px;
+        width:20px;
+        border-radius:50%;
+        margin-right: 10px;
+        margin-bottom: 5px;
+        margin-top: 2px;
+    }
+
+    .red-circle {
+        display: inline-block;
+        background-color: rgb(255, 0, 0);
+        height:20px;
+        width:20px;
+        border-radius:50%;
+        margin-right: 10px;
+        margin-bottom: 5px;
+        margin-top: 2px;
+    }
+
+    .black-circle {
+        display: inline-block;
+        background-color: rgb(0, 0, 0);
+        height:20px;
+        width:20px;
+        border-radius:50%;
+        margin-right: 10px;
+        margin-bottom: 5px;
+        margin-top: 2px;
+    }
+
+    /* 以上変更箇所 */
