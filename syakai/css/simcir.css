@@ -10,15 +10,60 @@
     */
 
     .circuit {
-        background-image: 
-            radial-gradient(circle, gray 15%, transparent 15%),
-            radial-gradient(circle, gray 15%, transparent 15%);
-        background-size: 10px 10px;
-        margin: 0 150px 0 20px;
-        border: 3px solid black;
         display: flex;
-        align-items: center;
+        background-color: transparent;
+        width: 1200px;
+        height: 600px;
+    }
+    .tab {
+        display: none;
+        opacity: 0;
+        transition: opacity 1.0s ease-in-out;
+        width: 80%;
+        background: radial-gradient(circle, black 7%, transparent 7%);
+        background-size: 18px 18px;
+    }
+    .tab.active {
+        display: block;
+        border: 1px solid darkgray;
+        opacity: 1;
+    }
+    .tabs{
+        width: 20%;
+        background-color: transparent;
+    }
+    .tabs .tablink {
+        margin: 0;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px solid darkgray;
+        text-align: center;
+        font-size: 2rem;
+        height: 33.33%;
+        display: flex;
         justify-content: center;
+        align-items: center;
+    }
+    .tabs .tablink:hover{
+        background-color: #ddd;
+    }
+    .tabs .tablink.active {
+        background-color: #ddd;
+    }
+    .fadeIn{
+        animation-name:fadeInAnime;
+        animation-duration:1s;
+        animation-fill-mode:forwards;
+        opacity:0;
+    }
+    @keyframes fadeInAnime{
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
 
     .element {
