@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link href="css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="simcir/simcir.js"></script>
+    <link rel="stylesheet" type="text/css" href="simcir/simcir-step3.css" />
+    <script type="text/javascript" src="simcir/simcir-basicset.js"></script>
+    <link rel="stylesheet" type="text/css" href="simcir/simcir-basicset.css" />
+    <script type="text/javascript" src="simcir-library.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        var ws = new WebSocket("ws://172.20.10.5:5555/");
+        ws.send('step4');
+    </script>
+    <title>simcirjs - test - </title>
+  </head>
+  <body>
+    <header>
+      <a href="index.html">TOP</a>
+      <a href="step1.html">step1</a>
+      <a href="step2.html">step2</a>
+      <a href="step3.html">step3</a>
+      <a href="step4.html">step4</a>
+    </header>
+
+    <div class="simcir">
+      {
+        "width":1000,
+        "height":600,
+        "showToolbox":true,
+        "toolbox":[
+          {"type":"DC"},
+          {"type":"Toggle"},
+          {"type":"LED","color":"#ff0000","label":"LED"},
+          {"type":"AND","label":"AND"},
+          {"type":"OR","label":"OR"},
+          {"type":"NOT","label":"NOT"},
+          {"type":"NAND","label":"NAND"},
+          {"type":"NOR","label":"NOR"},
+          {"type":"XOR","label":"XOR"},
+          {"type":"4bit7seg","color":"#ff0000"}
+        ]
+      }
+    </div>
+<div style="text-align: right;width:1000px;">
+	Copyright (c) 2014 Kazuhiko Arase <br>
+Licensed under the MIT license
+</div>
+  </body>
+
+  <script>
+  </script>
+
+</html>
