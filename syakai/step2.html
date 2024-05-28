@@ -11,12 +11,9 @@
         var ws = new WebSocket("ws://172.20.10.5:5555/");
         ws.send('step2');
     </script>
-
 </head>
 
 <body>
-
-  
   <div class="contain">
       <header>
         <a href="index.html">TOP</a>
@@ -26,70 +23,60 @@
         <a href="step4.html">step4</a>
       </header>
       <div class="container">
-        <aside class="box">
-          <h4>1. **入力と出力の理解:**</h4>
-          - 入力はスイッチのようなもので、ON（1）またはOFF（0）の2つの状態があります。
-          - 出力は電球やブザーなどで、ONまたはOFFの状態を示します。
-
-
-          <h4>2. **ANDゲート:**</h4>
-          - ANDゲートは2つの入力が両方ともONの場合、出力がONになります。
-          - 例: スイッチAとスイッチBが両方ONの時、電球がつく。
-
-
-          <h4>3. **ORゲート:**</h4>
-          - ORゲートは2つの入力のうち少なくとも1つがONの場合、出力がONになります。
-          - 例: スイッチAまたはスイッチBがONの時、電球がつく。
-
-
-          <h4>4. **NOTゲート:**</h4>
-          - NOTゲートは1つの入力を逆にします。ONならOFFに、OFFならONにします。
-          - 例: スイッチAがONの時、電球はOFF。
-
-          <h4>5. **XORゲート:**</h4>
-          - XORゲートは2つの入力のうち1つだけがONの場合、出力がONになります。
-          - 例: スイッチAまたはスイッチBがONの時、電球がつく。
-
-          <h4>6. **NANDゲート:**</h4>
-          - NANDゲートは2つの入力が両方ともONの場合、出力がOFFになります。
-          - 例: スイッチAとスイッチBが両方ONの時、電球が消える。
-
-          <h4>7. **NORゲート:**</h4>
-          - NORゲートは2つの入力のうち少なくとも1つがONの場合、出力がOFFになります。
-          - 例: スイッチAまたはスイッチBがONの時、電球が消える。
-        </aside>
         <main>
             <h1>論理回路シミュレーション2</h1>
             <h3>論理素子の関数をコーディングしていこう！</h3>
-            <div id = "editor" style="height: 600px;">var input1=0,input2=0
+            <div id = "editor" style="height: 600px;">
+var input1=0, input2=0
 
-def and(input1,input2):
-  #ここに入力
+def and_gate(input1, input2):
+    return input1 & input2
 
+def or_gate(input1, input2):
+    return input1 | input2
 
-def or(input1,input2):
-  #ここに入力
+def xor_gate(input1, input2):
+    return input1 ^ input2
 
+def nand_gate(input1, input2):
+    return not (input1 & input2)
 
-def xor(input1,input2):
-  #ここに入力
+def nor_gate(input1, input2):
+    return not (input1 | input2)
 
+def not_gate(input1):
+    return not input1
 
-def nand(input1,input2):
-  #ここに入力
+def check_answer(func, input1, input2, expected):
+    result = func(input1, input2)
+    if result == expected:
+        return "正解"
+    else:
+        return "不正解"
 
-
-def nor(input1,input2):
-  #ここに入力
-  
-
-<div class="output_rapper"></div>
+# 例: ANDゲートのチェック
+print(check_answer(and_gate, 1, 1, 1))
             </div>
+            <button onclick="runCode()">出力を確認</button>
+            <div id="output"></div>
             <script>
-                //エディターをタグにセット
+                function runCode() {
+                    var editor = ace.edit("editor");
+                    var code = editor.getValue();
+                    var outputDiv = document.getElementById("output");
+                    
+                    try {
+                        var output = eval(code);
+                        outputDiv.innerHTML = output;
+                    } catch (e) {
+                        outputDiv.innerHTML = "エラー: " + e.message;
+                    }
+                }
+
+                // エディターをタグにセット
                 var editor = ace.edit("editor");
 
-                //初期化用の関数
+                // 初期化用の関数
                 editor.$blockScrolling = Infinity;
                 editor.setOptions({
                     enableBasicAutocompletion: true,
@@ -111,10 +98,38 @@ def nor(input1,input2):
             <div id="chat-window">
               <pre id="chat-history"></pre>
             </div>
-            
           </form>
-        </aside>
+        </aside>        
     </div>
+        <footer class="box">
+          <h2>1. 入力と出力の理解:</h2>
+          入力はスイッチのようなもので、ON（1）またはOFF（0）の2つの状態があります。
+          出力は電球やブザーなどで、ONまたはOFFの状態を示します。
+
+          <h3>2. ANDゲート:</h3>
+          ANDゲートは2つの入力が両方ともONの場合、出力がONになります。
+          例: スイッチAとスイッチBが両方ONの時、電球がつく。
+
+          <h3>3. ORゲート:</h3>
+          ORゲートは2つの入力のうち少なくとも1つがONの場合、出力がONになります。
+          例: スイッチAまたはスイッチBがONの時、電球がつく。
+
+          <h3>4. NOTゲート:</h3>
+          NOTゲートは1つの入力を逆にします。ONならOFFに、OFFならONにします。
+          例: スイッチAがONの時、電球はOFF。
+
+          <h3>5. XORゲート:</h3>
+          XORゲートは2つの入力のうち1つだけがONの場合、出力がONになります。
+          例: スイッチAまたはスイッチBがONの時、電球がつく。
+
+          <h3>6. NANDゲート:</h3>
+          NANDゲートは2つの入力が両方ともONの場合、出力がOFFになります。
+          例: スイッチAとスイッチBが両方ONの時、電球が消える。
+
+          <h3>7. NORゲート:</h3>
+          NORゲートは2つの入力のうち少なくとも1つがONの場合、出力がOFFになります。
+          例: スイッチAまたはスイッチBがONの時、電球が消える。
+        </footer>
   </div>
   <script>
     let messageHistory = [];
@@ -186,12 +201,10 @@ def nor(input1,input2):
   
             if (jsonData.choices && jsonData.choices[0].delta && jsonData.choices[0].delta.content) {
               const assistantMessage = jsonData.choices[0].delta.content;
-              $('#chat-history').append('' + assistantMessage + '');
+              $('#chat-history').append('' + assistantMessage + '' );
               await appendAssistantResponse(assistantMessage);
             }
-  
           }
-  
         }
       }
     });

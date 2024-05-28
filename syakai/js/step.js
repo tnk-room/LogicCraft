@@ -174,10 +174,25 @@ function calculate(a, b, selectedGate) {
     }
 }
 
+function calculate(a, b, selectedGate) {
+    switch (selectedGate) {
+        case 'and':
+            return a & b ? 1 : 0;
+        case 'or':
+            return a | b ? 1 : 0;
+        case 'xor':
+            return a ^ b ? 1 : 0;
+        case 'nand':
+            return !(a & b) ? 1 : 0;
+        case 'nor':
+            return !(a | b) ? 1 : 0;
+        default:
+            return null; // 不正なゲートが選択された場合はnullを返す
+    }
+}
+
 function validateInputs() {
-    const userInputs = document.querySelectorAll('.userInput');
     const results = document.querySelectorAll('.result');
-    const calculatedCells = document.querySelectorAll('.calculated');
     const selectGate = document.getElementById('truth').value;
 
     // 初期化
@@ -186,6 +201,7 @@ function validateInputs() {
         result.style.color = 'black';
     });
 
+    // 行ごとの計算と検証
     for (let row = 0; row < 4; row++) {
         const a = parseInt(document.querySelector(`.userInput[data-row="${row}"][data-type="A"]`).value, 10);
         const b = parseInt(document.querySelector(`.userInput[data-row="${row}"][data-type="B"]`).value, 10);
@@ -193,21 +209,18 @@ function validateInputs() {
         const calculatedValue = calculate(a, b, selectGate);
 
         const resultElement = document.querySelector(`.result[data-row="${row}"]`);
-        const calculatedElement = document.querySelector(`.calculated[data-row="${row}"]`);
 
         if (calculatedValue === null) {
             resultElement.textContent = 'Invalid Gate';
             resultElement.style.color = 'red';
         } else if (output === calculatedValue) {
             resultElement.textContent = 'Correct';
-            resultElement.style.color = 'green';
+            resultElement.style.backgroundColor = 'green';
+            resultElement.style.color = 'white';
         } else {
             resultElement.textContent = 'Incorrect';
-            resultElement.style.color = 'red';
+            resultElement.style.backgroundColor = 'red';
+            resultElement.style.color = 'white';
         }
-
-        calculatedElement.textContent = calculatedValue !== null ? calculatedValue : 'N/A';
     }
-
-    
 }
