@@ -59,6 +59,12 @@
                 -->
 
                 <!--以下変更 (早渕壮真 05/14) -->
+                <div id="simcir">
+                    <div id="green-circle" class="green-circle" style="display:none;"></div> <!-- Display none initially -->
+                    <div id="yellow-circle" class="yellow-circle" style="display:none;"></div> <!-- Display none initially -->
+                    <div id="red-circle" class="red-circle" style="display:none;"></div> <!-- Display none initially -->
+                </div>
+
                 <div class="circuit">
                     <div class="tabs">
                         <p class="tablink" onclick="openTab(event, 'Tab1')">回路1</p>
@@ -66,7 +72,7 @@
                         <p class="tablink" onclick="openTab(event, 'Tab3')">回路3</p>
                     </div>
 
-                    <div id="tab1" class="tab fadeIn active">
+                    <div id="Tab1" class="tab fadeIn active">
                         <!-- 画像を配置 -->
                         <div class="element ele1">
                             <p><img src="img/AND.jpg" width="120" height="120" id="program1" alt=""></p>
@@ -85,7 +91,7 @@
                         </div>
                     </div>
                     
-                    <div id="tab2" class="tab fadeIn">
+                    <div id="Tab2" class="tab fadeIn">
                         <!-- 画像を配置 -->
                         <div class="element ele1">
                             <p><img src="img/AND.jpg" width="120" height="120" id="program1" alt=""></p>
@@ -120,130 +126,120 @@
                         </div>
                     </div>
 
-                    <div id="tab3" class="tab fadeIn">
+                    <div id="Tab3" class="tab fadeIn">
                         
                     </div>
                 </div>
-                <div id="simcir">
-                    <div id="green-circle" class="green-circle" style="display:none;"></div> <!-- Display none initially -->
-                    <div id="yellow-circle" class="yellow-circle" style="display:none;"></div> <!-- Display none initially -->
-                    <div id="red-circle" class="red-circle" style="display:none;"></div> <!-- Display none initially -->
-                </div>
                 <!--以上変更 (早渕壮真 05/14) -->
 
-                <p>選択素子出力: <span id="gates-output">0</span></p>
-
-                <div class="truthTable">
-                    <h1>真理値表</h1>
-                    <p>
-                        <select id="truth">
-                            <option value="0">AND</option>
-                            <option value="1">OR</option>
-                            <option value="2">XOR</option>
-                            <option value="3">NAND</option>
-                            <option value="4">NOR</option>
-                            <option value="5">XNOR</option>
-                            <option value="6">NOT</option>
-                        </select>
-                    </p>
-                    <table id="truthTable">
-                        <thead>
-                            <tr>
-                                <th>A</th>
-                                <th>B</th>
-                                <th>out</th>
-                                <th>Correct</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <select class="userInput" data-row="0" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="0" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="calculated" data-row="0">
-                                    <select class="userInput" data-row="0" data-type="out">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="result" data-row="0"></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <select class="userInput" data-row="1" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="1" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="calculated" data-row="1">
-                                    <select class="userInput" data-row="1" data-type="out">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="result" data-row="1"></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <select class="userInput" data-row="2" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="2" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="calculated" data-row="2">
-                                    <select class="userInput" data-row="2" data-type="out">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="result" data-row="2"></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <select class="userInput" data-row="3" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="3" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="calculated" data-row="3">
-                                    <select class="userInput" data-row="3" data-type="out">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td class="result" data-row="3"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button onclick="validateInputs()">Validate</button>
+                <h1>真理値表</h1>
+                <div class="gate-selector">
+                    <label for="truth">素子: </label>
+                    <select id="truth">
+                        <option value="and">AND</option>
+                        <option value="or">OR</option>
+                        <option value="xor">XOR</option>
+                        <option value="nand">NAND</option>
+                        <option value="nor">NOR</option>
+                    </select>
                 </div>
+                <table id="truthTable">
+                    <thead>
+                        <tr>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>Output</th>
+                            <th>Correct</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="userInput" data-row="0" data-type="A">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="0" data-type="B">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="0" data-type="out">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td class="result" data-row="0"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select class="userInput" data-row="1" data-type="A">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="1" data-type="B">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="1" data-type="out">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td class="result" data-row="1"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select class="userInput" data-row="2" data-type="A">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="2" data-type="B">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="2" data-type="out">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td class="result" data-row="2"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select class="userInput" data-row="3" data-type="A">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="3" data-type="B">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="userInput" data-row="3" data-type="out">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td class="result" data-row="3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button onclick="validateInputs()">Validate</button>
             </main>
             <script type="text/javascript" src="js/step.js"></script>
         </div>

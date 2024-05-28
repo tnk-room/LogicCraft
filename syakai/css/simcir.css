@@ -31,16 +31,17 @@
     .tabs{
         width: 20%;
         background-color: transparent;
+        padding: 0;
     }
     .tabs .tablink {
         margin: 0;
-        padding: 10px;
+        padding: 0;
         cursor: pointer;
         border-radius: 5px;
         border: 1px solid darkgray;
         text-align: center;
         font-size: 2rem;
-        height: 33.33%;
+        height: 33%;
         display: flex;
         justify-content: center;
         align-items: center;

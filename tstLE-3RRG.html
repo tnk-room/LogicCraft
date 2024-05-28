@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic Circuit TEXT ver</title>
+<style>
+  .paragraph {
+    float: left; /* 左側フロート */
+    width: 50%; /* 幅半分 */
+    box-sizing: border-box; /* ボックスモデル */
+    padding-right: 10px; /* 右余白 */
+  }
+  .clear {
+    clear: both; /* フロート解消 */
+  }
+</style>
+</head>
+<body>
+<h3><span style="color: blue;">Logic Circuit TEXT ver (Tanaka-Lab)</span></h3>
+<div class="paragraph"><p>
+  <label for="fai1">FaI1（必須）:</label>
+  <input type="text" id="fai1">
+
+  <label for="prvouta1">a1に接続する前の出力:</label>
+  <select id="prvouta1">
+    <option value=" "> </option>
+    <option value="a">a</option>
+    <option value="b">b</option>
+  </select>
+
+  <button onclick="copya1Text()">代入</button>
+    <script>
+      function copya1Text() {
+         var prvouta1 = document.getElementById("prvouta1").value;
+         var fai1Dummy;
+         if (prvouta1 === "a") {
+           fai1Dummy = outputa.textContent;
+         }  
+         else if (prvouta1 === "b") {
+           fai1Dummy = outputb.textContent;  
+         } 
+         var fai1 = document.getElementById("fai1"); 
+         fai1.value = "(" + fai1Dummy + ")";
+         }
+    </script>
+    <br><br>
+
+  <label for="fai2">FaI2:</label>
+  <input type="text" id="fai2">
+
+  <label for="prvouta2">a2に接続する前の出力:</label>
+  <select id="prvouta2">
+    <option value=" "> </option>
+    <option value="a">a</option>
+    <option value="b">b</option>
+  </select>
+
+  <button onclick="copya2Text()">代入</button>
+    <script>
+      function copya2Text() {
+         var prvouta2 = document.getElementById("prvouta2").value;
+         var fai1Dummy;
+         if (prvouta2 === "a") {
+           fai1Dummy = outputa.textContent;
+         }  
+         else if (prvouta2 === "b") {
+           fai2Dummy = outputb.textContent;  
+         } 
+         var fai2 = document.getElementById("fai2"); 
+         fai2.value = "(" + fai2Dummy + ")";
+         }
+    </script>
+    <br><br>
+
+  <label for="fai3">FaI3:</label>
+  <input type="text" id="fai3">
+
+  <label for="prvouta3">a3に接続する前の出力:</label>
+  <select id="prvouta3">
+    <option value=" "> </option>
+    <option value="a">a</option>
+    <option value="b">b</option>
+  </select>
+
+  <button onclick="copya3Text()">代入</button>
+    <script>
+      function copya3Text() {
+         var prvouta3 = document.getElementById("prvouta3").value;
+         var fai1Dummy;
+         if (prvouta3 === "a") {
+           fai1Dummy = outputa.textContent;
+         }  
+         else if (prvouta3 === "b") {
+           fai3Dummy = outputb.textContent;  
+         } 
+         var fai3 = document.getElementById("fai3"); 
+         fai3.value = "(" + fai3Dummy + "})";
+         }
+    </script>
+    <br><br>
+
+  <label for="fai1s">FaI1s:</label>
+  <select id="fai1s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br><br>
+  <label for="fai2s">FaI2s:</label>
+  <select id="fai2s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br><br>
+  <label for="fai3s">FaI3s:</label>
+  <select id="fai3s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br><br>
+  <label for="lea">LEa（必須）:</label>
+  <select id="lea">
+    <option value=" "> </option>
+    <option value="AND">AND</option>
+    <option value="OR">OR</option>
+    <option value="XOR">XOR</option>
+    <option value="NAND">NAND</option>
+    <option value="NOR">NOR</option>
+    <option value="XNOR">XNOR</option>
+    <option value="NOT">NOT</option>
+  </select><br><br>
+  <button onclick="executea()">実行a</button>
+  <button onclick="reseta()">リセットa</button><br><br>
+  <div id="outputa"></div>
+
+  <script>
+    function executea() {
+      var fai1 = document.getElementById("fai1").value.trim() || "#";
+      var fai2 = document.getElementById("fai2").value.trim() || "#";
+      var fai3 = document.getElementById("fai3").value.trim() || "#";
+      var fai1s = document.getElementById("fai1s").value.trim();
+      var fai2s = document.getElementById("fai2s").value.trim();
+      var fai3s = document.getElementById("fai3s").value.trim();
+      var lea = document.getElementById("lea").value.trim();
+      var outputa = document.getElementById("outputa");
+
+      if (lea === "") {
+        outputa.textContent = "error1";
+        return;
+      }
+
+      // LEaがNOTの場合の処理
+     if (lea === "NOT") {
+       var count = 0;
+       if (fai1.trim() !== "#") count++;
+       if (fai2.trim() !== "#") count++;
+        if (fai3.trim() !== "#") count++;
+        if (count !== 1) {
+          outputa.textContent = "error2";
+          return;
+        }
+      }
+
+      // LEaがAND, OR, XOR, NAND, NOR, XNORの場合の処理　　　　　　　　　　　＜＝機能しない
+      if (["AND", "OR", "XOR", "NAND", "NOR", "XNOR"].includes(lea)) {
+        var blanksCount = 0;
+        if (fai1.trim() == "#") count++;
+        if (fai2.trim() == "#") count++;
+        if (fai3.trim() == "#") count++;
+        if (count >= 2) {
+          outputa.textContent = "error3";
+          return;
+        }
+      }
+
+
+      if (fai1s === "not")  fai1 = fai1 + "^" ; 
+      if (fai2s === "not")  fai2 = fai2 + "^" ; 
+      if (fai3s === "not")  fai3 = fai3 + "^" ; 
+
+
+      var resulta;
+      switch (lea) {
+        case "AND":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "OR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "XOR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "NAND":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "NOR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "XNOR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "NOT":
+          resulta = fai1 + "^" + fai2 + "^" + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        default:
+          outputa.textContent = "error4";
+          return;
+      }
+
+      outputa.textContent = resulta;
+    }
+
+    function reseta() {
+      document.getElementById("fai1").value = "";
+      document.getElementById("fai2").value = "";
+      document.getElementById("fai3").value = "";
+      document.getElementById("fai1s").value = " ";
+      document.getElementById("fai2s").value = " ";
+      document.getElementById("fai3s").value = " ";
+      document.getElementById("lea").value = " ";
+      document.getElementById("outputa").textContent = "";
+    }
+  </script>
+</p>
+</div>
+<div class="paragraph"><p>
+  <label for="fbi1">FbI1（必須）:</label>
+  <input type="text" id="fbi1">
+
+  <label for="prvoutb1">b1に接続する前の出力:</label>
+  <select id="prvoutb1">
+    <option value=" "> </option>
+    <option value="a">a</option>
+    <option value="b">b</option>
+  </select>
+
+
+  <button onclick="copyb1Text()">代入</button>
+    <script>
+      function copyb1Text() {
+         var prvoutb1 = document.getElementById("prvoutb1").value;
+         var fbi1Dummy;
+         if (prvoutb1 === "a") {
+           fbi1Dummy = outputa.textContent;
+         }  
+         else if (prvoutb1 === "b") {
+           fbi1Dummy = outputb.textContent;  
+         } 
+         var fbi1 = document.getElementById("fbi1"); 
+         fbi1.value = "(" + fbi1Dummy + ")";
+         }
+    </script>
+    <br><br>
+
+  <label for="fbi2">FbI2:</label>
+  <input type="text" id="fbi2">
+
+  <label for="prvoutb2">b2に接続する前の出力:</label>
+  <select id="prvoutb2">
+    <option value=" "> </option>
+    <option value="a">a</option>
+    <option value="b">b</option>
+  </select>
+
+  <button onclick="copyb2Text()">代入</button>
+    <script>
+      function copyb2Text() {
+         var prvoutb2 = document.getElementById("prvoutb2").value;
+         var fbi2Dummy;
+         if (prvoutb2 === "a") {
+           fbi2Dummy = outputa.textContent;
+         }  
+         else if (prvoutb2 === "b") {
+           fbi2Dummy = outputb.textContent;  
+         } 
+         var fbi2 = document.getElementById("fbi2"); 
+         fbi2.value = "(" + fbi2Dummy + ")";
+         }
+    </script>
+    <br><br>
+
+  <label for="fbi3">FbI3:</label>
+  <input type="text" id="fbi3">
+
+  <label for="prvoutb3">b3に接続する前の出力:</label>
+  <select id="prvoutb3">
+    <option value=" "> </option>
+    <option value="a">a</option>
+    <option value="b">b</option>
+  </select>
+
+  <button onclick="copyb3Text()">代入</button>
+    <script>
+      function copyb3Text() {
+         var prvoutb3 = document.getElementById("prvoutb3").value;
+         var fbi3Dummy;
+         if (prvoutb3 === "a") {
+           fbi3Dummy = outputa.textContent;
+         }  
+         else if (prvoutb3 === "b") {
+           fbi3Dummy = outputb.textContent;  
+         } 
+         var fbi3 = document.getElementById("fbi3"); 
+         fbi3.value = "(" + fbi3Dummy + ")";
+         }
+    </script>
+    <br><br>
+
+  <label for="fbi1s">FbI1s:</label>
+  <select id="fbi1s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br><br>
+  <label for="fbi2s">FbI2s:</label>
+  <select id="fbi2s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br><br>
+  <label for="fbi3s">FbI3s:</label>
+  <select id="fbi3s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br><br>
+  <label for="leb">LEb（必須）:</label>
+  <select id="leb">
+    <option value=" "> </option>
+    <option value="AND">AND</option>
+    <option value="OR">OR</option>
+    <option value="XOR">XOR</option>
+    <option value="NAND">NAND</option>
+    <option value="NOR">NOR</option>
+    <option value="XNOR">XNOR</option>
+    <option value="NOT">NOT</option>
+  </select><br><br>
+  <button onclick="executeb()">実行b</button>
+  <button onclick="resetb()">リセットb</button><br><br>
+  <div id="outputb"></div>
+
+  <script>
+    function executeb() {
+      var fbi1 = document.getElementById("fbi1").value.trim() || "#";
+      var fbi2 = document.getElementById("fbi2").value.trim() || "#";
+      var fbi3 = document.getElementById("fbi3").value.trim() || "#";
+      var fbi1s = document.getElementById("fbi1s").value.trim();
+      var fbi2s = document.getElementById("fbi2s").value.trim();
+      var fbi3s = document.getElementById("fbi3s").value.trim();
+      var leb = document.getElementById("leb").value.trim();
+      var outputb = document.getElementById("outputb");
+
+      if (leb === "") {
+        outputb.textContent = "error1";
+        return;
+      }
+
+      // LEbがNOTの場合の処理
+     if (leb === "NOT") {
+       var count = 0;
+       if (fbi1.trim() !== "#") count++;
+       if (fbi2.trim() !== "#") count++;
+        if (fbi3.trim() !== "#") count++;
+        if (count !== 1) {
+          outputb.textContent = "error2";
+          return;
+        }
+      }
+
+      // LEbがAND, OR, XOR, NAND, NOR, XNORの場合の処理　　　　　　　　　　　＜＝機能しない
+      if (["AND", "OR", "XOR", "NAND", "NOR", "XNOR"].includes(leb)) {
+        var blanksCount = 0;
+        if (fbi1.trim() == "#") count++;
+        if (fbi2.trim() == "#") count++;
+        if (fbi3.trim() == "#") count++;
+        if (count >= 2) {
+          outputb.textContent = "error3";
+          return;
+        }
+      }
+
+
+      if (fbi1s === "not")  fbi1 = fbi1 + "^" ; 
+      if (fbi2s === "not")  fbi2 = fbi2 + "^" ; 
+      if (fbi3s === "not")  fbi3 = fbi3 + "^" ; 
+
+
+      var resultb;
+      switch (leb) {
+        case "AND":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "OR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "XOR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "NAND":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "NOR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "XNOR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "NOT":
+          resultb = fbi1 + "^" + fbi2 + "^" + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        default:
+          outputb.textContent = "error4";
+          return;
+      }
+
+      outputb.textContent = resultb;
+    }
+
+    function resetb() {
+      document.getElementById("fbi1").value = "";
+      document.getElementById("fbi2").value = "";
+      document.getElementById("fbi3").value = "";
+      document.getElementById("fbi1s").value = " ";
+      document.getElementById("fbi2s").value = " ";
+      document.getElementById("fbi3s").value = " ";
+      document.getElementById("leb").value = " ";
+      document.getElementById("outputb").textContent = "";
+    }
+  </script>
+</p>
+</div>
+<div class="clear"></div> <!-- フロート解消 -->
+
+</body></html>
