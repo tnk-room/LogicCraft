@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行列表示プログラム</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+            width: 60px; /* 二つの要素がそれぞれ30pxの幅を持つように調整 */
+            text-align: center;
+        }
+        input {
+            margin: 5px;
+        }
+    </style>
+    <script>
+        // 入力された値を保持するための配列
+        var matrix = Array.from({ length: 37 }, () => Array(122).fill(''));
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function addValue() {
+            // テキストボックスからXとYの値を取得
+            var x = parseInt(document.getElementById('xValue').value);
+            var y = parseInt(document.getElementById('yValue').value);
+            // f(X,Y)の値を取得
+            var fValue = document.getElementById('fValue').value;
+            // g(X,Y)の値を取得
+            var gValue = document.getElementById('gValue').value;
+
+            // 入力のバリデーション
+            if (isNaN(x) || isNaN(y) || x < 0 || x > 36 || y < 0 || y > 60) {
+                alert("XとYはそれぞれ0<=X<=36および0<=Y<=60の範囲で入力してください。");
+                return;
+            }
+
+            // 行列に値を追加
+            matrix[x][2*y] = escapeHtml(fValue);
+            matrix[x][2*y+1] = escapeHtml(gValue); // g(X,Y)の値を追加
+
+            // 入力フィールドをクリア
+            document.getElementById('xValue').value = '';
+            document.getElementById('yValue').value = '';
+            document.getElementById('fValue').value = '';
+            document.getElementById('gValue').value = '';
+
+            // 行列を更新
+            updateMatrix();
+        }
+
+        function updateValue() {
+            // テキストボックスからX'とY'の値を取得
+            var x1 = parseInt(document.getElementById('x1Value').value);
+            var y1 = parseInt(document.getElementById('y1Value').value);
+            // テキストボックスからXとYの値を取得
+            var x = parseInt(document.getElementById('xValue').value);
+            var y = parseInt(document.getElementById('yValue').value);
+
+            // 入力のバリデーション
+            if (isNaN(x) || isNaN(y) || isNaN(x1) || isNaN(y1) || 
+                x < 0 || x > 36 || y < 0 || y > 60 ||
+                x1 < 0 || x1 > 36 || y1 < 0 || y1 > 60) {
+                alert("XとYおよびX'とY'はそれぞれ0<=X<=36および0<=Y<=60の範囲で入力してください。");
+                return;
+            }
+
+            // 指定された位置の値を上書き
+            matrix[x][2*y] = matrix[x1][2*y1];
+            matrix[x][2*y+1] = matrix[x1][2*y1+1];
+
+            // 入力フィールドをクリア
+            document.getElementById('xValue').value = '';
+            document.getElementById('yValue').value = '';
+            document.getElementById('x1Value').value = '';
+            document.getElementById('y1Value').value = '';
+
+            // 行列を更新
+            updateMatrix();
+        }
+
+   
+        function updateMatrix() {
+            // 行列表示エリアを取得
+            var displayArea = document.getElementById('displayArea');
+            displayArea.innerHTML = ''; // エリアをクリア
+
+            // テーブルの作成
+            var table = document.createElement('table');
+            var tbody = document.createElement('tbody');
+
+            // 0=<X=<36，0=<Y=<60 の行列を作成
+            for (var i = 0; i <= 36; i++) {
+                var row = document.createElement('tr');
+                for (var j = 0; j <= 120; j+=2) {
+                    var cell1 = document.createElement('td');
+                    var cell2 = document.createElement('td');
+                    cell1.textContent = matrix[i][j];
+                    cell2.textContent = matrix[i][j+1]; // 二つ目の要素にg(X,Y)の値を表示
+                    row.appendChild(cell1);
+                    row.appendChild(cell2);
+                }
+                tbody.appendChild(row);
+            }
+
+            table.appendChild(tbody);
+            displayArea.appendChild(table);
+        }
+        function resetMatrix() {
+            // 配列をクリア
+            matrix = Array.from({ length: 37 }, () => Array(122).fill(''));
+            // 行列を更新（空にする）
+            updateMatrix();
+        }
+    </script>
+</head>
+<body>
+    <h1>行列表示プログラム</h1>
+    <label for="xValue">Xの値を入力 (0<=X<=36):</label>
+    <input type="number" id="xValue" min="0" max="36"><br>
+    <label for="yValue">Yの値を入力 (0<=Y<=60):</label>
+    <input type="number" id="yValue" min="0" max="60"><br>
+    <label for="fValue">f(X,Y)の値を入力:</label>
+    <input type="text" id="fValue"><br>
+    <label for="gValue">g(X,Y)の値を入力:</label>
+    <select id="gValue">
+        <option value="i">i</option>
+        <option value="o">o</option>
+        <option value=" ">空白</option>
+    </select><br>
+    <button onclick="addValue()">表示</button>
+    <br>
+    <label for="x1Value">X'の値を入力 (0<=X'<=36):</label>
+    <input type="number" id="x1Value" min="0" max="36"><br>
+    <label for="y1Value">Y'の値を入力 (0<=Y'<=60):</label>
+    <input type="number" id="y1Value" min="0" max="60"><br>
+    <button onclick="updateValue()">代入</button>
+    <button onclick="resetMatrix()">リセット</button>
+    <div id="displayArea"></div>
+</body>
+</html>

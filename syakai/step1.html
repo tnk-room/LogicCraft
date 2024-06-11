@@ -25,46 +25,8 @@
         <div class="container">
             <main>
                 <h1>論理回路シミュレーション1</h1>
-                <label for="input1" class="custom-checkbox">
-                    <input type="checkbox" id="input1">
-                    <span class="checkmark"></span>
-                </label>
-
-                <label for="input2" class="custom-checkbox">
-                    <input type="checkbox" id="input2">
-                    <span class="checkmark"></span>
-                </label>
-
-                <select name="gates" id="gates-select">
-                    <option value="and">AND</option>
-                    <option value="or">OR</option>
-                    <option value="xor">XOR</option>
-                    <option value="nand">NAND</option>
-                    <option value="nor">NOR</option>
-                </select>
-
-                <!--
-                <div class="simcir">
-                    <div class="simcir-body">
-                        <svg version="1.1" width="1000" height="600" viewbox="0 0 1200 500" class="simcir-workspace" style="user-select: none; display: inline;">
-                            <defs>
-                                <pattern id="simcir-id0" x="0" y="0" width="0.008" height="0.01">
-                                    <rect class="simcir-pin-hole" x="0" y="0" width="2" height="2"></rect>
-                                </pattern>
-                            </defs>
-                            <rect x="0" y="-111" width="1222" height="800" style="fill: url(#simcir-id0);"></rect>
-                        </svg>
-                    </div>
-                </div>
-                -->
 
                 <!--以下変更 (早渕壮真 05/14) -->
-                <div id="simcir">
-                    <div id="green-circle" class="green-circle" style="display:none;"></div> <!-- Display none initially -->
-                    <div id="yellow-circle" class="yellow-circle" style="display:none;"></div> <!-- Display none initially -->
-                    <div id="red-circle" class="red-circle" style="display:none;"></div> <!-- Display none initially -->
-                </div>
-
                 <div class="circuit">
                     <div class="tabs">
                         <p class="tablink" onclick="openTab(event, 'Tab1')">回路1</p>
@@ -72,174 +34,256 @@
                         <p class="tablink" onclick="openTab(event, 'Tab3')">回路3</p>
                     </div>
 
+                    <!--回路1-->
                     <div id="Tab1" class="tab fadeIn active">
-                        <!-- 画像を配置 -->
-                        <div class="element ele1">
-                            <p><img src="img/AND.jpg" width="120" height="120" id="program1" alt=""></p>
+                        <label for="input1-1" class="custom-checkbox checkbox1">
+                            <input type="checkbox" id="input1-1">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label for="input1-2" class="custom-checkbox checkbox2">
+                            <input type="checkbox" id="input1-2">
+                            <span class="checkmark"></span>
+                        </label>
+                        <div class="gate-select">
                             <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
                             <p>
-                                <select name="channel" size="1" onchange="imgChange1(this, 'program1')">
-                                    <option value="0">AND</option>
-                                    <option value="1">OR</option>
-                                    <option value="2">XOR</option>
-                                    <option value="3">NAND</option>
-                                    <option value="4">NOR</option>
-                                    <option value="5">XNOR</option>
-                                    <option value="6">NOT</option>
+                                <select name="channel" size="1" id="gates-select1" onchange="imgChange1(this, 'program1')">
+                                    <option value="and">AND</option>
+                                    <option value="or">OR</option>
+                                    <option value="xor">XOR</option>
+                                    <option value="nand">NAND</option>
+                                    <option value="nor">NOR</option>
+                                    <option value="xnor">XNOR</option>
+                                    <option value="not">NOT</option>
                                 </select>
                             </p>
                         </div>
-                    </div>
-                    
-                    <div id="Tab2" class="tab fadeIn">
+                        <div id="green-circle1" class="green-circle"></div>
+                        <div id="yellow-circle1" class="yellow-circle"></div>
+                        <div id="red-circle1" class="red-circle"></div>
+                        
                         <!-- 画像を配置 -->
                         <div class="element ele1">
                             <p><img src="img/AND.jpg" width="120" height="120" id="program1" alt=""></p>
+                        </div>
+                        <img src="img/step1.jpg" class="step1_img" width="650" height="220">
+                    </div>
+                    
+                    <!--回路2-->
+                    <div id="Tab2" class="tab fadeIn">
+                        <label for="input2-1" class="custom-checkbox checkbox1">
+                            <input type="checkbox" id="input2-1">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label for="input2-2" class="custom-checkbox checkbox2">
+                            <input type="checkbox" id="input2-2">
+                            <span class="checkmark"></span>
+                        </label>
+                        <div class="gate-select">
                             <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
                             <p>
-                                <select name="channel" size="1" onchange="imgChange1(this, 'program1')">
-                                    <option value="0">AND</option>
-                                    <option value="1">OR</option>
-                                    <option value="2">XOR</option>
-                                    <option value="3">NAND</option>
-                                    <option value="4">NOR</option>
-                                    <option value="5">XNOR</option>
-                                    <option value="6">NOT</option>
+                                <select name="channel" size="1" id="gates-select2-1" onchange="imgChange2(this, 'program2')">
+                                    <option value="and">AND</option>
+                                    <option value="or">OR</option>
+                                    <option value="xor">XOR</option>
+                                    <option value="nand">NAND</option>
+                                    <option value="nor">NOR</option>
+                                    <option value="xnor">XNOR</option>
+                                    <option value="not">NOT</option>
                                 </select>
                             </p>
+                            <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                            <p>
+                                <select name="channel" size="1" id="gates-select2-2" onchange="imgChange3(this, 'program3')">
+                                    <option value="and">AND</option>
+                                    <option value="or">OR</option>
+                                    <option value="xor">XOR</option>
+                                    <option value="nand">NAND</option>
+                                    <option value="nor">NOR</option>
+                                    <option value="xnor">XNOR</option>
+                                    <option value="not">NOT</option>
+                                </select>
+                            </p>
+                        </div>
+                        <div id="green-circle2" class="green-circle"></div>
+                        <div id="yellow-circle2" class="yellow-circle"></div>
+                        <div id="red-circle2-1" class="red-circle"></div>
+                        <div id="red-circle2-2" class="red-circle2"></div>
+                        <!-- 画像を配置 -->
+                        <div class="element ele1">
+                            <p><img src="img/AND.jpg" width="120" height="120" id="program2" alt=""></p>
+                        </div>
+                        <!-- 画像を配置 -->
+                        <div class="element ele2">
+                            <p><img src="img/AND.jpg" width="120" height="120" id="program3" alt=""></p>
+                        </div>
+                        <img src="img/step2.jpg" class="step2_img" width="650" height="300">
+                    </div>
+
+                    <!--回路3-->
+                    <div id="Tab3" class="tab fadeIn">
+                        <label for="input3-1" class="custom-checkbox checkbox1">
+                            <input type="checkbox" id="input3-1">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label for="input3-2" class="custom-checkbox checkbox2">
+                            <input type="checkbox" id="input3-2">
+                            <span class="checkmark"></span>
+                        </label>
+                        <div class="gate-select">
+                             <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                            <p>
+                                <select name="channel" size="1" id="gates-select3-1" onchange="imgChange4(this, 'program4')">
+                                    <option value="and">AND</option>
+                                    <option value="or">OR</option>
+                                    <option value="xor">XOR</option>
+                                    <option value="nand">NAND</option>
+                                    <option value="nor">NOR</option>
+                                    <option value="xnor">XNOR</option>
+                                    <option value="not">NOT</option>
+                                </select>
+                            </p>
+                            <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
+                            <p>
+                                <select name="channel" size="1" id="gates-select3-2" onchange="imgChange5(this, 'program5')">
+                                    AND
+                                    <option value="and">AND</option>
+                                    <option value="or">OR</option>
+                                    <option value="xor">XOR</option>
+                                    <option value="nand">NAND</option>
+                                    <option value="nor">NOR</option>
+                                    <option value="xnor">XNOR</option>
+                                    <option value="not">NOT</option>
+                                </select>
+                            </p>
+                        </div>
+                        <div id="green-circle3" class="green-circle"></div>
+                        <div id="yellow-circle3" class="yellow-circle"></div>
+                        <div id="red-circle3-1" class="red-circle"></div>
+                        <div id="red-circle3-2" class="red-circle2"></div>
+                        <!-- 画像を配置 -->
+                        <div class="element ele1">
+                            <p><img src="img/AND.jpg" width="120" height="120" id="program4" alt=""></p>
                         </div>
                         <div class="element ele2">
                             <!-- 画像を配置 -->
-                            <p><img src="img/AND.jpg" width="120" height="120" id="program2" alt=""></p>
-                            <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
-                            <p>
-                                <select name="channel" size="1" onchange="imgChange2(this, 'program2')">
-                                    <option value="0">AND</option>
-                                    <option value="1">OR</option>
-                                    <option value="2">XOR</option>
-                                    <option value="3">NAND</option>
-                                    <option value="4">NOR</option>
-                                    <option value="5">XNOR</option>
-                                    <option value="6">NOT</option>
-                                </select>
-                            </p>
+                            <p><img src="img/AND.jpg" width="120" height="120" id="program5" alt=""></p>
                         </div>
-                    </div>
-
-                    <div id="Tab3" class="tab fadeIn">
-                        
+                        <img src="img/step3.jpg" class="step3_img" width="650" height="300">
                     </div>
                 </div>
                 <!--以上変更 (早渕壮真 05/14) -->
 
-                <h1>真理値表</h1>
-                <div class="gate-selector">
-                    <label for="truth">素子: </label>
-                    <select id="truth">
-                        <option value="and">AND</option>
-                        <option value="or">OR</option>
-                        <option value="xor">XOR</option>
-                        <option value="nand">NAND</option>
-                        <option value="nor">NOR</option>
-                    </select>
+                <div class="truthTable">
+                    <h1>真理値表</h1>
+                    <div class="gate-selector">
+                        <label for="truth">素子: </label>
+                        <select id="truth">
+                            <option value="and">AND</option>
+                            <option value="or">OR</option>
+                            <option value="xor">XOR</option>
+                            <option value="nand">NAND</option>
+                            <option value="nor">NOR</option>
+                        </select>
+                    </div>
+                    <table id="Table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>Output</th>
+                                <th>Correct</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <select class="userInput" data-row="0" data-type="A">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="0" data-type="B">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="0" data-type="out">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td class="result" data-row="0"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select class="userInput" data-row="1" data-type="A">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="1" data-type="B">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="1" data-type="out">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td class="result" data-row="1"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select class="userInput" data-row="2" data-type="A">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="2" data-type="B">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="2" data-type="out">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td class="result" data-row="2"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select class="userInput" data-row="3" data-type="A">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="3" data-type="B">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="userInput" data-row="3" data-type="out">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </td>
+                                <td class="result" data-row="3"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button onclick="validateInputs()">Validate</button>
                 </div>
-                <table id="truthTable">
-                    <thead>
-                        <tr>
-                            <th>A</th>
-                            <th>B</th>
-                            <th>Output</th>
-                            <th>Correct</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <select class="userInput" data-row="0" data-type="A">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="0" data-type="B">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="0" data-type="out">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td class="result" data-row="0"></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select class="userInput" data-row="1" data-type="A">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="1" data-type="B">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="1" data-type="out">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td class="result" data-row="1"></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select class="userInput" data-row="2" data-type="A">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="2" data-type="B">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="2" data-type="out">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td class="result" data-row="2"></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select class="userInput" data-row="3" data-type="A">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="3" data-type="B">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="userInput" data-row="3" data-type="out">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                </select>
-                            </td>
-                            <td class="result" data-row="3"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button onclick="validateInputs()">Validate</button>
             </main>
             <script type="text/javascript" src="js/step.js"></script>
         </div>

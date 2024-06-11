@@ -49,6 +49,12 @@ main {
     border-radius: 8px;
 }
 
+@media (max-width: 1800px) {
+    main {
+        width: 1600px;
+    }
+}
+
 aside {
     background-color:#b0abab;
     width: 30%;
@@ -59,12 +65,12 @@ aside {
 }
 
 footer {
-    background-color: #d5b524fa;
+    background-color: #b0abab;
     width: 100%;
     margin: 40px;
     padding: 5px;
     border-radius: 8px;
-
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     text-align: left;
 }
 
@@ -87,6 +93,18 @@ h1 {
 .custom-checkbox {
     position: relative;
     display: inline-block;
+    z-index: 1;
+    opacity: 0;
+}
+
+.checkbox1 {
+    top: 38%;
+    left: -32%;
+}
+
+.checkbox2 {
+    top: 65%;
+    left: -39%;
 }
 
 .custom-checkbox input {
@@ -101,11 +119,11 @@ h1 {
     position: absolute;
     top: -18px;
     left: 0;
-    height: 20px;
-    width: 20px;
+    height: 50px;
+    width: 50px;
     background-color: #ccc;
     border: 1px solid #999;
-    border-radius: 3px;
+    border-radius: 50%;
 }
 
 .custom-checkbox input:checked + .checkmark {
@@ -113,7 +131,8 @@ h1 {
     border: 1px solid #2196F3;
 }
 
-.custom-checkbox .checkmark:after {
+/*
+.custom-checkbox .checkmark:after { 
     content: "\f00c";
     font-family: FontAwesome;
     color: white;
@@ -122,11 +141,11 @@ h1 {
     top: 2px;
     left: 2px;
 }
+*/
 
 select {
-    width: 10%;
     height: 40px;
-    margin-bottom: 20px;
+    margin: 0 30px 20px;
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: #fff;
@@ -237,11 +256,40 @@ input {
     width: 40px;
     text-align: center;
 }
+
 button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
 }
+
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: rgb(0, 0, 0);
+    width: 100px;
+    padding: 10px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 19px;
+    font-style: bold;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 6px; /* Rounded corners */
+    box-shadow: 0px 4px 2px #6a756894;
+    transition: background-color 0.3s ease; /* Animation for hover effect */
+}
+.button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+#output {
+    font-size: 15px;
+    text-align: left;
+    margin: 10px;
+}
+
 .userInput, .calculated, .result {
     width: 80px;
 }
