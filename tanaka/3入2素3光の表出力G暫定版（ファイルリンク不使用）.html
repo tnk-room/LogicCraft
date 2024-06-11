@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic Circuit TEXT ver</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .title {
+            width: 100%;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 10px 0;
+            font-size: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 50px); /* タイトルの高さを除いた画面全体の高さ */
+        }
+        .paragraph {
+            flex: 1;
+            box-sizing: border-box;
+            padding: 20px;
+            position: relative;
+        }
+        .textbox-container {
+            position: absolute; /* 各部分内での絶対位置指定 */
+            top: 50px; /* タイトルの高さ分下げる */
+        }
+        .line, .line-block {
+            margin-bottom: 20px; /* 各行の間に余白を設定 */
+        }
+        .line label, .line input, .line-block label, .line-block input {
+            display: block; /* ラベルとテキストボックスをブロック表示にして縦に並べる */
+            margin: 0;
+        }
+        .line input, .line-block input {
+            margin-top: 5px; /* テキストボックスとラベルの間に余白を設定 */
+        }
+        /* 追加1のparagraphを左端に配置 */
+        .paragraph:nth-child(3) { 
+            order: -1; 
+        } 
+        /* 内側のparagraphを囲むスタイル */
+        .border-box {
+            border: 2px solid #000;
+            padding: 50px;
+            background-color: rgb(255, 255, 153); /* 薄い黄色 */
+            margin-top: -20px; /* 上部のマージンを調整 */
+        }        
+    </style>
+</head>
+<body>
+    <div class="title"><span style="color: blue;">Logic Circuit TEXT ver (Tanaka-Lab)</span></div>
+    <div class="container">
+    <div class="paragraph">
+    <div class="image-container">
+<!--        <img src="file:///C:/Users/A_Tanaka/Desktop/Figures_A-Tanaka/square-a.png" alt="四角a">  -->
+        <div class="textbox-container border-box">
+
+<!-- テキストボックス部分 -->
+ <div class="line">
+  <label for="fai1">FaI1（必須）:</label>
+  <input type="text" id="fai1">
+  <label for="prvouta1">a1に接続する前の出力:</label>
+  <select id="prvouta1">
+    <option value=" "> </option>
+    <option value="a">素子aの出力を</option>
+    <option value="b">素子bの出力を</option>
+    <option value="sw-a">Aを</option>
+    <option value="sw-b">Bを</option>
+    <option value="sw-c">Cを</option>
+  </select>
+  <button onclick="copya1Text()">入力</button>
+    <script>
+      function copya1Text() {
+         var prvouta1 = document.getElementById("prvouta1").value;
+         var fai1Dummy;
+         if (prvouta1 === "a") {
+           fai1Dummy = outputa.textContent;
+         }  
+         else if (prvouta1 === "b") {
+           fai1Dummy = outputb.textContent;  
+         } 
+         else if (prvouta1 === "sw-a") {
+           fai1Dummy  = document.getElementById('sw-a').value;
+         } 
+         else if (prvouta1 === "sw-b") {
+           fai1Dummy  = document.getElementById('sw-b').value;
+         } 
+         else if (prvouta1 === "sw-c") {
+           fai1Dummy  = document.getElementById('sw-c').value;
+         } 
+         var fai1 = document.getElementById("fai1"); 
+         if (prvouta1 === "sw-a" || prvouta1 === "sw-b" || prvouta1 === "sw-c" ) {
+            fai1.value = fai1Dummy ;
+         }
+         else {
+            fai1.value = "(" + fai1Dummy + ")";
+        }
+        }
+    </script>
+  <label for="fai1s">FaI1s:</label>
+  <select id="fai1s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br>
+</div>
+
+ <div class="line">
+  <label for="fai2">FaI2:</label>
+  <input type="text" id="fai2">
+  <label for="prvouta2">a2に接続する前の出力:</label>
+  <select id="prvouta2">
+    <option value=" "> </option>
+    <option value="a">素子aの出力を</option>
+    <option value="b">素子bの出力を</option>
+    <option value="sw-a">Aを</option>
+    <option value="sw-b">Bを</option>
+    <option value="sw-c">Cを</option>
+  </select>
+  <button onclick="copya2Text()">入力</button>
+    <script>
+      function copya2Text() {
+         var prvouta2 = document.getElementById("prvouta2").value;
+         var fai2Dummy;
+         if (prvouta2 === "a") {
+           fai2Dummy = outputa.textContent;
+         }  
+         else if (prvouta2 === "b") {
+           fai2Dummy = outputb.textContent;  
+         } 
+         else if (prvouta2 === "sw-a") {
+           fai2Dummy  = document.getElementById('sw-a').value;
+         } 
+         else if (prvouta2 === "sw-b") {
+           fai2Dummy  = document.getElementById('sw-b').value;
+         } 
+         else if (prvouta2 === "sw-c") {
+           fai2Dummy  = document.getElementById('sw-c').value;
+         } 
+         var fai2 = document.getElementById("fai2"); 
+         if (prvouta2 === "sw-a" || prvouta2 === "sw-b" || prvouta2 === "sw-c" ) {
+            fai2.value = fai2Dummy ;
+         }
+         else {
+            fai2.value = "(" + fai2Dummy + ")";
+        }
+         }
+    </script>
+  <label for="fai2s">FaI2s:</label>
+  <select id="fai2s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br>
+</div>
+
+ <div class="line">
+  <label for="fai3">FaI3:</label>
+  <input type="text" id="fai3">
+  <label for="prvouta3">a3に接続する前の出力:</label>
+  <select id="prvouta3">
+    <option value=" "> </option>
+    <option value="a">素子aの出力を</option>
+    <option value="b">素子bの出力を</option>
+    <option value="sw-a">Aを</option>
+    <option value="sw-b">Bを</option>
+    <option value="sw-c">Cを</option>
+  </select>
+  <button onclick="copya3Text()">入力</button>
+    <script>
+      function copya3Text() {
+         var prvouta3 = document.getElementById("prvouta3").value;
+         var fai3Dummy;
+         if (prvouta3 === "a") {
+           fai3Dummy = outputa.textContent;
+         }  
+         else if (prvouta3 === "b") {
+           fai3Dummy = outputb.textContent;  
+         } 
+         else if (prvouta3 === "sw-a") {
+           fai3Dummy  = document.getElementById('sw-a').value;
+         } 
+         else if (prvouta3 === "sw-b") {
+           fai3Dummy  = document.getElementById('sw-b').value;
+         } 
+         else if (prvouta3 === "sw-c") {
+           fai3Dummy  = document.getElementById('sw-c').value;
+         } 
+         var fai3 = document.getElementById("fai3"); 
+         if (prvouta3 === "sw-a" || prvouta3 === "sw-b" || prvouta3 === "sw-c" ) {
+            fai3.value = fai3Dummy ;
+         }
+         else {
+            fai3.value = "(" + fai3Dummy + ")";
+        }
+         }
+    </script>
+   <label for="fai3s">FaI3s:</label>
+  <select id="fai3s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br>
+</div>
+
+  <label for="lea">LEa（必須）:</label>
+  <select id="lea">
+    <option value=" "> </option>
+    <option value="AND">AND</option>
+    <option value="OR">OR</option>
+    <option value="XOR">XOR</option>
+    <option value="NAND">NAND</option>
+    <option value="NOR">NOR</option>
+    <option value="XNOR">XNOR</option>
+    <option value="NOT">NOT</option>
+  </select><br><br>
+  <button onclick="executea()">実行a</button>
+  <button onclick="reseta()">リセットa</button><br><br>
+  <div id="outputa"></div>
+
+  <script>
+    function executea() {
+      var fai1 = document.getElementById("fai1").value.trim() || "#";
+      var fai2 = document.getElementById("fai2").value.trim() || "#";
+      var fai3 = document.getElementById("fai3").value.trim() || "#";
+      var fai1s = document.getElementById("fai1s").value.trim();
+      var fai2s = document.getElementById("fai2s").value.trim();
+      var fai3s = document.getElementById("fai3s").value.trim();
+      var lea = document.getElementById("lea").value.trim();
+      var outputa = document.getElementById("outputa");
+
+      if (fai1 === "#") {
+        outputa.textContent = "error1-1";
+        return;
+      }
+ 
+      if (lea === "") {
+        outputa.textContent = "error1-2";
+        return;
+      }
+
+      // LEaがNOTの場合の処理
+     if (lea === "NOT") {
+       var count = 0;
+       if (fai1.trim() !== "#") count++;
+       if (fai2.trim() !== "#") count++;
+        if (fai3.trim() !== "#") count++;
+        if (count !== 1) {
+          outputa.textContent = "error2";
+          return;
+        }
+      }
+
+      // LEaがAND, OR, XOR, NAND, NOR, XNORの場合の処理　　　　　　　　　　　＜＝機能しない
+      if (["AND", "OR", "XOR", "NAND", "NOR", "XNOR"].includes(lea)) {
+        var blanksCount = 0;
+        if (fai1.trim() == "#") count++;
+        if (fai2.trim() == "#") count++;
+        if (fai3.trim() == "#") count++;
+        if (count <= 1) {
+          outputa.textContent = "error3";
+          return;
+        }
+      }
+
+
+      if (fai1s === "not")  fai1 = "!"+ fai1 ; 
+      if (fai2s === "not")  fai2 = "!"+ fai2 ; 
+      if (fai3s === "not")  fai3 = "!"+ fai3 ; 
+
+
+      var resulta;
+      switch (lea) {
+        case "AND":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "OR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "XOR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "NAND":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "NOR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "XNOR":
+          resulta = fai1 + " " + lea + " " + fai2 + " " + lea + " " + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = fai1 ;
+          break;
+        case "NOT":
+          resulta = "!" + fai1 + "!" + fai2 + "!" + fai3;
+          if (fai2.trim() == "#") resulta = fai1  + " " + lea + " " + fai3;
+          if (fai3.trim() == "#") resulta = fai1  + " " + lea + " " + fai2;
+          if (fai2.trim() == "#" && fai3.trim() == "#") resulta = "!" + fai1 ;
+          break;
+        default:
+          outputa.textContent = "error4";
+          return;
+      }
+
+      outputa.textContent = resulta;
+    }
+
+    function reseta() {
+      document.getElementById("fai1").value = "";
+      document.getElementById("fai2").value = "";
+      document.getElementById("fai3").value = "";
+      document.getElementById("fai1s").value = " ";
+      document.getElementById("fai2s").value = " ";
+      document.getElementById("fai3s").value = " ";
+      document.getElementById("lea").value = " ";
+      document.getElementById("outputa").textContent = "";
+    }
+  </script>
+</p>
+<!-- テキストボックス部分終了 -->
+
+        </div>
+    </div>
+   </div>
+
+    <div class="paragraph">
+    <div class="image-container">
+<!--        <img src="file:///C:/Users/A_Tanaka/Desktop/Figures_A-Tanaka/square-b.png" alt="四角b"> -->
+        <div class="textbox-container border-box">
+
+<!-- テキストボックス部分 -->
+ <div class="line">
+  <label for="fbi1">FbI1（必須）:</label>
+  <input type="text" id="fbi1">
+  <label for="prvoutb1">b1に接続する前の出力:</label>
+  <select id="prvoutb1">
+    <option value=" "> </option>
+    <option value="a">素子aの出力を</option>
+    <option value="b">素子bの出力を</option>
+    <option value="sw-a">Aを</option>
+    <option value="sw-b">Bを</option>
+    <option value="sw-c">Cを</option>
+  </select>
+  <button onclick="copyb1Text()">入力</button>
+    <script>
+      function copyb1Text() {
+         var prvoutb1 = document.getElementById("prvoutb1").value;
+         var fbi1Dummy;
+         if (prvoutb1 === "a") {
+           fbi1Dummy = outputa.textContent;
+         }  
+         else if (prvoutb1 === "b") {
+           fbi1Dummy = outputb.textContent;  
+         } 
+         else if (prvoutb1 === "sw-a") {
+           fbi1Dummy  = document.getElementById('sw-a').value;
+         } 
+         else if (prvoutb1 === "sw-b") {
+           fbi1Dummy  = document.getElementById('sw-b').value;
+         } 
+         else if (prvoutb1 === "sw-c") {
+           fbi1Dummy  = document.getElementById('sw-c').value;
+         } 
+         var fbi1 = document.getElementById("fbi1"); 
+         if (prvoutb1 === "sw-a" || prvoutb1 === "sw-b" || prvoutb1 === "sw-c" ) {
+            fbi1.value = fbi1Dummy ;
+         }
+         else {
+            fbi1.value = "(" + fbi1Dummy + ")";
+        }
+         }
+    </script>
+  <label for="fbi1s">FbI1s:</label>
+  <select id="fbi1s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br>
+</div>
+
+ <div class="line">
+  <label for="fbi2">FbI2:</label>
+  <input type="text" id="fbi2">
+  <label for="prvoutb2">b2に接続する前の出力:</label>
+  <select id="prvoutb2">
+    <option value=" "> </option>
+    <option value="a">素子aの出力を</option>
+    <option value="b">素子bの出力を</option>
+    <option value="sw-a">Aを</option>
+    <option value="sw-b">Bを</option>
+    <option value="sw-c">Cを</option>
+  </select>
+  <button onclick="copyb2Text()">入力</button>
+    <script>
+      function copyb2Text() {
+         var prvoutb2 = document.getElementById("prvoutb2").value;
+         var fbi1Dummy;
+         if (prvoutb2 === "a") {
+           fbi2Dummy = outputa.textContent;
+         }  
+         else if (prvoutb2 === "b") {
+           fbi2Dummy = outputb.textContent;  
+         } 
+         else if (prvoutb2 === "sw-a") {
+           fbi2Dummy  = document.getElementById('sw-a').value;
+         } 
+         else if (prvoutb2 === "sw-b") {
+           fbi2Dummy  = document.getElementById('sw-b').value;
+         } 
+         else if (prvoutb2 === "sw-c") {
+           fbi2Dummy  = document.getElementById('sw-c').value;
+         } 
+         var fbi2 = document.getElementById("fbi2"); 
+         if (prvoutb2 === "sw-a" || prvoutb2 === "sw-b" || prvoutb2 === "sw-c" ) {
+            fbi2.value = fbi2Dummy ;
+         }
+         else {
+            fbi2.value = "(" + fbi2Dummy + ")";
+        }
+         }
+    </script>
+  <label for="fbi2s">FbI2s:</label>
+  <select id="fbi2s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br>
+</div>
+
+ <div class="line">
+  <label for="fbi3">FbI3:</label>
+  <input type="text" id="fbi3">
+  <label for="prvoutb3">b3に接続する前の出力:</label>
+  <select id="prvoutb3">
+    <option value=" "> </option>
+    <option value="a">素子aの出力を</option>
+    <option value="b">素子bの出力を</option>
+    <option value="sw-a">Aを</option>
+    <option value="sw-b">Bを</option>
+    <option value="sw-c">Cを</option>
+  </select>
+  <button onclick="copyb3Text()">入力</button>
+    <script>
+      function copyb3Text() {
+         var prvoutb3 = document.getElementById("prvoutb3").value;
+         var fbi3Dummy;
+         if (prvoutb3 === "a") {
+           fbi3Dummy = outputa.textContent;
+         }  
+         else if (prvoutb3 === "b") {
+           fbi3Dummy = outputb.textContent;  
+         } 
+         else if (prvoutb3 === "sw-a") {
+           fbi3Dummy  = document.getElementById('sw-a').value;
+         } 
+         else if (prvoutb3 === "sw-b") {
+           fbi3Dummy  = document.getElementById('sw-b').value;
+         } 
+         else if (prvoutb3 === "sw-c") {
+           fbi3Dummy  = document.getElementById('sw-c').value;
+         } 
+         var fbi3 = document.getElementById("fbi3"); 
+         if (prvoutb3 === "sw-a" || prvoutb3 === "sw-b" || prvoutb3 === "sw-c" ) {
+            fbi3.value = fbi3Dummy ;
+         }
+         else {
+            fbi3.value = "(" + fbi3Dummy + ")";
+        }
+         }
+    </script>
+   <label for="fbi3s">FbI3s:</label>
+  <select id="fbi3s">
+    <option value=" "> </option>
+    <option value="not">not</option>
+  </select><br>
+</div>
+
+  <label for="leb">LEb（必須）:</label>
+  <select id="leb">
+    <option value=" "> </option>
+    <option value="AND">AND</option>
+    <option value="OR">OR</option>
+    <option value="XOR">XOR</option>
+    <option value="NAND">NAND</option>
+    <option value="NOR">NOR</option>
+    <option value="XNOR">XNOR</option>
+    <option value="NOT">NOT</option>
+  </select><br><br>
+  <button onclick="executeb()">実行b</button>
+  <button onclick="resetb()">リセットb</button><br><br>
+  <div id="outputb"></div>
+
+  <script>
+    function executeb() {
+      var fbi1 = document.getElementById("fbi1").value.trim() || "#";
+      var fbi2 = document.getElementById("fbi2").value.trim() || "#";
+      var fbi3 = document.getElementById("fbi3").value.trim() || "#";
+      var fbi1s = document.getElementById("fbi1s").value.trim();
+      var fbi2s = document.getElementById("fbi2s").value.trim();
+      var fbi3s = document.getElementById("fbi3s").value.trim();
+      var leb = document.getElementById("leb").value.trim();
+      var outputb = document.getElementById("outputb");
+
+      if (fbi1 === "#") {
+        outputb.textContent = "error1-1";
+        return;
+      }
+
+      if (leb === "") {
+        outputb.textContent = "error1-2";
+        return;
+      }
+
+      // LEbがNOTの場合の処理
+     if (leb === "NOT") {
+       var count = 0;
+       if (fbi1.trim() !== "#") count++;
+       if (fbi2.trim() !== "#") count++;
+        if (fbi3.trim() !== "#") count++;
+        if (count !== 1) {
+          outputb.textContent = "error2";
+          return;
+        }
+      }
+
+      // LEbがAND, OR, XOR, NAND, NOR, XNORの場合の処理　　　　　　　　　　　＜＝機能しない
+      if (["AND", "OR", "XOR", "NAND", "NOR", "XNOR"].includes(leb)) {
+        var blanksCount = 0;
+        if (fbi1.trim() == "#") count++;
+        if (fbi2.trim() == "#") count++;
+        if (fbi3.trim() == "#") count++;
+        if (count <= 1) {
+          outputb.textContent = "error3";
+          return;
+        }
+      }
+
+
+      if (fbi1s === "not")  fbi1 = "!" + fbi1 ; 
+      if (fbi2s === "not")  fbi2 = "!" + fbi2 ; 
+      if (fbi3s === "not")  fbi3 = "!" + fbi3 ; 
+
+
+      var resultb;
+      switch (leb) {
+        case "AND":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "OR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "XOR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "NAND":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "NOR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "XNOR":
+          resultb = fbi1 + " " + leb + " " + fbi2 + " " + leb + " " + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = fbi1 ;
+          break;
+        case "NOT":
+          resultb = "!" + fbi1 + "!" + fbi2 + "!" + fbi3;
+          if (fbi2.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi3;
+          if (fbi3.trim() == "#") resultb = fbi1  + " " + leb + " " + fbi2;
+          if (fbi2.trim() == "#" && fbi3.trim() == "#") resultb = "!" + fbi1 ;
+          break;
+        default:
+          outputb.textContent = "error4";
+          return;
+      }
+
+      outputb.textContent = resultb;
+    }
+
+    function resetb() {
+      document.getElementById("fbi1").value = "";
+      document.getElementById("fbi2").value = "";
+      document.getElementById("fbi3").value = "";
+      document.getElementById("fbi1s").value = " ";
+      document.getElementById("fbi2s").value = " ";
+      document.getElementById("fbi3s").value = " ";
+      document.getElementById("leb").value = " ";
+      document.getElementById("outputb").textContent = "";
+    }
+  </script>
+</p>
+<!-- テキストボックス部分終了 -->
+
+        </div>
+    </div>
+    </div>
+
+
+        <!-- 入力：のparagraph -->
+        <div class="paragraph">
+            <div class="textbox-container">
+                <div class="line">
+                   <label for="sw-a">A:</label>
+                   <select id="sw-a">
+                   <option value="A">A</option>
+                   <option value="X">X</option>
+                   </select><br>
+                   <label for="a-value">Aの値を:</label>
+                   <select id="a-value">
+                   <option value=" "> </option>
+                   <option value="0">0</option>
+                   <option value="1">1</option>
+                   </select><br><br>
+                   <label for="sw-b">B:</label>
+                   <select id="sw-b">
+                   <option value="B">B</option>
+                   <option value="X">X</option>
+                   </select><br>
+                   <label for="b-value">Bの値を:</label>
+                   <select id="b-value">
+                   <option value=" "> </option>
+                   <option value="0">0</option>
+                   <option value="1">1</option>
+                   </select><br><br>
+                   <label for="sw-c">C:</label>
+                   <select id="sw-c">
+                   <option value="C">C</option>
+                   <option value="X">X</option>
+                   </select><br>
+                   <label for="c-value">Cの値を:</label>
+                   <select id="c-value">
+                   <option value=" "> </option>
+                   <option value="0">0</option>
+                   <option value="1">1</option>
+                   </select><br><br>
+                </div>
+            </div>
+        </div>
+        <!-- 出力：のparagraph -->
+        <div class="paragraph">
+            <div class="textbox-container">
+                <div class="line">
+                    <label for="LED1">LED1:</label>
+                    <input type="text" id="led1">
+                    <label for="prvoutl1">LED1に接続する前の出力:</label>
+                    <select id="prvoutl1">
+                      <option value=" "> </option>
+                      <option value="a">素子aの出力を</option>
+                      <option value="b">素子bの出力を</option>
+                      <option value="sw-a">Aを</option>
+                      <option value="sw-b">Bを</option>
+                      <option value="sw-c">Cを</option>
+                    </select>
+                    <button onclick="copyl1Text()">入力</button>
+                      <script>
+                        function copyl1Text() {
+                           var prvoutl1 = document.getElementById("prvoutl1").value;
+                           var led1Dummy;
+                           if (prvoutl1 === "a") {
+                             led1Dummy = outputa.textContent;
+                           }  
+                           else if (prvoutl1 === "b") {
+                             led1Dummy = outputb.textContent;  
+                           } 
+                           else if (prvoutl1 === "sw-a") {
+                             led1Dummy  = document.getElementById('sw-a').value;
+                           } 
+                           else if (prvoutl1 === "sw-b") {
+                             led1Dummy  = document.getElementById('sw-b').value;
+                           } 
+                           else if (prvoutl1 === "sw-c") {
+                             led1Dummy  = document.getElementById('sw-c').value;
+                           } 
+                           var led1 = document.getElementById("led1"); 
+                           if (prvoutl1 === "sw-a" || prvoutl1 === "sw-b" || prvoutl1 === "sw-c" ) {
+                              led1.value = led1Dummy ;
+                           }
+                           else {
+                              led1.value = "(" + led1Dummy + ")";
+                          }
+                          }
+                      </script>
+                    <label for="led1s">LED1s:</label>
+                    <select id="led1s">
+                    <option value=" "> </option>
+                    <option value="not">not</option>
+                    </select><br>
+
+                    <button onclick="generateTruthTable1()">LED1の真理値表の表示</button>
+                    <div id="truthTable1"></div>
+                    <button onclick="getResultledbr1()">LED1の結果を表示</button>
+                    <div id="resultledbr1"></div>
+                    <script>
+                        function generateTruthTable1() {
+                            let led1 = document.getElementById('led1').value;
+                            const led1s = document.getElementById('led1s').value;
+
+                            if (led1s === "not")  led1 = "!("+ led1 + ")" ; 
+                            
+                
+                            // 使用されている変数を動的に検出
+                            const allVariables = ['A', 'B', 'C'];
+                            const usedVariables = allVariables.filter(variable => {
+                                const regex = new RegExp(`\\b${variable}\\b`);
+                                return regex.test(led1);
+                            });
+                
+                            const combinations = generateCombinations(usedVariables.length);
+                
+                            const operators = {
+                                'AND': '&&',
+                                'OR': '||',
+                                'XOR': '!=',  // 一時的なプレースホルダー
+                                'XNOR': '==', // 一時的なプレースホルダー
+                                '!': '!'
+                            };
+                
+                            for (let op in operators) {
+                                let regex = new RegExp(`\\b${op}\\b`, 'g');
+                                led1 = led1.replace(regex, operators[op]);
+                            }
+                
+                            let table = '<table><tr>';
+                            usedVariables.forEach(variable => {
+                                table += `<th>${variable}</th>`;
+                            });
+                            table += '<th>LED1</th></tr>';
+                
+                            combinations.forEach(combination => {
+                                let context = {};
+                                usedVariables.forEach((variable, index) => {
+                                    context[variable] = combination[index] ? 1 : 0;
+                                });
+                
+                                let evalExpression = led1;
+                                for (let variable in context) {
+                                    let regex = new RegExp(`\\b${variable}\\b`, 'g');
+                                    evalExpression = evalExpression.replace(regex, context[variable]);
+                                }
+                
+                                // 真理値表の計算結果を 1 か 0 に変更する
+                                let result = eval(evalExpression) ? 1 : 0;
+                                table += '<tr>';
+                                usedVariables.forEach(variable => {
+                                    // 値を true/false から 1/0 に変更する
+                                    table += `<td>${context[variable]}</td>`;
+                                });
+                                // 結果のセルも 1 か 0 に変更する
+                                table += `<td>${result}</td></tr>`;
+                            });
+                
+                            table += '</table>';
+                            document.getElementById('truthTable1').innerHTML = table;
+                        }
+                
+                        function generateCombinations(n) {
+                            let combinations = [];
+                            for (let i = 0; i < (1 << n); i++) {
+                                let combination = [];
+                                for (let j = 0; j < n; j++) {
+                                    combination.push(!!(i & (1 << j)));
+                                }
+                                combinations.push(combination);
+                            }
+                            return combinations;
+                        }
+
+                        // ledbr1 関数を追加
+                        function ledbr1(A, B, C) {
+                            let led1 = document.getElementById('led1').value;
+                            const led1s = document.getElementById('led1s').value;
+                            if (led1s === "not")  led1 = "!("+ led1 + ")" ; 
+
+                            const operators = {
+                                'AND': '&&',
+                                'OR': '||',
+                                'XOR': '!=',  // 一時的なプレースホルダー
+                                'XNOR': '==', // 一時的なプレースホルダー
+                                '!': '!'
+                            };
+                
+                            for (let op in operators) {
+                                let regex = new RegExp(`\\b${op}\\b`, 'g');
+                                led1 = led1.replace(regex, operators[op]);
+                            }
+
+                            // コンテキストに変数を置換
+                            let context = { A, B, C };
+                            let evalExpression = led1;
+                            for (let variable in context) {
+                                let regex = new RegExp(`\\b${variable}\\b`, 'g');
+                                evalExpression = evalExpression.replace(regex, context[variable]);
+                            }
+                            return eval(evalExpression);
+                        }
+
+                        // ledbr1 関数をグローバルスコープに追加
+                        window.ledbr1 = ledbr1;
+
+                        // 結果を取得する関数
+                        function getResultledbr1() {
+                            const A = document.getElementById('a-value').value === '1' ? true : false; 
+                        /*    const A = true; */
+                            const B = document.getElementById('b-value').value === '1' ? true : false; 
+                        /*   const B = true; */
+                            const C = document.getElementById('c-value').value === '1' ? true : false; 
+                        /*    const C = true; */
+                        const resultledbr1 = ledbr1(A, B, C);
+                        const resultStyle = resultledbr1 ? 'color: red; font-size: 24px; font-weight: bold;' : 'color: blue; font-size: 24px; font-weight: bold;';
+                        document.getElementById('resultledbr1').innerHTML = `ResultLED1: <span style="${resultStyle}">${resultledbr1 ? 1 : 0}</span>`;
+
+                        }
+                    </script>
+
+                </div>
+                <div class="line">
+                    <label for="LED2">LED2:</label>
+                    <input type="text" id="led2">
+                    <label for="prvoutl2">LED2に接続する前の出力:</label>
+                    <select id="prvoutl2">
+                      <option value=" "> </option>
+                      <option value="a">素子aの出力を</option>
+                      <option value="b">素子bの出力を</option>
+                      <option value="sw-a">Aを</option>
+                      <option value="sw-b">Bを</option>
+                      <option value="sw-c">Cを</option>
+                    </select>
+                    <button onclick="copyl2Text()">入力</button>
+                      <script>
+                        function copyl2Text() {
+                           var prvoutl2 = document.getElementById("prvoutl2").value;
+                           var led2Dummy;
+                           if (prvoutl1 === "a") {
+                             led2Dummy = outputa.textContent;
+                           }  
+                           else if (prvoutl2 === "b") {
+                             led2Dummy = outputb.textContent;  
+                           } 
+                           else if (prvoutl2 === "sw-a") {
+                             led2Dummy  = document.getElementById('sw-a').value;
+                           } 
+                           else if (prvoutl2 === "sw-b") {
+                             led2Dummy  = document.getElementById('sw-b').value;
+                           } 
+                           else if (prvoutl2 === "sw-c") {
+                             led2Dummy  = document.getElementById('sw-c').value;
+                           } 
+                           var led2 = document.getElementById("led2"); 
+                           if (prvoutl2 === "sw-a" || prvoutl2 === "sw-b" || prvoutl2 === "sw-c" ) {
+                              led2.value = led2Dummy ;
+                           }
+                           else {
+                              led2.value = "(" + led2Dummy + ")";
+                          }
+                          }
+                      </script>
+                    <label for="led2s">LED2s:</label>
+                    <select id="led2s">
+                    <option value=" "> </option>
+                    <option value="not">not</option>
+                    </select><br>
+
+                    <button onclick="generateTruthTable2()">LED2の真理値表の表示</button>
+                    <div id="truthTable2"></div>
+                    <button onclick="getResultledbr2()">LED2の結果を表示</button>
+                    <div id="resultledbr2"></div>
+                    <script>
+                        function generateTruthTable2() {
+                            let led2 = document.getElementById('led2').value;
+                            const led2s = document.getElementById('led2s').value;
+
+                            if (led2s === "not")  led2 = "!("+ led2 + ")" ; 
+                
+                            // 使用されている変数を動的に検出
+                            const allVariables = ['A', 'B', 'C'];
+                            const usedVariables = allVariables.filter(variable => {
+                                const regex = new RegExp(`\\b${variable}\\b`);
+                                return regex.test(led2);
+                            });
+                
+                            const combinations = generateCombinations(usedVariables.length);
+                
+                            const operators = {
+                                'AND': '&&',
+                                'OR': '||',
+                                'XOR': '!=',  // 一時的なプレースホルダー
+                                'XNOR': '==', // 一時的なプレースホルダー
+                                '!': '!'
+                            };
+                
+                            for (let op in operators) {
+                                let regex = new RegExp(`\\b${op}\\b`, 'g');
+                                led2 = led2.replace(regex, operators[op]);
+                            }
+                
+                            let table = '<table><tr>';
+                            usedVariables.forEach(variable => {
+                                table += `<th>${variable}</th>`;
+                            });
+                            table += '<th>LED2</th></tr>';
+                
+                            combinations.forEach(combination => {
+                                let context = {};
+                                usedVariables.forEach((variable, index) => {
+                                    context[variable] = combination[index] ? 1 : 0;
+                                });
+                
+                                let evalExpression = led2;
+                                for (let variable in context) {
+                                    let regex = new RegExp(`\\b${variable}\\b`, 'g');
+                                    evalExpression = evalExpression.replace(regex, context[variable]);
+                                }
+                
+                                // 真理値表の計算結果を 1 か 0 に変更する
+                                let result = eval(evalExpression) ? 1 : 0;
+                                table += '<tr>';
+                                usedVariables.forEach(variable => {
+                                    // 値を true/false から 1/0 に変更する
+                                    table += `<td>${context[variable]}</td>`;
+                                });
+                                // 結果のセルも 1 か 0 に変更する
+                                table += `<td>${result}</td></tr>`;
+                            });
+                
+                            table += '</table>';
+                            document.getElementById('truthTable2').innerHTML = table;
+                        }
+                
+                        function generateCombinations(n) {
+                            let combinations = [];
+                            for (let i = 0; i < (1 << n); i++) {
+                                let combination = [];
+                                for (let j = 0; j < n; j++) {
+                                    combination.push(!!(i & (1 << j)));
+                                }
+                                combinations.push(combination);
+                            }
+                            return combinations;
+                        }
+
+                        // ledbr2 関数を追加
+                        function ledbr2(A, B, C) {
+                            let led2 = document.getElementById('led2').value;
+                            const led2s = document.getElementById('led2s').value;
+                            if (led2s === "not")  led2 = "!("+ led2 + ")" ; 
+
+                            const operators = {
+                                'AND': '&&',
+                                'OR': '||',
+                                'XOR': '!=',  // 一時的なプレースホルダー
+                                'XNOR': '==', // 一時的なプレースホルダー
+                                '!': '!'
+                            };
+                
+                            for (let op in operators) {
+                                let regex = new RegExp(`\\b${op}\\b`, 'g');
+                                led2 = led2.replace(regex, operators[op]);
+                            }
+
+                            // コンテキストに変数を置換
+                            let context = { A, B, C };
+                            let evalExpression = led2;
+                            for (let variable in context) {
+                                let regex = new RegExp(`\\b${variable}\\b`, 'g');
+                                evalExpression = evalExpression.replace(regex, context[variable]);
+                            }
+                            return eval(evalExpression);
+                        }
+
+                        // ledbr2 関数をグローバルスコープに追加
+                        window.ledbr2 = ledbr2;
+
+                        // 結果を取得する関数
+                        function getResultledbr2() {
+                            const A = document.getElementById('a-value').value === '1' ? true : false; 
+                        /*    const A = true; */
+                            const B = document.getElementById('b-value').value === '1' ? true : false; 
+                        /*   const B = true; */
+                            const C = document.getElementById('c-value').value === '1' ? true : false; 
+                        /*    const C = true; */
+                        const resultledbr2 = ledbr2(A, B, C);
+                        const resultStyle = resultledbr2 ? 'color: red; font-size: 24px; font-weight: bold;' : 'color: blue; font-size: 24px; font-weight: bold;';
+                        document.getElementById('resultledbr2').innerHTML = `ResultLED2: <span style="${resultStyle}">${resultledbr2 ? 1 : 0}</span>`;
+                        }
+                    </script>
+
+
+
+                </div>
+                <div class="line">
+                    <label for="LED3">LED3:</label>
+                    <input type="text" id="led3">
+                    <label for="prvoutl3">LED3に接続する前の出力:</label>
+                    <select id="prvoutl3">
+                      <option value=" "> </option>
+                      <option value="a">素子aの出力を</option>
+                      <option value="b">素子bの出力を</option>
+                      <option value="sw-a">Aを</option>
+                      <option value="sw-b">Bを</option>
+                      <option value="sw-c">Cを</option>
+                    </select>
+                    <button onclick="copyl3Text()">入力</button>
+                      <script>
+                        function copyl3Text() {
+                           var prvoutl3 = document.getElementById("prvoutl3").value;
+                           var led3Dummy;
+                           if (prvoutl3 === "a") {
+                             led3Dummy = outputa.textContent;
+                           }  
+                           else if (prvoutl3 === "b") {
+                             led3Dummy = outputb.textContent;  
+                           } 
+                           else if (prvoutl3 === "sw-a") {
+                             led3Dummy  = document.getElementById('sw-a').value;
+                           } 
+                           else if (prvoutl3 === "sw-b") {
+                             led3Dummy  = document.getElementById('sw-b').value;
+                           } 
+                           else if (prvoutl3 === "sw-c") {
+                             led3Dummy  = document.getElementById('sw-c').value;
+                           } 
+                           var led3 = document.getElementById("led3"); 
+                           if (prvoutl3 === "sw-a" || prvoutl3 === "sw-b" || prvoutl3 === "sw-c" ) {
+                              led3.value = led3Dummy ;
+                           }
+                           else {
+                              led3.value = "(" + led3Dummy + ")";
+                          }
+                          }
+                      </script>
+                    <label for="led3s">LED3s:</label>
+                    <select id="led3s">
+                      <option value=" "> </option>
+                      <option value="not">not</option>
+                    </select><br>
+
+
+
+                    <button onclick="generateTruthTable3()">LED3の真理値表の表示</button>
+                    <div id="truthTable3"></div>
+                    <button onclick="getResultledbr3()">LED2の結果を表示</button>
+                    <div id="resultledbr3"></div>
+                    <script>
+                        function generateTruthTable3() {
+                            let led3 = document.getElementById('led3').value;
+                            const led3s = document.getElementById('led3s').value;
+
+                            if (led3s === "not")  led3 = "!("+ led3 + ")" ; 
+
+                
+                            // 使用されている変数を動的に検出
+                            const allVariables = ['A', 'B', 'C'];
+                            const usedVariables = allVariables.filter(variable => {
+                                const regex = new RegExp(`\\b${variable}\\b`);
+                                return regex.test(led3);
+                            });
+                
+                            const combinations = generateCombinations(usedVariables.length);
+                
+                            const operators = {
+                                'AND': '&&',
+                                'OR': '||',
+                                'XOR': '!=',  // 一時的なプレースホルダー
+                                'XNOR': '==', // 一時的なプレースホルダー
+                                '!': '!'
+                            };
+                
+                            for (let op in operators) {
+                                let regex = new RegExp(`\\b${op}\\b`, 'g');
+                                led3 = led3.replace(regex, operators[op]);
+                            }
+                
+                            let table = '<table><tr>';
+                            usedVariables.forEach(variable => {
+                                table += `<th>${variable}</th>`;
+                            });
+                            table += '<th>LED3</th></tr>';
+                
+                            combinations.forEach(combination => {
+                                let context = {};
+                                usedVariables.forEach((variable, index) => {
+                                    context[variable] = combination[index] ? 1 : 0;
+                                });
+                
+                                let evalExpression = led3;
+                                for (let variable in context) {
+                                    let regex = new RegExp(`\\b${variable}\\b`, 'g');
+                                    evalExpression = evalExpression.replace(regex, context[variable]);
+                                }
+                
+                                // 真理値表の計算結果を 1 か 0 に変更する
+                                let result = eval(evalExpression) ? 1 : 0;
+                                table += '<tr>';
+                                usedVariables.forEach(variable => {
+                                    // 値を true/false から 1/0 に変更する
+                                    table += `<td>${context[variable]}</td>`;
+                                });
+                                // 結果のセルも 1 か 0 に変更する
+                                table += `<td>${result}</td></tr>`;
+                            });
+                
+                            table += '</table>';
+                            document.getElementById('truthTable3').innerHTML = table;
+                        }
+                
+                        function generateCombinations(n) {
+                            let combinations = [];
+                            for (let i = 0; i < (1 << n); i++) {
+                                let combination = [];
+                                for (let j = 0; j < n; j++) {
+                                    combination.push(!!(i & (1 << j)));
+                                }
+                                combinations.push(combination);
+                            }
+                            return combinations;
+                        }
+
+                         // ledbr3 関数を追加
+                         function ledbr3(A, B, C) {
+                            let led3 = document.getElementById('led3').value;
+                            const led3s = document.getElementById('led3s').value;
+                            if (led3s === "not")  led3 = "!("+ led3 + ")" ; 
+
+                            const operators = {
+                                'AND': '&&',
+                                'OR': '||',
+                                'XOR': '!=',  // 一時的なプレースホルダー
+                                'XNOR': '==', // 一時的なプレースホルダー
+                                '!': '!'
+                            };
+                
+                            for (let op in operators) {
+                                let regex = new RegExp(`\\b${op}\\b`, 'g');
+                                led3 = led3.replace(regex, operators[op]);
+                            }
+
+                            // コンテキストに変数を置換
+                            let context = { A, B, C };
+                            let evalExpression = led3;
+                            for (let variable in context) {
+                                let regex = new RegExp(`\\b${variable}\\b`, 'g');
+                                evalExpression = evalExpression.replace(regex, context[variable]);
+                            }
+                            return eval(evalExpression);
+                        }
+
+                        // ledbr3 関数をグローバルスコープに追加
+                        window.ledbr3 = ledbr3;
+
+                        // 結果を取得する関数
+                        function getResultledbr3() {
+                            const A = document.getElementById('a-value').value === '1' ? true : false; 
+                        /*    const A = true; */
+                            const B = document.getElementById('b-value').value === '1' ? true : false; 
+                        /*   const B = true; */
+                            const C = document.getElementById('c-value').value === '1' ? true : false; 
+                        /*    const C = true; */
+                        const resultledbr3 = ledbr3(A, B, C);
+                        const resultStyle = resultledbr3 ? 'color: red; font-size: 24px; font-weight: bold;' : 'color: blue; font-size: 24px; font-weight: bold;';
+                        document.getElementById('resultledbr3').innerHTML = `ResultLED3: <span style="${resultStyle}">${resultledbr3 ? 1 : 0}</span>`;
+                        }                       
+                    </script>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

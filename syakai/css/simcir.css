@@ -15,6 +15,11 @@
         width: 1200px;
         height: 600px;
     }
+    @media (max-width: 1800px) {
+        .circuit {
+            display: block;
+        }
+    }
     .tab {
         display: none;
         opacity: 0;
@@ -22,16 +27,25 @@
         width: 80%;
         background: radial-gradient(circle, black 7%, transparent 7%);
         background-size: 18px 18px;
+        height: 100%;
     }
     .tab.active {
         display: block;
         border: 1px solid darkgray;
         opacity: 1;
+        text-align: center;
     }
     .tabs{
         width: 20%;
         background-color: transparent;
         padding: 0;
+    }
+    @media (max-width: 1800px) {
+        .tabs{
+            display: flex;
+            width: 80%;
+            margin: 0;
+        }
     }
     .tabs .tablink {
         margin: 0;
@@ -41,10 +55,15 @@
         border: 1px solid darkgray;
         text-align: center;
         font-size: 2rem;
-        height: 33%;
+        height: calc(100% / 3);
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+    @media (max-width: 1800px) {
+        .tabs .tablink {
+            width: calc(100% / 3);
+        }
     }
     .tabs .tablink:hover{
         background-color: #ddd;
@@ -67,8 +86,41 @@
         }
     }
 
-    .element {
+    #Tab1 .element, #Tab2 .element {
+        float: left;
+    }
+
+    #Tab1 .element {
         margin: 0 80px;
+    }
+
+    #Tab2 .element {
+        margin: 0 120px;
+    }
+
+    .element p {
+        position: relative;
+    }
+
+    #Tab1 .element p {
+        top: -50px;
+        left: 345px;
+    }
+
+    #Tab2 .element p{
+        top: -110px;
+        left: 125px;
+    }
+
+    #Tab3 .element {
+        display: block;
+        position: relative;
+        top: -30%;
+        left: 36px;
+    }
+
+    #Tab2 .ele2 {
+        margin-top: 80px;
     }
 
     .simcir-body {
@@ -272,37 +324,61 @@
     /* 以下変更箇所 */
 
     .green-circle {
-        display: inline-block; /* センター寄せ用 */
-        background-color: rgb(0, 255, 0); /* ベースカラー */
-        height:20px; /* 円の大きさ */
-        width:20px;  /* 円の大きさ */
-        border-radius:50%; /* まるみ */
-        /* 以下はそろえるだけの為のmargin */
-        margin-right: 10px;
-        margin-bottom: 5px;
-        margin-top: 2px;
+        height:50px;
+        width:50px;
+        position: relative;
+        top: 102px;
+        left: 100px;
+        border: 5px solid black;
+        border-radius:50%;
     }
 
     .yellow-circle {
-        display: inline-block;
-        background-color: rgb(255, 230, 0);
-        height:20px;
-        width:20px;
+        height:50px;
+        width:50px;
+        position: relative;
+        top: 206px;
+        left: 100px;
+        border: 5px solid black;
         border-radius:50%;
-        margin-right: 10px;
-        margin-bottom: 5px;
-        margin-top: 2px;
     }
 
     .red-circle {
-        display: inline-block;
-        background-color: rgb(255, 0, 0);
-        height:20px;
-        width:20px;
+        height:50px;
+        width:50px;
+        position: relative;
+        top: 65px;
+        left: 800px;
+        border: 5px solid black;
         border-radius:50%;
-        margin-right: 10px;
-        margin-bottom: 5px;
-        margin-top: 2px;
+    }
+
+    #Tab2 .red-circle {
+        top: 130px;
+    }
+
+    #Tab3 .red-circle{
+        top: -17px;
+    }
+
+    .red-circle2 {
+        height:50px;
+        width:50px;
+        position: relative;
+        top: 16%;
+        left: 47%;
+        border: 5px solid black;
+        border-radius:50%;
+    }
+
+    #Tab2 .red-circle2 {
+        top: 5px;
+        z-index: 1;
+    }
+
+    #Tab3 .red-circle2{
+        top: 80px;
+        left: 800px;
     }
 
     .black-circle {
@@ -314,6 +390,49 @@
         margin-right: 10px;
         margin-bottom: 5px;
         margin-top: 2px;
+    }
+
+    .step1_img {
+        position: relative;
+        top: -85px;
+        left: -137px;
+    }
+
+    .step2_img {
+        position: relative;
+        top: -390px;
+    }
+
+    .step3_img {
+        position: relative;
+        top: -486px;
+    }
+    
+    .gate-select {
+        display: flex;
+        justify-content: center;
+    }
+
+    .switch1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        background-color: #e3364a; /* 背景色 */
+        box-shadow: 0 5px 0 #ca1c30; /* 影の太さ・色 */
+        border-radius: 50%;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .switch1:active {
+        box-shadow: none;
+        transform: translateY(5px);
+    }
+
+    .truthTable {
+        margin-top: 80px;
     }
 
     /* 以上変更箇所 */
