@@ -222,7 +222,7 @@ h1 {
 
 .main {
     background-color: #4545458c;
-    height: 600px;
+    height: 100vh;
     padding: 50px 0;
     text-align: center;
 }
@@ -277,6 +277,9 @@ h2, h3 {
 .footer {
     background-color: #000000;
     color: #fff;
+    position:fixed;
+    bottom: 0;
+    width: 100%;
     padding: 60px;
     text-align: center;
 }
