@@ -26,7 +26,19 @@
       <main>
         <h1>論理回路シミュレーション2</h1>
         <h3>論理素子の関数をコーディングしていこう！</h3>
-        <div id="editor" style="height: 600px;">def and_gate(input1, input2):
+        <div id="editor" style="height: 600px; width: 100%;">def check_answer(func, input1, input2, expected):
+    try:
+        result = func(input1, input2)
+        assert result == expected
+        return "Test passed!"
+    except AssertionError:
+        return f"Test failed: {func.__name__}({input1}, {input2}) returned {result} instead of {expected}"
+    except Exception as e:
+        return f"Test failed with error: {e}"
+    except SyntaxError:
+        return "SyntaxError: Check your code for syntax errors."
+
+def and_gate(input1, input2):
     return input1 & input2
 
 def or_gate(input1, input2):
@@ -44,14 +56,6 @@ def nor_gate(input1, input2):
 def not_gate(input1):
     return not input1
 
-def check_answer(func, input1, input2, expected):
-    result = func(input1, input2)
-    if result == expected:
-        return '正解'
-    else:
-        return '不正解'
-
-# 例: ANDゲートのチェック
 check_answer(and_gate, 1, 1, 1)
         </div>
         <input class="button" id="runBtn" type="button" value="Run" onclick="RunCode();" />
@@ -109,15 +113,16 @@ check_answer(and_gate, 1, 1, 1)
         enableEmmet: true
     });
     editor.setTheme("ace/theme/monokai");
-    editor.setFontSize(14);
+    editor.setFontSize(18);
     editor.getSession().setMode("ace/mode/python");
     editor.getSession().setUseWrapMode(true);
     editor.getSession().setTabSize(2);
+    editor.setHighlightActiveLine(false);
+    editor.setShowPrintMargin(false);
   
     // Pyodideの初期化
     const output = document.getElementById("output");
-    const code = editor.getValue();
-    
+    var code = editor.getValue();
 
     function addToOutput(s) {
       output.value += '>>>' + s + '\n';
@@ -131,11 +136,16 @@ check_answer(and_gate, 1, 1, 1)
 
     async function RunCode() {
       await pyodideReadyPromise;
-       try {
+      code = editor.getValue();
+      try {
           let output = await pyodide.runPythonAsync(code);
           addToOutput(output);
         } catch(err) {
-          addToOutput(err);
+          if(err.name == 'PythonError'){
+            addToOutput('SyntaxError: Check your code for syntax errors.');
+          } else {
+            addToOutput(err);
+          }
       }
     }
   </script>
