@@ -9,6 +9,7 @@ const canvas = document.getElementById('gridCanvas');
     const componentFrames = [];
     const gridPoints = []; // 黒い円の座標を保持する配列
     const inputs = { A: 0, B: 0, C: 0 }; // 入力の値を保持するオブジェクト
+    let Line = [];
 
     const inputPositions = {
         A: { x: 60, y: 150 },
@@ -31,10 +32,20 @@ const canvas = document.getElementById('gridCanvas');
         inputs.C = parseInt(event.target.value);
         drawPolyline();
     }));
+
+
     /*回路画像チェンジ*/
     function imgChange(id, fname){
         const frame = componentFrames.find(frame => frame.id === id);
         if (!frame) return;
+
+        const input1Element = document.getElementById('input1');
+        const input2Element = document.getElementById('input2');
+
+        if (input1Element && input2Element) {
+            frame.input1 = parseInt(input1Element.value);
+            frame.input2 = parseInt(input2Element.value);
+        }
         
         let imageSrc;
         switch (fname) {
@@ -65,7 +76,46 @@ const canvas = document.getElementById('gridCanvas');
         }
 
         frame.imageSrc = imageSrc; // フレームに画像ソースを保存
+        frame.type = fname;
+        calculateOutput(frame);
+        alert(`Frame ${frame.id} changed: Input1 = ${frame.input1}, Input2 = ${frame.input2}, Output = ${frame.outputValue}`);
         drawPolyline();
+    }
+
+    //論理式を計算
+    function calculateOutput(frame) {
+        const input1 = frame.input1.includes(' ') ? `(${frame.input1})` : frame.input1;
+        const input2 = frame.input2.includes(' ') ? `(${frame.input2})` : frame.input2;
+        let newOutputValue;
+    
+        switch (frame.type) {
+            case 'and':
+                newOutputValue = `${input1} AND ${input2}`;
+                break;
+            case 'or':
+                newOutputValue = `${input1} OR ${input2}`;
+                break;
+            case 'xor':
+                newOutputValue = `${input1} XOR ${input2}`;
+                break;
+            case 'nand':
+                newOutputValue = `NOT (${input1} AND ${input2})`;
+                break;
+            case 'nor':
+                newOutputValue = `NOT (${input1} OR ${input2})`;
+                break;
+            case 'xnor':
+                newOutputValue = `NOT (${input1} XOR ${input2})`;
+                break;
+            case 'not':
+                newOutputValue = `NOT ${input1}`;
+                break;
+            default:
+                newOutputValue = '';
+                break;
+        }
+    
+        frame.outputValue = newOutputValue;
     }
 
     function drawInputs() {
@@ -117,7 +167,7 @@ const canvas = document.getElementById('gridCanvas');
         ctx.fillStyle = 'blue'; 
         ctx.font = '20px Arial'; 
         ctx.fillText('Tanaka-Lab', 1050, 30); 
-        drawGridPoints();
+        //drawGridPoints();
     }
 
     //初期の画像を表示
@@ -152,7 +202,16 @@ const canvas = document.getElementById('gridCanvas');
                         y: frameY,
                         width: frameWidth,
                         height: frameHeight,
-                        imageSrc: 'img/WHITE.png' // デフォルトの画像ソースを設定
+                        imageSrc: 'img/WHITE.png', // デフォルトの画像ソースを設定
+                        type: '',
+                        inputs: [
+                            {x: imageX, y: frameY + 40},
+                            {x: imageX, y: frameY + 80}
+                        ],
+                        input1: 'A AND B',
+                        input2: 'B',
+                        output: {x: imageX + frameWidth, y: frameY + 60},
+                        outputValue: 0
                     });
                 }
             }
@@ -168,10 +227,22 @@ const canvas = document.getElementById('gridCanvas');
             image.onload = function() {
                 ctx.clearRect(frame.x, frame.y, frame.width, frame.height);
                 ctx.drawImage(image, frame.x, frame.y, frame.width, frame.height);
+                drawFramePoints(frame); // ここで各フレームにポイントを描画
             };
         });
     }
 
+    function drawFramePoints(frame) {
+        ctx.fillStyle = 'black';
+        frame.inputs.forEach(input => {
+            ctx.beginPath();
+            ctx.arc(input.x, input.y, 6, 0, 2 * Math.PI);
+            ctx.fill();
+        });
+        ctx.beginPath();
+        ctx.arc(frame.output.x, frame.output.y, 6, 0, 2 * Math.PI);
+        ctx.fill();
+    }
 
     function drawLEDs() {
         ctx.font = '20px Arial';
@@ -204,35 +275,6 @@ const canvas = document.getElementById('gridCanvas');
         ctx.fill();
     }
 
-
-    // グリッドの交点に黒い点を描く
-    function drawGridPoints() {
-        ctx.fillStyle = 'black';
-        for (let i = 16; i <= 46; i += 20) {
-            for (let j = 10; j < 34; j += 12) {
-                const x1 = i * 20;
-                const y1 = j * 20;
-                ctx.beginPath();
-                ctx.arc(x1, y1, 6, 0, 2 * Math.PI); // 半径6の円を描く
-                ctx.fill();
-
-                const x2 = i * 20;
-                const y2 = (j + 2) * 20;
-                ctx.beginPath();
-                ctx.arc(x2, y2, 6, 0, 2 * Math.PI); // 半径6の円を描く
-                ctx.fill();
-
-            }
-            for (let j = 11; j < 34; j += 12) {
-                const x = (i + 8) * 20;
-                const y = j * 20;
-                ctx.beginPath();
-                ctx.arc(x, y, 6, 0, 2 * Math.PI); // 半径6の円を描く
-                ctx.fill();
-            }
-        }
-    }
-
     // クリック検出
     canvas.addEventListener('click', function(event) {
         if (clickTimeout) {
@@ -259,6 +301,7 @@ const canvas = document.getElementById('gridCanvas');
             }
 
             if (!isPointInComponentFrame(x, y) && (currentLine.length === 0 || !isLineIntersectingComponent(currentLine[currentLine.length - 1], { x, y }))) {
+                if(currentLine.length > 0) judgeInput(currentLine[currentLine.length - 1], { x, y });
                 currentLine.push({ x, y });
                 drawPolyline();
             }
@@ -399,6 +442,119 @@ const canvas = document.getElementById('gridCanvas');
         return (dx * dx + dy * dy) <= tolerance * tolerance;
     }
 
+    // 入力判定(どこから入力されるか)
+    function judgeInput(p1, p2) {
+        const { x: x1, y: y1 } = p1;
+        const { x: x2, y: y2 } = p2;
+
+        if(x1 == 80 && y1 == 140) Line.s = "A"; //A: 80 140
+        else if(x1 == 80 && y1 == 340) Line.s = "B"; //B: 80 340
+        else if(x1 == 80 && y1 == 540) Line.s = "C"; //C: 80 540
+
+        let ele = 0;
+        for (let i = 16; i <= 46; i += 20) {
+            for (let j = 10; j < 34; j += 12) {
+                ele++;
+                if(x2 == i * 20 && y2 == j * 20) Line.e = ele;
+                if(x2 == i * 20 && y2 == (j + 2) * 20) Line.e = ele;
+            }
+        }
+
+        console.log("始点: " + Line.s + " 終点: " + Line.e);
+    }
+
+    //真理値表作成関数
+    function generateTruthTable() {
+        const selectedPartId = document.getElementById('partSelector').value;
+        console.log('Selected Part ID:', selectedPartId); // デバッグ用
+    
+        const selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
+        if (!selectedPart) {
+            alert('選択されたパーツが見つかりません');
+            return;
+        }
+    
+        console.log('Selected Part:', selectedPart); // デバッグ用
+    
+        let expression = selectedPart.outputValue;
+        console.log('Initial Expression:', expression); // デバッグ用
+        
+        const usedVariables = ['A', 'B', 'C'].filter(variable => {
+            const regex = new RegExp(`\\b${variable}\\b`);
+            return regex.test(expression);
+        });
+    
+        console.log('Used Variables:', usedVariables); // デバッグ用
+    
+        const combinations = generateCombinations(usedVariables.length);
+    
+        const operators = {
+            'AND': '&&',
+            'OR': '||',
+            'XOR': '!=',  // 一時的なプレースホルダー
+            'XNOR': '==', // 一時的なプレースホルダー
+            'NOT': '!'
+        };
+    
+        for (let op in operators) {
+            let regex = new RegExp(`\\b${op}\\b`, 'g');
+            expression = expression.replace(regex, operators[op]);
+        }
+    
+        console.log('Evaluated Expression:', expression); // デバッグ用
+    
+        let table = '<table><tr>';
+        usedVariables.forEach(variable => {
+            table += `<th>${variable}</th>`;
+        });
+        table += `<th>${selectedPartId} (${selectedPart.outputValue})</th></tr>`;
+    
+        combinations.forEach(combination => {
+            let context = {};
+            usedVariables.forEach((variable, index) => {
+                context[variable] = combination[index] ? 1 : 0;
+            });
+    
+            let evalExpression = expression;
+            for (let variable in context) {
+                let regex = new RegExp(`\\b${variable}\\b`, 'g');
+                evalExpression = evalExpression.replace(regex, context[variable]);
+            }
+    
+            let result;
+            try {
+                result = eval(evalExpression) ? 1 : 0;
+            } catch (error) {
+                console.error('Evaluation Error:', error); // デバッグ用
+                result = 'error';
+            }
+    
+            table += '<tr>';
+            usedVariables.forEach(variable => {
+                table += `<td>${context[variable]}</td>`;
+            });
+            table += `<td>${result}</td></tr>`;
+        });
+    
+        table += '</table>';
+        document.getElementById('truthTable').innerHTML = table;
+        console.log('Truth Table Generated'); // デバッグ用
+    }
+    
+    function generateCombinations(n) {
+        let combinations = [];
+        for (let i = 0; i < (1 << n); i++) {
+            let combination = [];
+            for (let j = 0; j < n; j++) {
+                combination.push(!!(i & (1 << j)));
+            }
+            combinations.push(combination);
+        }
+        return combinations;
+    }
+    
+    
+
     // 一連の配線を描く
     function drawPolyline() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -428,6 +584,8 @@ const canvas = document.getElementById('gridCanvas');
         drawLEDs();
     }
 
+    //出力を計算
+    componentFrames.forEach(frame => calculateOutput(frame));
     // 格子を描く
     drawGrid();
     //最初に画像を表示
