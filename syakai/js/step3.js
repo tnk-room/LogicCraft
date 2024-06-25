@@ -6,9 +6,11 @@ const canvas = document.getElementById('gridCanvas');
     let currentLine = [];
     let newLine = false;
     let clickTimeout = null;
-    const componentFrames = [];
+    const componentFrames = []; // 画像情報
     const gridPoints = []; // 黒い円の座標を保持する配列
     const inputs = { A: 0, B: 0, C: 0 }; // 入力の値を保持するオブジェクト
+    const outputs = {LED1: 0, LED2: 0, LED3: 0}; // 出力の値を保持するオブジェクト
+    const outputsExp = {LED1: '', LED2: '', LED3: ''};
     let Line = [];
 
     const inputPositions = {
@@ -17,20 +19,29 @@ const canvas = document.getElementById('gridCanvas');
         C: { x: 60, y: 550 }
     };
 
+    const outputPositions = {
+        LED1: { x: 1000, y: 150 },
+        LED2: { x: 1000, y: 350 },
+        LED3: { x: 1000, y: 550 }
+    }
+
     // 入力値が変更されたときに呼び出されるイベントリスナー
     document.querySelectorAll('input[name="inputA"]').forEach(input => input.addEventListener('change', (event) => {
         inputs.A = parseInt(event.target.value);
         drawPolyline();
+        changeValue();
     }));
 
     document.querySelectorAll('input[name="inputB"]').forEach(input => input.addEventListener('change', (event) => {
         inputs.B = parseInt(event.target.value);
         drawPolyline();
+        changeValue();
     }));
 
     document.querySelectorAll('input[name="inputC"]').forEach(input => input.addEventListener('change', (event) => {
         inputs.C = parseInt(event.target.value);
         drawPolyline();
+        changeValue();
     }));
 
 
@@ -39,13 +50,13 @@ const canvas = document.getElementById('gridCanvas');
         const frame = componentFrames.find(frame => frame.id === id);
         if (!frame) return;
 
-        const input1Element = document.getElementById('input1');
-        const input2Element = document.getElementById('input2');
+        // const input1Element = document.getElementById('input1');
+        // const input2Element = document.getElementById('input2');
 
-        if (input1Element && input2Element) {
-            frame.input1 = parseInt(input1Element.value);
-            frame.input2 = parseInt(input2Element.value);
-        }
+        // if (input1Element && input2Element) {
+        //     frame.input[0] = parseInt(input1Element.value);
+        //     frame.input2[1] = parseInt(input2Element.value);
+        // }
         
         let imageSrc;
         switch (fname) {
@@ -77,45 +88,68 @@ const canvas = document.getElementById('gridCanvas');
 
         frame.imageSrc = imageSrc; // フレームに画像ソースを保存
         frame.type = fname;
+        //console.log(componentFrames[0].outputLocate);
         calculateOutput(frame);
-        alert(`Frame ${frame.id} changed: Input1 = ${frame.input1}, Input2 = ${frame.input2}, Output = ${frame.outputValue}`);
+        changeValue();
+        alert(`Frame ${frame.id} changed: Input1 = ${frame.input[0]}, Input2 = ${frame.input[1]}, Output = ${frame.outputValue}`);
         drawPolyline();
     }
 
     //論理式を計算
     function calculateOutput(frame) {
-        const input1 = frame.input1.includes(' ') ? `(${frame.input1})` : frame.input1;
-        const input2 = frame.input2.includes(' ') ? `(${frame.input2})` : frame.input2;
-        let newOutputValue;
+        const input1 = (frame.input[0] == 'A' || frame.input[0] == 'B' || frame.input[0] == 'C') ? `${frame.input[0]}` : `(${frame.input[0]})`;
+        const input2 = (frame.input[1] == 'A' || frame.input[1] == 'B' || frame.input[1] == 'C') ? `${frame.input[1]}` : `(${frame.input[1]})`;
     
+        console.log(frame.inputValue[0] + " " + frame.inputValue[1]);
         switch (frame.type) {
             case 'and':
-                newOutputValue = `${input1} AND ${input2}`;
+                frame.outputValue = `${input1} AND ${input2}`;
+                frame.outputValue1 = frame.inputValue[0] & frame.inputValue[1];
                 break;
             case 'or':
-                newOutputValue = `${input1} OR ${input2}`;
+                frame.outputValue = `${input1} OR ${input2}`;
+                frame.outputValue1 = frame.inputValue[0] | frame.inputValue[1];
                 break;
             case 'xor':
-                newOutputValue = `${input1} XOR ${input2}`;
+                frame.outputValue = `${input1} XOR ${input2}`;
+                frame.outputValue1 = frame.inputValue[0] ^ frame.inputValue[1];
                 break;
             case 'nand':
-                newOutputValue = `NOT (${input1} AND ${input2})`;
+                frame.outputValue = `NOT (${input1} AND ${input2})`;
+                frame.outputValue1 = !(frame.inputValue[0] & frame.inputValue[1]);
                 break;
             case 'nor':
-                newOutputValue = `NOT (${input1} OR ${input2})`;
+                frame.outputValue = `NOT (${input1} OR ${input2})`;
+                frame.outputValue1 = !(frame.inputValue[0] | frame.inputValue[1]);
                 break;
             case 'xnor':
-                newOutputValue = `NOT (${input1} XOR ${input2})`;
+                frame.outputValue = `NOT (${input1} XOR ${input2})`;
+                frame.outputValue1 = !(frame.inputValue[0] ^ frame.inputValue[1]);
                 break;
             case 'not':
-                newOutputValue = `NOT ${input1}`;
+                frame.outputValue = `NOT ${input1}`;
+                frame.outputValue1 = !frame.inputValue[0];
                 break;
             default:
-                newOutputValue = '';
-                break;
+                frame.outputValue = '';
+                frame.outputValue1 = 0;
         }
-    
-        frame.outputValue = newOutputValue;
+
+        //console.log(frame.outputValue1 + " " + frame.outputLocate);
+        if(frame.outputLocate == 'LED1') {
+            outputsExp.LED1 = frame.outputValue;
+            outputs.LED1 = frame.outputValue1 ? 1 : 0;
+        }else if(frame.outputLocate == 'LED2') {
+            outputsExp.LED2 = frame.outputValue;
+            outputs.LED2 = frame.outputValue1 ? 1 : 0;
+        }else if(frame.outputLocate == 'LED3') {
+            outputsExp.LED3 = frame.outputValue;
+            outputs.LED3 = frame.outputValue1 ? 1 : 0;
+        }
+        drawLEDs();
+
+        // console.log(componentFrames[0].input[0] + " " + componentFrames[0].input[1]);
+        // console.log(componentFrames[0].inputValue[0] + " " + componentFrames[0].inputValue[0] + " " + componentFrames[0].outputValue1);
     }
 
     function drawInputs() {
@@ -127,6 +161,7 @@ const canvas = document.getElementById('gridCanvas');
         ctx.fillText('A', posA.x, posA.y - 20);
         ctx.beginPath();
         ctx.arc(posA.x + 20, posA.y - 10, 10, 0, 2 * Math.PI); // 半径10の円を描く
+        ctx.fillStyle = inputs.A === 1  ? 'green' : 'gray';
         ctx.fill();
 
         // 入力Bを描画
@@ -135,7 +170,7 @@ const canvas = document.getElementById('gridCanvas');
         ctx.fillText('B', posB.x, posB.y - 20);
         ctx.beginPath();
         ctx.arc(posB.x + 20, posB.y - 10, 10, 0, 2 * Math.PI); // 半径10の円を描く
-        ctx.fillStyle = inputs.B === 1 ? 'green' : 'black';
+        ctx.fillStyle = inputs.B === 1  ? 'green' : 'gray';
         ctx.fill();
 
         // 入力Cを描画
@@ -144,7 +179,7 @@ const canvas = document.getElementById('gridCanvas');
         ctx.fillText('C', posC.x, posC.y - 20);
         ctx.beginPath();
         ctx.arc(posC.x + 20, posC.y - 10, 10, 0, 2 * Math.PI); // 半径10の円を描く
-        ctx.fillStyle = inputs.C === 1 ? 'green' : 'black';
+        ctx.fillStyle = inputs.C === 1  ? 'green' : 'gray';
         ctx.fill();
     }
     
@@ -208,10 +243,13 @@ const canvas = document.getElementById('gridCanvas');
                             {x: imageX, y: frameY + 40},
                             {x: imageX, y: frameY + 80}
                         ],
-                        input1: 'A AND B',
-                        input2: 'B',
+                        input: ['', ''], //入力論理式
+                        inputValue: [0, 0], //入力値0or1
+                        inputLocate: ['', ''], //入力場所(A,B,C,0,1,2,3)
                         output: {x: imageX + frameWidth, y: frameY + 60},
-                        outputValue: 0
+                        outputValue: '', //出力論理式
+                        outputValue1: 0, //出力値0or1
+                        outputLocate: '' //出力場所(0,1,2,3,LED1,LED2,LED3)
                     });
                 }
             }
@@ -242,36 +280,36 @@ const canvas = document.getElementById('gridCanvas');
         ctx.beginPath();
         ctx.arc(frame.output.x, frame.output.y, 6, 0, 2 * Math.PI);
         ctx.fill();
-    }
+    } 
 
     function drawLEDs() {
         ctx.font = '20px Arial';
 
         // LED1
-        const led1Pos = { x: 1000, y: 150 };
-        ctx.fillStyle = 'black';
+        const led1Pos = outputPositions.LED1;
+        ctx.fillStyle = (outputs.LED1 === 1 || outputs.LED1)  ? 'red' : 'black';
         ctx.fillText('LED1', led1Pos.x, led1Pos.y - 20);
         ctx.beginPath();
         ctx.arc(led1Pos.x + 40, led1Pos.y - 10, 10, 0, 2 * Math.PI); // 半径10の円を描く
-        ctx.fillStyle = 'gray';
+        ctx.fillStyle = (outputs.LED1 === 1 || outputs.LED1)  ? 'red' : 'gray';
         ctx.fill();
 
         // LED2
-        const led2Pos = { x: 1000, y: 350 };
-        ctx.fillStyle = 'black';
+        const led2Pos = outputPositions.LED2;
+        ctx.fillStyle = (outputs.LED2 === 1 || outputs.LED2) ? 'red' : 'black';
         ctx.fillText('LED2', led2Pos.x, led2Pos.y - 20);
         ctx.beginPath();
         ctx.arc(led2Pos.x + 40, led2Pos.y - 10, 10, 0, 2 * Math.PI); // 半径10の円を描く
-        ctx.fillStyle = 'gray';
+        ctx.fillStyle = (outputs.LED2 === 1 || outputs.LED2)  ? 'red' : 'gray';
         ctx.fill();
 
         // LED3
-        const led3Pos = { x: 1000, y: 550 };
-        ctx.fillStyle = 'black';
+        const led3Pos = outputPositions.LED3;
+        ctx.fillStyle = (outputs.LED3 === 1 || outputs.LED3) ? 'red' : 'black';
         ctx.fillText('LED3', led3Pos.x, led3Pos.y - 20);
         ctx.beginPath();
         ctx.arc(led3Pos.x + 40, led3Pos.y - 10, 10, 0, 2 * Math.PI); // 半径10の円を描く
-        ctx.fillStyle = 'gray';
+        ctx.fillStyle = (outputs.LED3 === 1 || outputs.LED3)  ? 'red' : 'gray';
         ctx.fill();
     }
 
@@ -442,25 +480,81 @@ const canvas = document.getElementById('gridCanvas');
         return (dx * dx + dy * dy) <= tolerance * tolerance;
     }
 
+    function changeValue(){
+        for(let i=0;i<4;i++) {
+            const com = componentFrames[i];
+            for(let j=0;j<2;j++) {
+                console.log(com.inputLocate[j]);
+                if(com.inputLocate[j] == 'A') {
+                    com.inputValue[j] = inputs.A;
+                    if(com.type != '') calculateOutput(com);
+                }else if(com.inputLocate[j] == 'B') {
+                    com.inputValue[j] = inputs.B;
+                    if(com.type != '') calculateOutput(com);
+                }else if(com.inputLocate[j] == 'C') {
+                    com.inputValue[j] = inputs.C;
+                    if(com.type != '') calculateOutput(com);
+                }else if(com.inputLocate[j] == '0') {
+                    com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
+                    if(com.type != '') calculateOutput(com);
+                    console.log("input: " + com.inputValue[j]);
+                }
+            }
+        }
+        // console.log(componentFrames[0]);
+        // console.log(inputs.A + " " + inputs.B + " " + inputs.C + " " + outputs.LED1);
+    }
+
     // 入力判定(どこから入力されるか)
     function judgeInput(p1, p2) {
-        const { x: x1, y: y1 } = p1;
-        const { x: x2, y: y2 } = p2;
+        const { x: x1, y: y1 } = p1; //始点
+        const { x: x2, y: y2 } = p2; //終点
 
+        //始点
         if(x1 == 80 && y1 == 140) Line.s = "A"; //A: 80 140
         else if(x1 == 80 && y1 == 340) Line.s = "B"; //B: 80 340
         else if(x1 == 80 && y1 == 540) Line.s = "C"; //C: 80 540
 
-        let ele = 0;
-        for (let i = 16; i <= 46; i += 20) {
-            for (let j = 10; j < 34; j += 12) {
-                ele++;
-                if(x2 == i * 20 && y2 == j * 20) Line.e = ele;
-                if(x2 == i * 20 && y2 == (j + 2) * 20) Line.e = ele;
+        for(let i=0;i<4;i++) {
+            const com = componentFrames[i];
+            if(Math.abs(x1 - com.output.x) < 20 && Math.abs(y1 - com.output.y) < 20)  {
+                Line.s = i;
+                calculateOutput(com);
             }
         }
 
-        console.log("始点: " + Line.s + " 終点: " + Line.e);
+        //終点
+        for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
+            const com = componentFrames[i];
+            if(Math.abs(x2 - com.inputs[j].x) < 20 && Math.abs(y2 - com.inputs[j].y) < 20) {
+                Line.e = i; 
+                if(Line.s == "A" || Line.s == "B" || Line.s == "C") com.input[j] = Line.s;
+                else {
+                    com.input[j] = componentFrames[Line.s].outputValue;
+                    componentFrames[Line.s].outputLocate = Line.e;
+                }
+                com.inputLocate[j] = Line.s;
+                calculateOutput(com);
+            }
+        }
+
+        if(x2 == 1040 && y2 == 140) {
+            Line.e = "LED1"; //LED1: 1040 140
+            outputs.LED1 = componentFrames[Line.s].outputValue1; 
+            componentFrames[Line.s].outputLocate = 'LED1';
+        }else if(x2 == 1040 && y2 == 340) {
+            Line.e = "LED2"; //LED2: 1040 340
+            outputs.LED2 = componentFrames[Line.s].outputValue1;
+            componentFrames[Line.s].outputLocate = 'LED2';
+        }else if(x2 == 1040 && y2 == 540) {
+            Line.e = "LED3"; //LED3: 1040 540
+            outputs.LED3 = componentFrames[Line.s].outputValue1;
+            componentFrames[Line.s].outputLocate = 'LED3';
+        }
+
+        // console.log(componentFrames[0].outputLocate);
+        // console.log("始点: " + Line.s + " 終点: " + Line.e);
+        // console.log(componentFrames[0].inputValue[0] + " " + componentFrames[0].inputValue[1] + " " + componentFrames[0].outputValue1);
     }
 
     //真理値表作成関数
@@ -468,7 +562,8 @@ const canvas = document.getElementById('gridCanvas');
         const selectedPartId = document.getElementById('partSelector').value;
         console.log('Selected Part ID:', selectedPartId); // デバッグ用
     
-        const selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
+        selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
+        if(selectedPartId == "led1" || selectedPartId == "led2" || selectedPartId == "led3") selectedPart = componentFrames.find(frame => frame.outputLocate === selectedPartId.toUpperCase());
         if (!selectedPart) {
             alert('選択されたパーツが見つかりません');
             return;
@@ -476,8 +571,13 @@ const canvas = document.getElementById('gridCanvas');
     
         console.log('Selected Part:', selectedPart); // デバッグ用
     
-        let expression = selectedPart.outputValue;
-        console.log('Initial Expression:', expression); // デバッグ用
+        let expression;
+        console.log(outputsExp.LED1);
+        if(selectedPart == "led1") expression = outputsExp.LED1;
+        else if(selectedPart == "led2") expression = outputsExp.LED2;
+        else if(selectedPart == "led3") expression = outputsExp.LED3;
+        else expression = selectedPart.outputValue;
+        console.log('Initial Expression:',  expression); // デバッグ用
         
         const usedVariables = ['A', 'B', 'C'].filter(variable => {
             const regex = new RegExp(`\\b${variable}\\b`);
