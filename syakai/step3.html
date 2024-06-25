@@ -24,6 +24,19 @@
         button {
             margin-top: 10px;
         }
+        #canvasContainer {
+            position: relative;
+        }
+        select.onCanvas {
+            position: absolute;
+            z-index: 10;  /* canvasの上に表示するため */
+            background: #45454500;
+            font-size: 20px;
+            width: 150px;
+            height: 113px; 
+            border: none;
+            appearance: none; /* 標準のスタイルを無効にする */
+        }
     </style>
 </head>
 <body>
@@ -40,9 +53,12 @@
             <main>
                 <h1>論理回路シミュレーション3</h1>
                 <h3>論理回路を描いてみよう</h3>
-                <canvas id="gridCanvas" width="1200%" height="720"></canvas>
+                <div id="canvasContainer">
+                    <canvas id="gridCanvas" width="1200%" height="720"></canvas>
+                </div>
                 
                 <button id="newWireButton">別の配線</button>
+                <button id="resetButton">スイッチリセット</button>
                 
                 <div class="input-container">
                     <label class="input-label">入力A: </label>
@@ -59,50 +75,6 @@
                     <label><input type="radio" name="inputC" value="0" checked> 0</label>
                     <label><input type="radio" name="inputC" value="1"> 1</label>
                 </div>
-        
-            <select name="channel" size="1" id="gates-select1" onchange="imgChange('program1', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
-            
-            <select name="channel" size="1" id="gates-select2" onchange="imgChange('program2', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
-            
-            <select name="channel" size="1" id="gates-select3" onchange="imgChange('program3', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
-            
-            <select name="channel" size="1" id="gates-select4" onchange="imgChange('program4', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
 
             <div class="input-container">
                 <label for="partSelector">パーツを選択:</label>
