@@ -26,6 +26,7 @@
         }
         #canvasContainer {
             position: relative;
+            margin-top: 10px;
         }
         select.onCanvas {
             position: absolute;
@@ -37,6 +38,11 @@
             border: none;
             appearance: none; /* 標準のスタイルを無効にする */
         }
+        #saveName {
+            width: 90px;
+            height: 40px;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
@@ -46,19 +52,28 @@
             <a href="step1.html">step1</a>
             <a href="step2.html">step2</a>
             <a href="step3.html">step3</a>
-            <a href="step4.html">step4</a>
         </header>
         
         <div class="container">
             <main>
                 <h1>論理回路シミュレーション3</h1>
                 <h3>論理回路を描いてみよう</h3>
+                <div>組み合わせ回路か順序回路か選んでね</div>
+                <button id="switchButton">組み合わせ回路</button>
                 <div id="canvasContainer">
                     <canvas id="gridCanvas" width="1200%" height="720"></canvas>
                 </div>
+                <button id="doButton" style="display: none;">実行</button>
                 
                 <button id="newWireButton">別の配線</button>
                 <button id="resetButton">スイッチリセット</button>
+                <br>
+                <input type="text" id="saveName" placeholder="保存名を入力">
+                <button id="saveButton">保存</button>
+                <select id="loadSelect"></select>
+                <button id="loadButton">復元</button>
+                <div id="loadText"></div>
+                <button id="clearButton">すべて削除</button>
                 
                 <div class="input-container">
                     <label class="input-label">入力A: </label>

@@ -299,12 +299,13 @@ button {
     font-size: 1.6rem;
 }
 #chat-window {
-	margin:0px auto 15px;
+	/* margin:0px auto 15px; */
 	text-align:left;
     width: 100%;
     height: 673px;
     border: 1px solid #ccc;
     border-top: none;
+    overflow-x: hidden;
     overflow-y: auto;
     padding: 20px 10px;
     box-sizing:border-box;
@@ -315,6 +316,7 @@ button {
     box-sizing:border-box;
     line-height:1.5em;
     font-size:12pt;
+    font-family: Arial, sans-serif;
 }
 #chat-history hr {
 	border-top: 1px dashed #8c8b8b;
@@ -331,9 +333,48 @@ button {
     font-size: 16px; 
     max-height: 100%; 
 }
+.you, .gpt{
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
 .you {
 	color:#FF6600;
-	margin:0px;
-	padding-top:5px;
-	padding-bottom:5px;
+	margin:5px 0 0 auto;
+    max-width: 500px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 17px 13px 15px 18px;
+    border-radius: 12px;
+    background: #99dddd;
+    line-height: 1.5;
+    width: 70%;
+}
+.you::after{
+    content: "";
+    border: 10px solid transparent;
+    border-left: 20px solid #99dddd;
+    position: absolute;
+    right: -20px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.gpt {
+    margin:5px auto 0 0;
+    max-width: 500px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 17px 13px 15px 18px;
+    border-radius: 12px;
+    background: #99dddd;
+    line-height: 1.5;
+    width: 70%;
+}
+.gpt::before{
+    content: "";
+    border: 10px solid transparent;
+    border-right: 20px solid #99dddd;
+    position: absolute;
+    left: -20px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
