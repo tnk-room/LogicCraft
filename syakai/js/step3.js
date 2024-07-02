@@ -6,11 +6,11 @@ let allLines = [];
 let currentLine = [];
 let newLine = false;
 let clickTimeout = null;
-const componentFrames = []; // 画像情報
+let componentFrames = []; // 画像情報
 const gridPoints = []; // 黒い円の座標を保持する配列
 const inputs = { A: 0, B: 0, C: 0 }; // 入力の値を保持するオブジェクト
 const outputs = {LED1: 0, LED2: 0, LED3: 0}; // 出力の値を保持するオブジェクト
-const outputsExp = {LED1: '', LED2: '', LED3: ''};
+const outputsExp = {LED1: '', LED2: '', LED3: ''}; // 出力の論理式を保持するオブジェクト
 let Lines = [];
 let Line = [];
 
@@ -24,40 +24,112 @@ const outputPositions = {
     LED1: { x: 1000, y: 150 },
     LED2: { x: 1000, y: 350 },
     LED3: { x: 1000, y: 550 }
-}
+};
+
+// 論理回路か順序回路を判断　スイッチの仕様変更
+// if(switchText.textContent === log) {
+//     switchText.textContent = seq;
+//     logicCircuit();
+// }else {
+//     switchText.textContent = log;
+//     doButton.style.display = 'none';
+// }
+
+const switchText = document.getElementById('switchButton');
+const doButton = document.getElementById('doButton');
+const log = "組み合わせ回路";
+const seq = "順序回路";
 
 // 入力値が変更されたときに呼び出されるイベントリスナー
-document.querySelectorAll('input[name="inputA"]').forEach(input => input.addEventListener('change', (event) => {
-    inputs.A = parseInt(event.target.value);
+function handleInputChange(event, key) {
+    inputs[key] = parseInt(event.target.value);
     drawPolyline();
     changeValue();
-}));
+}
 
-document.querySelectorAll('input[name="inputB"]').forEach(input => input.addEventListener('change', (event) => {
-    inputs.B = parseInt(event.target.value);
-    drawPolyline();
-    changeValue();
-}));
+// イベントリスナーの追加
+function addInputListeners() {
+    document.querySelectorAll('input[name="inputA"]').forEach(input => input.addEventListener('change', handleInputChangeA));
+    document.querySelectorAll('input[name="inputB"]').forEach(input => input.addEventListener('change', handleInputChangeB));
+    document.querySelectorAll('input[name="inputC"]').forEach(input => input.addEventListener('change', handleInputChangeC));
+}
 
-document.querySelectorAll('input[name="inputC"]').forEach(input => input.addEventListener('change', (event) => {
-    inputs.C = parseInt(event.target.value);
+// イベントリスナーの削除
+function removeInputListeners() {
+    document.querySelectorAll('input[name="inputA"]').forEach(input => input.removeEventListener('change', handleInputChangeA));
+    document.querySelectorAll('input[name="inputB"]').forEach(input => input.removeEventListener('change', handleInputChangeB));
+    document.querySelectorAll('input[name="inputC"]').forEach(input => input.removeEventListener('change', handleInputChangeC));
+}
+
+// handleInputChange関数を特定のキーにバインド
+const handleInputChangeA = (event) => handleInputChange(event, 'A');
+const handleInputChangeB = (event) => handleInputChange(event, 'B');
+const handleInputChangeC = (event) => handleInputChange(event, 'C');
+
+// doButtonのクリックイベント
+function handleDoButtonClick() {
+    const inputA = document.querySelectorAll('input[name="inputA"]');
+    const inputB = document.querySelectorAll('input[name="inputB"]');
+    const inputC = document.querySelectorAll('input[name="inputC"]');
+
+    for (const input of inputA) if (input.checked) inputs.A = parseInt(input.value);
+    for (const input of inputB) if (input.checked) inputs.B = parseInt(input.value);
+    for (const input of inputC) if (input.checked) inputs.C = parseInt(input.value);
     drawPolyline();
     changeValue();
-}));
+    console.log(componentFrames[2]);
+}
+
+// 初期状態の確認とリスナーの追加
+if (switchText.textContent === log) {
+    console.log(switchText.textContent);
+    addInputListeners();
+} else {
+    doButton.style.display = 'inline-block';
+}
+
+// スイッチボタンのクリックイベント
+switchButton.addEventListener('click', function() {
+    if (switchText.textContent === log) {
+        switchText.textContent = seq;
+        doButton.style.display = 'inline-block';
+        removeInputListeners();
+    } else {
+        switchText.textContent = log;
+        doButton.style.display = 'none';
+        addInputListeners();
+    }
+    switchReset();
+});
+
+// 常にdoButtonのクリックイベントを設定
+doButton.addEventListener('click', handleDoButtonClick);
+
+
+// document.querySelectorAll('input[name="inputA"]').forEach(input => input.addEventListener('change', (event) => {
+//     inputs.A = parseInt(event.target.value);
+//     drawPolyline();
+//     changeValue();
+// }));
+
+// document.querySelectorAll('input[name="inputB"]').forEach(input => input.addEventListener('change', (event) => {
+//     inputs.B = parseInt(event.target.value);
+//     drawPolyline();
+//     changeValue();
+// }));
+
+// document.querySelectorAll('input[name="inputC"]').forEach(input => input.addEventListener('change', (event) => {
+//     inputs.C = parseInt(event.target.value);
+//     drawPolyline();
+//     changeValue();
+// }));
+// 入力値が変更されたときに呼び出されるイベントリスナー
 
 
 /*回路画像チェンジ*/
 function imgChange(id, fname){
     const frame = componentFrames.find(frame => frame.id === id);
     if (!frame) return;
-
-    // const input1Element = document.getElementById('input1');
-    // const input2Element = document.getElementById('input2');
-
-    // if (input1Element && input2Element) {
-    //     frame.input[0] = parseInt(input1Element.value);
-    //     frame.input2[1] = parseInt(input2Element.value);
-    // }
     
     let imageSrc;
     switch (fname) {
@@ -89,13 +161,12 @@ function imgChange(id, fname){
 
     frame.imageSrc = imageSrc; // フレームに画像ソースを保存
     frame.type = fname;
-    //console.log(componentFrames[0].outputLocate);
     calculateOutput(frame);
     changeValue();
-    //alert(`Frame ${frame.id} changed: Input1 = ${frame.input[0]}, Input2 = ${frame.input[1]}, Output = ${frame.outputValue}`);
     drawPolyline();
 }
 
+// 素子選択
 function addselect(program_id, top, left) {
     var canvasContainer = document.getElementById('canvasContainer');
     document.getElementById('gridCanvas');
@@ -136,14 +207,12 @@ function addselect(program_id, top, left) {
     canvasContainer.appendChild(select);
 }
 
-    
-
-//論理式を計算
+//　論理式を計算
 function calculateOutput(frame) {
     const input1 = (frame.input[0] == 'A' || frame.input[0] == 'B' || frame.input[0] == 'C') ? `${frame.input[0]}` : `(${frame.input[0]})`;
     const input2 = (frame.input[1] == 'A' || frame.input[1] == 'B' || frame.input[1] == 'C') ? `${frame.input[1]}` : `(${frame.input[1]})`;
 
-    console.log(frame.inputValue[0] + " " + frame.inputValue[1]);
+    //console.log(frame.inputValue[0] + " " + frame.inputValue[1]);
     switch (frame.type) {
         case 'and':
             frame.outputValue = `${input1} AND ${input2}`;
@@ -197,6 +266,7 @@ function calculateOutput(frame) {
     // console.log(componentFrames[0].inputValue[0] + " " + componentFrames[0].inputValue[0] + " " + componentFrames[0].outputValue1);
 }
 
+// 入力を表示
 function drawInputs() {
     ctx.font = '20px Arial';
 
@@ -250,7 +320,7 @@ function drawGrid() {
     //drawGridPoints();
 }
 
-//初期の画像を表示
+//　初期の画像を表示
 function initializeComponentFrames() {
     const image = new Image();
     image.src = 'img/void.png';
@@ -266,7 +336,7 @@ function initializeComponentFrames() {
 
                 const frameX = i * 20;
                 const frameY = j * 20;
-                const frameWidth = 7.9 * 20;  // 横幅を少し狭くする
+                const frameWidth = 7.5 * 20;  // 横幅を少し狭くする
                 const frameHeight = 6 * 20;
 
                 const offsetX = (8 * 20 - frameWidth) / 2;  // 中央に配置するためのオフセット
@@ -304,7 +374,7 @@ function initializeComponentFrames() {
     };
 }
 
-//画像を表示
+//　画像を表示
 function drawImage() {
     componentFrames.forEach(frame => {
         const image = new Image();
@@ -317,6 +387,7 @@ function drawImage() {
     });
 }
 
+// 点を表示
 function drawFramePoints(frame) {
     ctx.fillStyle = 'black';
     frame.inputs.forEach(input => {
@@ -329,6 +400,7 @@ function drawFramePoints(frame) {
     ctx.fill();
 } 
 
+// LEDを表示
 function drawLEDs() {
     ctx.font = '20px Arial';
 
@@ -373,9 +445,9 @@ canvas.addEventListener('click', function(event) {
         const y = Math.round((event.clientY - rect.top) / 20) * 20;
 
         // 指定された条件に一致する場合は描画しない
-        if ((x + 80) % 160 == 0 && (y + 40) % 160 == 0) {
-            return;
-        }
+        // if ((x + 80) % 160 == 0 && (y + 40) % 160 == 0) {
+        //     return;
+        // }
 
         if (newLine) {
             if (currentLine.length > 0) {
@@ -389,9 +461,7 @@ canvas.addEventListener('click', function(event) {
             if(currentLine.length > 0) judgeInput(currentLine[currentLine.length - 1], { x, y });
             currentLine.push({ x, y });
             if(Line.s != null && Line.e != null) {
-                // console.log(Line);
                 Lines.push(Line);
-                // console.log(Lines);
                 newWireButton.click();
                 Line = [];
             }
@@ -419,9 +489,8 @@ canvas.addEventListener('dblclick', function(event) {
         }
     }
 
-    checkConnectPoints(allLines[lineToRemove]);
-
     if (lineToRemove !== -1) {
+        if(allLines.length > 0) checkConnectPoints(allLines[lineToRemove]);
         allLines.splice(lineToRemove, 1);
         drawPolyline();
     }
@@ -442,9 +511,7 @@ newWireButton.addEventListener('click', function() {
     newLine = true;
 });
 
-// リセットボタン(スイッチ)
-resetButton.addEventListener('click', function() {
-    // Inputs reset
+function switchReset() {
     inputs.A = 0;
     inputs.B = 0;
     inputs.C = 0;
@@ -458,25 +525,111 @@ resetButton.addEventListener('click', function() {
     });
 
     drawPolyline();
+    for(let i=0;i<componentFrames.length;i++) calculateOutput(componentFrames[i]);
+}
+
+// リセットボタン(スイッチ)
+resetButton.addEventListener('click', function() {
+    switchReset();
 });
+
+// 回路保存ボタンの検出
+saveButton.addEventListener('click', function() {
+    const saveName = document.getElementById('saveName').value;
+    const loadText = document.getElementById('loadText');
+    if(saveName){
+        const data = {
+            componentFrames: componentFrames,
+            allLines: allLines
+        };
+        localStorage.setItem(`circuitData_${saveName}`, JSON.stringify(data));
+        loadText.textContent = '保存しました';
+        updateLoadSelect();
+    } else {
+        loadText.textContent = '保存名を入力してください'
+    }
+});
+
+// 回路復元ボタンの検出
+loadButton.addEventListener('click', function() {
+    const loadSelect = document.getElementById('loadSelect');
+    const saveName = document.getElementById('saveName');
+    const loadText = document.getElementById('loadText');
+    const selectedSave = loadSelect.options[loadSelect.selectedIndex].value;
+
+    // 入出力初期化
+    inputs.A = 0;
+    inputs.B = 0;
+    inputs.C = 0;
+    outputs.LED1 = 0;
+    outputs.LED2 = 0;
+    outputs.LED3 = 0;
+
+    if(selectedSave) {
+        const data = localStorage.getItem(`circuitData_${selectedSave}`);
+        if (data) {
+            let parsedData = JSON.parse(data);
+            componentFrames = parsedData.componentFrames;
+            allLines = parsedData.allLines;
+            drawPolyline();
+            loadText.textContent = '復元されました';
+            saveName.value = selectedSave;
+        } else {
+            loadText.textContent = '保存されたデータがありません';
+        }
+    } else {
+        loadText.textContent = '読み込みたい保存データを選択して下さい';
+    }
+    switchReset();
+});
+
+// 全保存回路削除ボタンの検出
+clearButton.addEventListener('click', function() {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key.startsWith('circuitData_')) {
+            localStorage.removeItem(key);
+        }
+    }
+    updateLoadSelect();
+    // console.log('すべてのデータを消去しました');
+});
+
+// 保存されたデータの一覧を更新する関数
+function updateLoadSelect() {
+    const loadSelect = document.getElementById('loadSelect');
+    loadSelect.innerHTML = '';
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('circuitData_')) {
+            const saveName = key.replace('circuitData_', '');
+            const option = document.createElement('option');
+            option.value = saveName;
+            option.textContent = saveName;
+            loadSelect.appendChild(option);
+        }
+    }
+}
 
 // 点とつながっているか検出
 function checkConnectPoints(points){
     // A,B,C
-    for(let y=140;y<=540;y+=200){
-        if(points[0].x === 80 && points[0].y === y) {
-            for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
-                const com = componentFrames[i];
-                if(Math.abs(points[points.length-1].x - com.inputs[j].x) < 20 && Math.abs(points[points.length-1].y - com.inputs[j].y) < 20) {
-                    com.input[j] = '';
-                    com.inputLocate[j] = '';
-                    com.inputValue[j] = 0;
-                    calculateOutput(com);
+    console.log(points);
+    if(points[0] != null){
+        for(let y=140;y<=540;y+=200){
+            if(points[0].x === 80 && points[0].y === y) {
+                for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
+                    const com = componentFrames[i];
+                    if(Math.abs(points[points.length-1].x - com.inputs[j].x) < 20 && Math.abs(points[points.length-1].y - com.inputs[j].y) < 20) {
+                        com.input[j] = '';
+                        com.inputLocate[j] = '';
+                        com.inputValue[j] = 0;
+                        calculateOutput(com);
+                    }
                 }
             }
         }
     }
-    console.log(componentFrames[0]);
 }
 
 // 枠内か検出
@@ -500,6 +653,8 @@ function isLineIntersectingComponent(p1, p2) {
                 (p1.y === frame.y + frame.height && p2.y === frame.y)) {
                 continue;
             }
+            alert('素子と線が交差します');
+            newWireButton.click();
             return true;
         }
     }
@@ -573,32 +728,41 @@ function isPointNearLine(px, py, p1, p2, tolerance) {
     return (dx * dx + dy * dy) <= tolerance * tolerance;
 }
 
+// 入力変化後の値変更
 function changeValue(){
-    for(let i=0;i<4;i++) {
+    for(let i=0;i<componentFrames.length;i++) {
         const com = componentFrames[i];
         for(let j=0;j<2;j++) {
-            console.log(com.inputLocate[j]);
-            if(com.inputLocate[j] == 'A') {
+            //console.log(com.inputLocate[j]);
+            if(com.inputLocate[j] === "A") {
+                com.input[j] = "A";
                 com.inputValue[j] = inputs.A;
-                if(com.type != '') calculateOutput(com);
-            }else if(com.inputLocate[j] == 'B') {
+                if(com.type != "") calculateOutput(com);
+            }else if(com.inputLocate[j] === "B") {
+                com.input[j] = "B";
                 com.inputValue[j] = inputs.B;
-                if(com.type != '') calculateOutput(com);
-            }else if(com.inputLocate[j] == 'C') {
+                if(com.type != "") calculateOutput(com);
+            }else if(com.inputLocate[j] === "C") {
+                com.input[j] = "C";
                 com.inputValue[j] = inputs.C;
-                if(com.type != '') calculateOutput(com);
-            }else if(com.inputLocate[j] == '0') {
-                com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
-                if(com.type != '') calculateOutput(com);
-                // console.log("input: " + com.inputValue[j]);
+                if(com.type != "") calculateOutput(com);
             }
+            for(let k=0;k<componentFrames.length;k++){
+                if(com.inputLocate[j] === k) {
+                    com.input[j] = componentFrames[com.inputLocate[j]].outputValue;
+                    //console.log("input: " + com.input[j]);
+                    com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
+                    if(com.type != "") calculateOutput(com);
+                }
+            }
+            
         }
     }
     // console.log(componentFrames[0]);
-    // console.log(inputs.A + " " + inputs.B + " " + inputs.C + " " + outputs.LED1);
+    // console.log(componentFrames[2]);
 }
 
-// 入力判定(どこから入力されるか)
+// 線の始点終点検出
 function judgeInput(p1, p2) {
     const { x: x1, y: y1 } = p1; //始点
     const { x: x2, y: y2 } = p2; //終点
@@ -608,7 +772,7 @@ function judgeInput(p1, p2) {
     else if(x1 == 80 && y1 == 340) Line.s = "B"; //B: 80 340
     else if(x1 == 80 && y1 == 540) Line.s = "C"; //C: 80 540
 
-    for(let i=0;i<4;i++) {
+    for(let i=0;i<componentFrames.length;i++) {
         const com = componentFrames[i];
         if(Math.abs(x1 - com.output.x) < 20 && Math.abs(y1 - com.output.y) < 20)  {
             Line.s = i;
@@ -617,14 +781,16 @@ function judgeInput(p1, p2) {
     }
 
     //終点
-    for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
+    for(let i=0;i<componentFrames.length;i++) for(let j=0;j<2;j++) {
         const com = componentFrames[i];
         if(Math.abs(x2 - com.inputs[j].x) < 20 && Math.abs(y2 - com.inputs[j].y) < 20) {
-            Line.e = i; 
-            if(Line.s == "A" || Line.s == "B" || Line.s == "C") com.input[j] = Line.s;
-            else {
-                com.input[j] = componentFrames[Line.s].outputValue;
-                componentFrames[Line.s].outputLocate.push(Line.e);
+            Line.e = i;
+            if(Line.s != null){
+                if(Line.s == "A" || Line.s == "B" || Line.s == "C") com.input[j] = Line.s;
+                else {
+                    com.input[j] = componentFrames[Line.s].outputValue;
+                    componentFrames[Line.s].outputLocate.push(Line.e);
+                }
             }
             com.inputLocate[j] = Line.s;
             calculateOutput(com);
@@ -645,121 +811,10 @@ function judgeInput(p1, p2) {
         componentFrames[Line.s].outputLocate.push('LED3');
     }
 
-    // console.log(componentFrames[0].outputLocate);
-    // console.log("始点: " + Line.s + " 終点: " + Line.e);
-    // console.log(componentFrames[0].inputValue[0] + " " + componentFrames[0].inputValue[1] + " " + componentFrames[0].outputValue1);
+    // console.log(x1 + " " + y1 + " " + x2 + " " + y2);
 }
 
-//真理値表作成関数
-function generateTruthTable() {
-    const selectedPartId = document.getElementById('partSelector').value;
-    console.log('Selected Part ID:', selectedPartId); // デバッグ用
-
-    selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
-    if(selectedPartId == "led1" || selectedPartId == "led2" || selectedPartId == "led3") {
-        selectedPart = componentFrames.find(frame => {
-            if(Array.isArray(frame.outputLocate)) {
-                return frame.outputLocate.includes(selectedPartId.toUpperCase());
-            }else {
-                return frame.outputLocate === selectedPartId.toUpperCase();
-            }
-        });
-    }else{
-        selectedPartId = componentFrames.find(frame => frame.id === selectedPartId);
-    }
-
-    if (!selectedPart) {
-        alert('選択されたパーツが見つかりません');
-        return;
-    }
-
-    console.log('Selected Part:', selectedPart); // デバッグ用
-
-    let expression;
-    console.log(outputsExp.LED1);
-    if(selectedPart == "led1") expression = outputsExp.LED1;
-    else if(selectedPart == "led2") expression = outputsExp.LED2;
-    else if(selectedPart == "led3") expression = outputsExp.LED3;
-    else expression = selectedPart.outputValue;
-    console.log('Initial Expression:',  expression); // デバッグ用
-    
-    const usedVariables = ['A', 'B', 'C'].filter(variable => {
-        const regex = new RegExp(`\\b${variable}\\b`);
-        return regex.test(expression);
-    });
-
-    console.log('Used Variables:', usedVariables); // デバッグ用
-
-    const combinations = generateCombinations(usedVariables.length);
-
-    const operators = {
-        'AND': '&&',
-        'OR': '||',
-        'XOR': '!=',  // 一時的なプレースホルダー
-        'XNOR': '==', // 一時的なプレースホルダー
-        'NOT': '!'
-    };
-
-    for (let op in operators) {
-        let regex = new RegExp(`\\b${op}\\b`, 'g');
-        expression = expression.replace(regex, operators[op]);
-    }
-
-    console.log('Evaluated Expression:', expression); // デバッグ用
-
-    let table = '<table><tr>';
-    usedVariables.forEach(variable => {
-        table += `<th>${variable}</th>`;
-    });
-    table += `<th>${selectedPartId} (${selectedPart.outputValue})</th></tr>`;
-
-    combinations.forEach(combination => {
-        let context = {};
-        usedVariables.forEach((variable, index) => {
-            context[variable] = combination[index] ? 1 : 0;
-        });
-
-        let evalExpression = expression;
-        for (let variable in context) {
-            let regex = new RegExp(`\\b${variable}\\b`, 'g');
-            evalExpression = evalExpression.replace(regex, context[variable]);
-        }
-
-        let result;
-        try {
-            result = eval(evalExpression) ? 1 : 0;
-        } catch (error) {
-            console.error('Evaluation Error:', error); // デバッグ用
-            result = 'error';
-        }
-
-        table += '<tr>';
-        usedVariables.forEach(variable => {
-            table += `<td>${context[variable]}</td>`;
-        });
-        table += `<td>${result}</td></tr>`;
-    });
-
-    table += '</table>';
-    document.getElementById('truthTable').innerHTML = table;
-    console.log('Truth Table Generated'); // デバッグ用
-}
-
-function generateCombinations(n) {
-    let combinations = [];
-    for (let i = 0; i < (1 << n); i++) {
-        let combination = [];
-        for (let j = 0; j < n; j++) {
-            combination.push(!!(i & (1 << j)));
-        }
-        combinations.push(combination);
-    }
-    return combinations;
-}
-
-
-
-// 一連の配線を描く
+// 一連の回路図を描く
 function drawPolyline() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
@@ -788,6 +843,111 @@ function drawPolyline() {
     drawLEDs();
 }
 
+//真理値表作成関数
+function generateTruthTable() {
+    const selectedPartId = document.getElementById('partSelector').value;
+    // console.log('Selected Part ID:', selectedPartId); // デバッグ用
+
+    selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
+    if(selectedPartId == "led1" || selectedPartId == "led2" || selectedPartId == "led3") {
+        selectedPart = componentFrames.find(frame => {
+            if(Array.isArray(frame.outputLocate)) {
+                return frame.outputLocate.includes(selectedPartId.toUpperCase());
+            }else {
+                return frame.outputLocate === selectedPartId.toUpperCase();
+            }
+        });
+    }
+    if (!selectedPart) {
+        alert('選択されたパーツが見つかりません');
+        return;
+    }
+
+    // console.log('Selected Part:', selectedPart); // デバッグ用
+
+    let expression;
+    // console.log(outputsExp.LED1);
+    if(selectedPart == "led1") expression = outputsExp.LED1;
+    else if(selectedPart == "led2") expression = outputsExp.LED2;
+    else if(selectedPart == "led3") expression = outputsExp.LED3;
+    else expression = selectedPart.outputValue;
+    // console.log('Initial Expression:',  expression); // デバッグ用
+    
+    const usedVariables = ['A', 'B', 'C'].filter(variable => {
+        const regex = new RegExp(`\\b${variable}\\b`);
+        return regex.test(expression);
+    });
+
+    // console.log('Used Variables:', usedVariables); // デバッグ用
+
+    const combinations = generateCombinations(usedVariables.length);
+
+    const operators = {
+        'AND': '&&',
+        'OR': '||',
+        'XOR': '!=',  // 一時的なプレースホルダー
+        'XNOR': '==', // 一時的なプレースホルダー
+        'NOT': '!'
+    };
+
+    for (let op in operators) {
+        let regex = new RegExp(`\\b${op}\\b`, 'g');
+        expression = expression.replace(regex, operators[op]);
+    }
+
+    // console.log('Evaluated Expression:', expression); // デバッグ用
+
+    let table = '<table><tr>';
+    usedVariables.forEach(variable => {
+        table += `<th>${variable}</th>`;
+    });
+    table += `<th>${selectedPartId} (${selectedPart.outputValue})</th></tr>`;
+
+    combinations.forEach(combination => {
+        let context = {};
+        usedVariables.forEach((variable, index) => {
+            context[variable] = combination[index] ? 1 : 0;
+        });
+
+        let evalExpression = expression;
+        for (let variable in context) {
+            let regex = new RegExp(`\\b${variable}\\b`, 'g');
+            evalExpression = evalExpression.replace(regex, context[variable]);
+        }
+
+        let result;
+        try {
+            result = eval(evalExpression) ? 1 : 0;
+        } catch (error) {
+            // console.error('Evaluation Error:', error); // デバッグ用
+            result = 'error';
+        }
+
+        table += '<tr>';
+        usedVariables.forEach(variable => {
+            table += `<td>${context[variable]}</td>`;
+        });
+        table += `<td>${result}</td></tr>`;
+    });
+
+    table += '</table>';
+    document.getElementById('truthTable').innerHTML = table;
+    // console.log('Truth Table Generated'); // デバッグ用
+}
+
+function generateCombinations(n) {
+    let combinations = [];
+    for (let i = 0; i < (1 << n); i++) {
+        let combination = [];
+        for (let j = 0; j < n; j++) {
+            combination.push(!!(i & (1 << j)));
+        }
+        combinations.push(combination);
+    }
+    return combinations;
+}
+
+
 //出力を計算
 componentFrames.forEach(frame => calculateOutput(frame));
 // 格子を描く
@@ -798,3 +958,5 @@ initializeComponentFrames();
 drawInputs();
 //出力用のLEDを描く
 drawLEDs();
+// 初期化時に保存されたデータの一覧を更新
+updateLoadSelect();
