@@ -1,5 +1,5 @@
 (function(){
-    const canvas = document.getElementById('gridCanvas');
+    const canvas = document.getElementById('gridCanvas2');
     const ctx = canvas.getContext('2d');
     const newWireButton = document.getElementById('newWireButton');
 
@@ -23,10 +23,10 @@
     };
 
     const outputPositions = {
-        LED1: { x: 1040, y: 150 },
-        LED2: { x: 1040, y: 300 },
-        LED3: { x: 1040, y: 450 },
-        LED4: { x: 1040, y: 600 },
+        LED1: { x: 1440, y: 150 },
+        LED2: { x: 1440, y: 300 },
+        LED3: { x: 1440, y: 450 },
+        LED4: { x: 1440, y: 600 },
     };
 
     const switchText = document.getElementById('switchButton');
@@ -41,97 +41,11 @@
         changeValue();
     }
 
-    //ポップアップ表示
-    document.getElementById('saveButton').addEventListener('click', function() {
-        document.getElementById('saveModal').style.display = "block";
-    });
-
-    document.querySelectorAll('.close').forEach(element => {
-        element.addEventListener('click', function() {
-            document.getElementById('saveModal').style.display = "none";
-        });
-    });
-
-    document.getElementById('saveModalButton').addEventListener('click', function() {
-        var saveName = document.getElementById('modalSaveName').value;
-        if (saveName) {
-            const data = {
-                componentFrames: componentFrames,
-                allLines: allLines
-            };
-            localStorage.setItem(`circuitData_${saveName}`, JSON.stringify(data));
-            loadText.textContent = '保存しました';
-            updateLoadSelect();
-            document.getElementById('saveModal').style.display = "none";
-        } else {
-            alert("保存名を入力してください");
-        }
-    });
-
-    // 回路復元ポップアップ表示
-    document.getElementById('loadButton').addEventListener('click', function() {
-        updateLoadSelectModal();
-        document.getElementById('loadModal').style.display = "block";
-    });
-
-    document.getElementById('loadModalButton').addEventListener('click', function() {
-        const selectedSave = document.getElementById('modalLoadSelect').value;
-        if (selectedSave) {
-            const data = localStorage.getItem(`circuitData_${selectedSave}`);
-            if (data) {
-                let parsedData = JSON.parse(data);
-                componentFrames = parsedData.componentFrames;
-                allLines = parsedData.allLines;
-                drawPolyline();
-                loadText.textContent = '復元されました';
-                saveName.value = selectedSave;
-            } else {
-                loadText.textContent = '保存されたデータがありません';
-            }
-            document.getElementById('loadModal').style.display = "none";
-            switchReset();
-        } else {
-            alert("復元する回路を選択してください");
-        }
-    });
-
-    // 保存されたデータの一覧を更新する関数
-    function updateLoadSelectModal() {
-        const loadSelect = document.getElementById('modalLoadSelect');
-        loadSelect.innerHTML = '';
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.startsWith('circuitData_')) {
-                const saveName = key.replace('circuitData_', '');
-                const option = document.createElement('option');
-                option.value = saveName;
-                option.textContent = saveName;
-                loadSelect.appendChild(option);
-            }
-        }
-    }
-
-    function updateLoadSelect() {
-        const loadSelect = document.getElementById('loadSelect');
-        loadSelect.innerHTML = '';
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.startsWith('circuitData_')) {
-                const saveName = key.replace('circuitData_', '');
-                const option = document.createElement('option');
-                option.value = saveName;
-                option.textContent = saveName;
-                loadSelect.appendChild(option);
-            }
-        }
-    }
-
     // イベントリスナーの追加
     function addInputListeners() {
         document.querySelectorAll('input[name="inputA"]').forEach(input => input.addEventListener('change', handleInputChangeA));
         document.querySelectorAll('input[name="inputB"]').forEach(input => input.addEventListener('change', handleInputChangeB));
         document.querySelectorAll('input[name="inputC"]').forEach(input => input.addEventListener('change', handleInputChangeC));
-        document.querySelectorAll('input[name="inputD"]').forEach(input => input.addEventListener('change', handleInputChangeD));
     }
 
     // イベントリスナーの削除
@@ -139,40 +53,30 @@
         document.querySelectorAll('input[name="inputA"]').forEach(input => input.removeEventListener('change', handleInputChangeA));
         document.querySelectorAll('input[name="inputB"]').forEach(input => input.removeEventListener('change', handleInputChangeB));
         document.querySelectorAll('input[name="inputC"]').forEach(input => input.removeEventListener('change', handleInputChangeC));
-        document.querySelectorAll('input[name="inputD"]').forEach(input => input.removeEventListener('change', handleInputChangeD));
     }
 
     // handleInputChange関数を特定のキーにバインド
     const handleInputChangeA = (event) => handleInputChange(event, 'A');
     const handleInputChangeB = (event) => handleInputChange(event, 'B');
     const handleInputChangeC = (event) => handleInputChange(event, 'C');
-    const handleInputChangeD = (event) => handleInputChange(event, 'D');
 
     // doButtonのクリックイベント
     function handleDoButtonClick() {
         const inputA = document.querySelectorAll('input[name="inputA"]');
         const inputB = document.querySelectorAll('input[name="inputB"]');
         const inputC = document.querySelectorAll('input[name="inputC"]');
-        const inputD = document.querySelectorAll('input[name="inputD"]');
 
         for (const input of inputA) if (input.checked) inputs.A = parseInt(input.value);
         for (const input of inputB) if (input.checked) inputs.B = parseInt(input.value);
         for (const input of inputC) if (input.checked) inputs.C = parseInt(input.value);
-        for (const input of inputD) if (input.checked) inputs.D = parseInt(input.value);
-
         drawPolyline();
         changeValue();
-        drawPolyline();
-        changeValue();
+        console.log(componentFrames[2]);
     }
 
     // 初期状態の確認とリスナーの追加
-    if (switchText.textContent === log) {
-        console.log(switchText.textContent);
-        addInputListeners();
-    } else {
-        doButton.style.display = 'inline-block';
-    }
+    if (switchText.textContent === log) addInputListeners();
+    else doButton.style.display = 'inline-block';
 
     // スイッチボタンのクリックイベント
     switchButton.addEventListener('click', function() {
@@ -190,6 +94,27 @@
 
     // 常にdoButtonのクリックイベントを設定
     doButton.addEventListener('click', handleDoButtonClick);
+
+
+    // document.querySelectorAll('input[name="inputA"]').forEach(input => input.addEventListener('change', (event) => {
+    //     inputs.A = parseInt(event.target.value);
+    //     drawPolyline();
+    //     changeValue();
+    // }));
+
+    // document.querySelectorAll('input[name="inputB"]').forEach(input => input.addEventListener('change', (event) => {
+    //     inputs.B = parseInt(event.target.value);
+    //     drawPolyline();
+    //     changeValue();
+    // }));
+
+    // document.querySelectorAll('input[name="inputC"]').forEach(input => input.addEventListener('change', (event) => {
+    //     inputs.C = parseInt(event.target.value);
+    //     drawPolyline();
+    //     changeValue();
+    // }));
+    // 入力値が変更されたときに呼び出されるイベントリスナー
+
 
     /*回路画像チェンジ*/
     function imgChange(id, fname){
@@ -233,8 +158,8 @@
 
     // 素子選択
     function addselect(program_id, top, left) {
-        var canvasContainer = document.getElementById('canvasContainer');
-        document.getElementById('gridCanvas');
+        var canvasContainer = document.getElementById('canvasContainer2');
+        document.getElementById('gridCanvas2');
 
         // canvasの親要素をrelativeに設定
         canvasContainer.style.position = 'relative';
@@ -248,8 +173,8 @@
 
         // オプションを追加
         var options = [
-            { value: "", text: ""},
-            { value: "and", text: "AND"},
+            { value: "", text: "" },
+            { value: "and", text: "AND" },
             { value: "or", text: "OR" },
             { value: "xor", text: "XOR" },
             { value: "nand", text: "NAND" },
@@ -274,9 +199,10 @@
 
     //　論理式を計算
     function calculateOutput(frame) {
-        const input1 = (frame.input[0] == 'A' || frame.input[0] == 'B' || frame.input[0] == 'C' || frame.input[0] == 'D') ? `${frame.input[0]}` : `(${frame.input[0]})`;
-        const input2 = (frame.input[1] == 'A' || frame.input[1] == 'B' || frame.input[1] == 'C' || frame.input[1] == 'D') ? `${frame.input[1]}` : `(${frame.input[1]})`;
+        const input1 = (frame.input[0] == 'A' || frame.input[0] == 'B' || frame.input[0] == 'C') ? `${frame.input[0]}` : `(${frame.input[0]})`;
+        const input2 = (frame.input[1] == 'A' || frame.input[1] == 'B' || frame.input[1] == 'C') ? `${frame.input[1]}` : `(${frame.input[1]})`;
 
+        //console.log(frame.inputValue[0] + " " + frame.inputValue[1]);
         switch (frame.type) {
             case 'and':
                 frame.outputValue = `${input1} AND ${input2}`;
@@ -311,6 +237,7 @@
                 frame.outputValue1 = 0;
         }
 
+        //console.log(frame.outputValue1 + " " + frame.outputLocate);
         if(frame.outputLocate.includes('LED1')) {
             outputsExp.LED1 = frame.outputValue;
             outputs.LED1 = frame.outputValue1 ? 1 : 0;
@@ -323,11 +250,10 @@
             outputsExp.LED3 = frame.outputValue;
             outputs.LED3 = frame.outputValue1 ? 1 : 0;
         }
-        if(frame.outputLocate.includes('LED4')) {
-            outputsExp.LED4 = frame.outputValue;
-            outputs.LED4 = frame.outputValue1 ? 1 : 0;
-        }
         drawLEDs();
+
+        // console.log(componentFrames[0].input[0] + " " + componentFrames[0].input[1]);
+        // console.log(componentFrames[0].inputValue[0] + " " + componentFrames[0].inputValue[0] + " " + componentFrames[0].outputValue1);
     }
 
     // 入力を表示
@@ -374,7 +300,7 @@
     // 格子
     function drawGrid() {
         ctx.strokeStyle = '#ccc';
-        for (let i = 0; i <= 60; i++) { // 横
+        for (let i = 0; i <= 80; i++) { // 横
             ctx.beginPath();
             ctx.moveTo(i * 20, 0);
             ctx.lineTo(i * 20, 720);
@@ -383,13 +309,13 @@
         for (let i = 0; i <= 36; i++) { // 縦
             ctx.beginPath();
             ctx.moveTo(0, i * 20);
-            ctx.lineTo(1200, i * 20);
+            ctx.lineTo(1600, i * 20);
             ctx.stroke();
         }
         // "Tanaka-Lab" を描画
         ctx.fillStyle = 'blue'; 
         ctx.font = '20px Arial'; 
-        ctx.fillText('Tanaka-Lab', 1050, 30); 
+        ctx.fillText('Tanaka-Lab', 1450, 30); 
         //drawGridPoints();
     }
 
@@ -399,12 +325,17 @@
         image.src = 'img/void.png';
 
         image.onload = function() {
-            const ids = ['program1', 'program2', 'program3', 'program4']; // 割り当てるIDの配列
+            const ids = [
+                'program1', 'program2', 'program3', 'program4',
+                'program5', 'program6', 'program7', 'program8',
+                'program9', 'program10', 'program11', 'program12',
+                'program13', 'program14', 'program15', 'program16'
+            ]; // 割り当てるIDの配列
             let idIndex = 0; // IDインデックスを初期化
 
             // 素子を配置する枠に画像を表示
-            for (let i = 16; i < 46; i += 20) {
-                for (let j = 8; j < 32; j += 12) {
+            for (let i = 12; i <= 60; i += 16) {
+                for (let j = 3; j <= 27; j += 8) {
                     if (idIndex >= ids.length) break; // すべてのIDが割り当てられたらループを終了
 
                     const frameX = i * 20;
@@ -418,7 +349,7 @@
                     // IDを割り当て
                     const componentId = ids[idIndex++];
                     
-                    addselect(componentId,`${frameY + 5}px`, `${frameX - 19}px`);
+                    addselect(componentId,`${frameY + 5}px`, `${frameX - 24}px`);
 
                     // IDを含む情報をcomponentFramesに追加
                     componentFrames.push({
@@ -611,59 +542,59 @@
     }
 
     // リセットボタン(スイッチ)
-    // resetButton.addEventListener('click', function() {
-    //     switchReset();
-    // });
+    resetButton.addEventListener('click', function() {
+        switchReset();
+    });
 
     // 回路保存ボタンの検出
-    // saveButton.addEventListener('click', function() {
-    //     const saveName = document.getElementById('saveName').value;
-    //     const loadText = document.getElementById('loadText');
-    //     if(saveName){
-    //         const data = {
-    //             componentFrames: componentFrames,
-    //             allLines: allLines
-    //         };
-    //         localStorage.setItem(`circuitData_${saveName}`, JSON.stringify(data));
-    //         loadText.textContent = '保存しました';
-    //         updateLoadSelect();
-    //     } else {
-    //         loadText.textContent = '保存名を入力してください'
-    //     }
-    // });
+    saveButton.addEventListener('click', function() {
+        const saveName = document.getElementById('saveName').value;
+        const loadText = document.getElementById('loadText');
+        if(saveName){
+            const data = {
+                componentFrames: componentFrames,
+                allLines: allLines
+            };
+            localStorage.setItem(`circuitData_${saveName}`, JSON.stringify(data));
+            loadText.textContent = '保存しました';
+            updateLoadSelect();
+        } else {
+            loadText.textContent = '保存名を入力してください'
+        }
+    });
 
     // 回路復元ボタンの検出
-    // loadButton.addEventListener('click', function() {
-    //     const loadSelect = document.getElementById('loadSelect');
-    //     const saveName = document.getElementById('saveName');
-    //     const loadText = document.getElementById('loadText');
-    //     const selectedSave = loadSelect.options[loadSelect.selectedIndex].value;
+    loadButton.addEventListener('click', function() {
+        const loadSelect = document.getElementById('loadSelect');
+        const saveName = document.getElementById('saveName');
+        const loadText = document.getElementById('loadText');
+        const selectedSave = loadSelect.options[loadSelect.selectedIndex].value;
 
-    //     // 入出力初期化
-    //     inputs.A = 0;
-    //     inputs.B = 0;
-    //     inputs.C = 0;
-    //     outputs.LED1 = 0;
-    //     outputs.LED2 = 0;
-    //     outputs.LED3 = 0;
+        // 入出力初期化
+        inputs.A = 0;
+        inputs.B = 0;
+        inputs.C = 0;
+        outputs.LED1 = 0;
+        outputs.LED2 = 0;
+        outputs.LED3 = 0;
 
-    //     if(selectedSave) {
-    //         const data = localStorage.getItem(`circuitData_${selectedSave}`);
-    //         if (data) {
-    //             let parsedData = JSON.parse(data);
-    //             componentFrames = parsedData.componentFrames;
-    //             allLines = parsedData.allLines;
-    //             drawPolyline();
-    //             loadText.textContent = '復元されました';
-    //             saveName.value = selectedSave;
-    //         } else {
-    //             loadText.textContent = '保存されたデータがありません';
-    //         }
-    //     } else {
-    //         loadText.textContent = '読み込みたい保存データを選択して下さい';
-    //     }
-    //     switchReset();
-    // });
+        if(selectedSave) {
+            const data = localStorage.getItem(`circuitData_${selectedSave}`);
+            if (data) {
+                let parsedData = JSON.parse(data);
+                componentFrames = parsedData.componentFrames;
+                allLines = parsedData.allLines;
+                drawPolyline();
+                loadText.textContent = '復元されました';
+                saveName.value = selectedSave;
+            } else {
+                loadText.textContent = '保存されたデータがありません';
+            }
+        } else {
+            loadText.textContent = '読み込みたい保存データを選択して下さい';
+        }
+        switchReset();
+    });
 
     // 全保存回路削除ボタンの検出
     clearButton.addEventListener('click', function() {
@@ -677,21 +608,21 @@
         // console.log('すべてのデータを消去しました');
     });
 
-    // // 保存されたデータの一覧を更新する関数
-    // function updateLoadSelect() {
-    //     const loadSelect = document.getElementById('loadSelect');
-    //     loadSelect.innerHTML = '';
-    //     for (let i = 0; i < localStorage.length; i++) {
-    //         const key = localStorage.key(i);
-    //         if (key.startsWith('circuitData_')) {
-    //             const saveName = key.replace('circuitData_', '');
-    //             const option = document.createElement('option');
-    //             option.value = saveName;
-    //             option.textContent = saveName;
-    //             loadSelect.appendChild(option);
-    //         }
-    //     }
-    // }
+    // 保存されたデータの一覧を更新する関数
+    function updateLoadSelect() {
+        const loadSelect = document.getElementById('loadSelect');
+        loadSelect.innerHTML = '';
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('circuitData_')) {
+                const saveName = key.replace('circuitData_', '');
+                const option = document.createElement('option');
+                option.value = saveName;
+                option.textContent = saveName;
+                loadSelect.appendChild(option);
+            }
+        }
+    }
 
     // 点とつながっているか検出
     function checkConnectPoints(points){
@@ -836,7 +767,6 @@
                 for(let k=0;k<componentFrames.length;k++){
                     if(com.inputLocate[j] === k) {
                         com.input[j] = componentFrames[com.inputLocate[j]].outputValue;
-                        //console.log("input: " + com.input[j]);
                         com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
                         if(com.type != "") calculateOutput(com);
                     }
@@ -844,8 +774,6 @@
                 
             }
         }
-        // console.log(componentFrames[0]);
-        // console.log(componentFrames[2]);
     }
 
     // 線の始点終点検出
@@ -854,10 +782,10 @@
         const { x: x2, y: y2 } = p2; //終点
 
         //始点
-        if(x1 == 80 && y1 == 140) Line.s = "A"; //A: 80 140
-        else if(x1 == 80 && y1 == 340) Line.s = "B"; //B: 80 340
-        else if(x1 == 80 && y1 == 540) Line.s = "C"; //C: 80 540
-        else if(x1 == 60 && y1 == 600) Line.s = "D"; //C: 60 600
+        if(x1 == 60 && y1 == 150) Line.s = "A"; //A: 60 150
+        else if(x1 == 60 && y1 == 300) Line.s = "B"; //B: 60 300
+        else if(x1 == 60 && y1 == 450) Line.s = "C"; //C: 60 450
+        else if(x1 == 60 && y1 == 600) Line.s = "C"; //C: 60 600
 
         for(let i=0;i<componentFrames.length;i++) {
             const com = componentFrames[i];
@@ -884,23 +812,25 @@
             }
         }
 
-        if(x2 == 1040 && y2 == 140) {
-            Line.e = "LED1"; //LED1: 1040 140
+        if(x2 == 1440 && y2 == 150) {
+            Line.e = "LED1"; //LED1: 1440 150
             outputs.LED1 = componentFrames[Line.s].outputValue1; 
             componentFrames[Line.s].outputLocate.push('LED1');
-        }else if(x2 == 1040 && y2 == 340) {
-            Line.e = "LED2"; //LED2: 1040 340
+        }else if(x2 == 1440 && y2 == 300) {
+            Line.e = "LED2"; //LED2: 1440 300
             outputs.LED2 = componentFrames[Line.s].outputValue1;
             componentFrames[Line.s].outputLocate.push('LED2');
-        }else if(x2 == 1040 && y2 == 540) {
-            Line.e = "LED3"; //LED3: 1040 540
+        }else if(x2 == 1440 && y2 == 450) {
+            Line.e = "LED3"; //LED3: 1440 450
             outputs.LED3 = componentFrames[Line.s].outputValue1;
             componentFrames[Line.s].outputLocate.push('LED3');
         }else if(x2 == 1440 && y2 == 600) {
-            Line.e = "LED4"; //LED4: 1440 600
-            outputs.LED4 = componentFrames[Line.s].outputValue1;
-            componentFrames[Line.s].outputLocate.push('LED4');
+            Line.e = "LED3"; //LED3: 1440 600
+            outputs.LED3 = componentFrames[Line.s].outputValue1;
+            componentFrames[Line.s].outputLocate.push('LED3');
         }
+
+        // console.log(x1 + " " + y1 + " " + x2 + " " + y2);
     }
 
     // 一連の回路図を描く
@@ -938,7 +868,7 @@
         // console.log('Selected Part ID:', selectedPartId); // デバッグ用
 
         selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
-        if(selectedPartId == "led1" || selectedPartId == "led2" || selectedPartId == "led3" || selectedPartId == "led4") {
+        if(selectedPartId == "led1" || selectedPartId == "led2" || selectedPartId == "led3") {
             selectedPart = componentFrames.find(frame => {
                 if(Array.isArray(frame.outputLocate)) {
                     return frame.outputLocate.includes(selectedPartId.toUpperCase());
@@ -1036,16 +966,6 @@
         }
         return combinations;
     }
-
-    // toggleボタン
-    $(".toggle").on("click", function() {
-        $(".toggle").toggleClass("checked");
-        if(!$('input[name="check"]').prop("checked")) {
-        $(".toggle input").prop("checked", true);
-        } else {
-        $(".toggle input").prop("checked", false);
-        }
-    });
 
 
     //出力を計算

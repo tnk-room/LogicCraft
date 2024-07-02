@@ -6,12 +6,75 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
+    <link rel="stylesheet" type="text/css" href="css/style_step3.css">
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
         var ws = new WebSocket("ws://172.20.10.5:5555/");
         ws.onopen = function () {
             ws.send('step1');
         };
+
+        // スクリプトの削除と再読み込みを行う関数
+        async function reloadScript(src) {
+            try {
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                script.dataset.loaded = 'true'; // 読み込み済みフラグを設定
+                const existingScripts = document.querySelectorAll('script[data-loaded="true"]');
+                existingScripts.forEach(script => script.remove());
+                document.head.appendChild(script);
+            } catch (error) {
+                console.error('Failed to reload script:', error);
+            }
+        }
+
+        // ボタンのクリックイベントに基づいてスクリプトを読み込む
+        async function onButtonClick(buttonId) {
+            let scriptPath = '';
+            if (buttonId === 'eleButton1') {
+                scriptPath = 'js/step3.js';     // step3.jsのパス
+            } else if (buttonId === 'eleButton2') {
+                scriptPath = 'js/step3-2.js';   // step3-2.jsのパス
+            } else {
+                scriptPath = 'js/step3.js';     // デフォルトスクリプトの指定
+            }
+            await reloadScript(scriptPath);
+        }
+
+        // ページロード時にデフォルトスクリプトを読み込む
+        window.onload = async function() {
+            try {
+                await reloadScript('js/step3.js'); // 初期のデフォルトスクリプトの読み込み
+
+                // ボタンにイベントリスナーを追加
+                document.getElementById('eleButton1').addEventListener('click', function() {
+                    onButtonClick('eleButton1');
+                });
+                document.getElementById('eleButton2').addEventListener('click', function() {
+                    onButtonClick('eleButton2');
+                });
+            } catch (error) {
+                console.error('Failed to load default script:', error);
+            }
+        };
+
+        /*タブ*/
+        function openTab(event, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logic Circuit Editor Base</title>
@@ -24,7 +87,7 @@
         button {
             margin-top: 10px;
         }
-        #canvasContainer {
+        #canvasContainer, #canvasContainer2 {
             position: relative;
             margin-top: 10px;
         }
@@ -33,15 +96,22 @@
             z-index: 10;  /* canvasの上に表示するため */
             background: #45454500;
             font-size: 20px;
-            width: 150px;
+            width: 140px;
             height: 113px; 
             border: none;
             appearance: none; /* 標準のスタイルを無効にする */
+            
         }
         #saveName {
             width: 90px;
             height: 40px;
             font-size: 13px;
+        }
+        .tab {
+            background: none;
+        }
+        .tab.active{
+            border: none;
         }
     </style>
 </head>
@@ -58,23 +128,77 @@
             <main>
                 <h1>論理回路シミュレーション3</h1>
                 <h3>論理回路を描いてみよう</h3>
-                <div>組み合わせ回路か順序回路か選んでね</div>
                 <button id="switchButton">組み合わせ回路</button>
-                <div id="canvasContainer">
-                    <canvas id="gridCanvas" width="1200%" height="720"></canvas>
+
+                <input type="text" id="saveName" placeholder="保存名を入力">
+                <button id="saveButton">
+                    <img src = "img/saveicon.png" width = "40" height = "40">
+                </button>
+
+                <div id="saveModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div class="modal-header">
+                            <h2>保存名を入力してください</h2>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" id="modalSaveName" placeholder="保存名を入力">
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary close">キャンセル</button>
+                            <button id="saveModalButton" class="btn btn-primary">保存</button>
+                        </div>
+                    </div>
                 </div>
+
+                <div id="loadModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div class="modal-header">
+                            <h2>復元する回路を選択してください</h2>
+                        </div>
+                        <div class="modal-body">
+                            <select id="modalLoadSelect"></select>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary close">キャンセル</button>
+                            <button id="loadModalButton" class="btn btn-primary">復元</button>
+                        </div>
+                    </div>
+                </div>
+
+                <select id="loadSelect" style="display: none;"></select>
+                <button id="loadButton">
+                    <img src = "img/restoration.png" width = "40" height = "40">
+                </button>
+            
+                <button id="clearButton">すべて削除</button>
+
+                <button id="eleButton1"  onclick="openTab(event, 'Tab1')">2×2</button>
+                <button id="eleButton2"  onclick="openTab(event, 'Tab2')">4×4</button>
+                <div id="Tab1" class="tab fadeIn active">
+                    <div id="canvasContainer">
+                        <canvas id="gridCanvas" width="1200" height="720"></canvas>
+                    </div>
+                </div>
+                <div id="Tab2" class="tab fadeIn">
+                    <div id="canvasContainer2">
+                        <canvas id="gridCanvas2" width="1600" height="720"></canvas>
+                    </div>
+                </div>
+
                 <button id="doButton" style="display: none;">実行</button>
                 
-                <button id="newWireButton">別の配線</button>
-                <button id="resetButton">スイッチリセット</button>
+                <button id="newWireButton" style="display: none;">別の配線</button>
+                <button id="resetButton" style="display: none;">スイッチリセット</button>
                 <br>
-                <input type="text" id="saveName" placeholder="保存名を入力">
-                <button id="saveButton">保存</button>
-                <select id="loadSelect"></select>
-                <button id="loadButton">復元</button>
-                <div id="loadText"></div>
-                <button id="clearButton">すべて削除</button>
                 
+                <div id="loadText"></div>
+                
+                <div class="toggle">
+                    <input type="checkbox" name="inputA"/>
+                </div>
+
                 <div class="input-container">
                     <label class="input-label">入力A: </label>
                     <label><input type="radio" name="inputA" value="0" checked> 0</label>
@@ -90,17 +214,23 @@
                     <label><input type="radio" name="inputC" value="0" checked> 0</label>
                     <label><input type="radio" name="inputC" value="1"> 1</label>
                 </div>
+                <div class="input-container">
+                    <label class="input-label">入力D: </label>
+                    <label><input type="radio" name="inputD" value="0" checked> 0</label>
+                    <label><input type="radio" name="inputD" value="1"> 1</label>
+                </div>
 
             <div class="input-container">
-                <label for="partSelector">パーツを選択:</label>
+                <label for="partSelector">パーツを選択:</Dabel>
                 <select id="partSelector">
                     <option value="program1">素子1</option>
-                    <option value="program2">素子2</option>
+                    <option value="program2">素子2</oDtion>
                     <option value="program3">素子3</option>
                     <option value="program4">素子4</option>
                     <option value="led1">LED1</option>
                     <option value="led2">LED2</option>
                     <option value="led3">LED3</option>
+                    <option value="led4">LED4</option>
                 </select>
                 <button onclick="generateTruthTable()">真理値表の表示</button>
             </div>
@@ -111,7 +241,7 @@
     
     </div>
     
-    <script type="text/javascript" src="js/step3.js"></script>
+    <!-- <script type="text/javascript" src="js/step3.js"></script> -->
 
 </body>
 </html>
