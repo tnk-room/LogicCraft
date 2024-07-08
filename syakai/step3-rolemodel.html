@@ -66,11 +66,8 @@
             <main>
                 <h1>論理回路シミュレーション3</h1>
                 <h3>論理回路を描いてみよう</h3>
-                <!-- <div class="switch-button">
-                    <input class="switch-button-checkbox" type="checkbox" id="switchButtonCheckbox">
-                    <label class="switch-button-label" for="switchButtonCheckbox"><span id="switchButton" class="switch-button-label-span">組み合わせ回路</span></label>
-                </div> -->
                 <button id="switchButton">組み合わせ回路</button>
+
                 <ul class = "topbar-list">
                     <li>
                         <input type="text" id="saveName" placeholder="保存名を入力">
@@ -158,18 +155,19 @@
                         <button id="eleButton3"  onclick="location.href='step3-rolemodel.html'">Role Model</button>
                     </li>
                 </ul>
-            
-                
-
 
                 <div id="canvasContainer">
-                    <canvas id="gridCanvas" width="1200" height="720"></canvas>
+                    <canvas id="gridCanvas" width="1600" height="720"></canvas>
                 </div>
+
                 <button id="doButton" style="display: none;">実行</button>
                 <button id="newWireButton" style="display: none;">別の配線</button>
                 <button id="resetButton" style="display: none;">スイッチリセット</button>
+                
                 <br>
+                
                 <div id="loadText"></div>
+
                 <div class="inputs">
                     <div>
                         <input type="checkbox" name="inputA" id="inputA"/>
@@ -188,6 +186,7 @@
                         <label class="toggle" for="inputD"></label>
                     </div>
                 </div>
+
                 <div class="input-container">
                     <label for="partSelector">パーツを選択:</Dabel>
                     <select id="partSelector">
@@ -195,6 +194,18 @@
                         <option value="program2">素子2</oDtion>
                         <option value="program3">素子3</option>
                         <option value="program4">素子4</option>
+                        <option value="program5">素子5</option>
+                        <option value="program6">素子6</oDtion>
+                        <option value="program7">素子7</option>
+                        <option value="program8">素子8</option>
+                        <option value="program9">素子9</option>
+                        <option value="program10">素子10</oDtion>
+                        <option value="program11">素子11</option>
+                        <option value="program12">素子12</option>
+                        <option value="program13">素子13</option>
+                        <option value="program14">素子14</oDtion>
+                        <option value="program15">素子15</option>
+                        <option value="program16">素子16</option>
                         <option value="led1">LED1</option>
                         <option value="led2">LED2</option>
                         <option value="led3">LED3</option>
@@ -206,6 +217,8 @@
             </main>
         <div>
     </div>
-    <script type="text/javascript" src="js/step3.js" defer></script>
+    
+    <script type="text/javascript" src="js/step3-rolemodel.js"></script>
+
 </body>
 </html>

@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 image = Image.new('RGB', (400, 300), (222, 222, 222))
 image2 = Image.new('RGB', (400, 300), (222, 222, 222))
 image3 = Image.new('RGB', (400, 300), (222, 222, 222))
-image4 = Image.new('RGB', (400, 300), (222, 222, 222))
+image4 = Image.new('RGB', (400, 300), (255,255,255))
 image5 = Image.new('RGB', (400, 300), (222, 222, 222))
 image6 = Image.new('RGB', (400, 300), (222, 222, 222))
 
@@ -103,20 +103,20 @@ XNOR.line([(370, 150), (400, 150)], fill='black', width=2)
 AND.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
 OR.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
 NAND.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
-NOR.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
+# NOR.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
 XOR.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
 XNOR.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
 VOID.rectangle([(0, 0), (400, 300)], outline='#646464', width=9)
 
 
 # Save the image as a JPG file
-image.save('syakai/img/AND.png', quality=95)
-image2.save('syakai/img/OR.png', quality=95)
-image3.save('syakai/img/NAND.png', quality=95)
-image4.save('syakai/img/NOR.png', quality=95)
-image5.save('syakai/img/XOR.png', quality=95)
-image6.save('syakai/img/XNOR.png', quality=95)
-image_void.save('syakai/img/void.png', quality=95)
+# image.save('syakai/img/AND.png', quality=95)
+# image2.save('syakai/img/OR.png', quality=95)
+# image3.save('syakai/img/NAND.png', quality=95)
+image4.save('syakai/img/NOR.jpg', quality=95)
+# image5.save('syakai/img/XOR.png', quality=95)
+# image6.save('syakai/img/XNOR.png', quality=95)
+# image_void.save('syakai/img/void.png', quality=95)
 
 # Display the image
 # image.show()

@@ -22,10 +22,10 @@ const inputPositions = {
 };
 
 const outputPositions = {
-    LED1: { x: 1040, y: 130 },
-    LED2: { x: 1040, y: 290 },
-    LED3: { x: 1040, y: 450 },
-    LED4: { x: 1040, y: 610 },
+    LED1: { x: 1440, y: 130 },
+    LED2: { x: 1440, y: 290 },
+    LED3: { x: 1440, y: 450 },
+    LED4: { x: 1440, y: 610 },
 };
 
 const switchText = document.getElementById('switchButton');
@@ -33,13 +33,18 @@ const doButton = document.getElementById('doButton');
 const log = "組み合わせ回路";
 const seq = "順序回路";
 
-//回路保存ポップアップ表示
+//ポップアップ表示
 document.getElementById('saveButton').addEventListener('click', function() {
-    document.getElementById('overlay').style.display = "block";
     document.getElementById('saveModal').style.display = "block";
 });
 
-//保存ボタンのクリックイベント
+document.querySelectorAll('.close').forEach(element => {
+    element.addEventListener('click', function() {
+        document.getElementById('saveModal').style.display = "none";
+        document.getElementById('loadModal').style.display = "none";
+    });
+});
+
 document.getElementById('saveModalButton').addEventListener('click', function() {
     var saveName = document.getElementById('modalSaveName').value;
     if (saveName) {
@@ -51,7 +56,6 @@ document.getElementById('saveModalButton').addEventListener('click', function() 
         loadText.textContent = '保存しました';
         updateLoadSelect();
         document.getElementById('saveModal').style.display = "none";
-        document.getElementById('overlay').style.display = "block";
     } else {
         alert("保存名を入力してください");
     }
@@ -61,10 +65,8 @@ document.getElementById('saveModalButton').addEventListener('click', function() 
 document.getElementById('loadButton').addEventListener('click', function() {
     updateLoadSelectModal();
     document.getElementById('loadModal').style.display = "block";
-    document.getElementById('overlay').style.display = "block";
 });
 
-//復元ボタンのクリックイベント
 document.getElementById('loadModalButton').addEventListener('click', function() {
     const selectedSave = document.getElementById('modalLoadSelect').value;
     const saveName = document.getElementById('modalSaveName');
@@ -82,7 +84,6 @@ document.getElementById('loadModalButton').addEventListener('click', function() 
             loadText.textContent = '保存されたデータがありません';
         }
         document.getElementById('loadModal').style.display = "none";
-        document.getElementById('overlay').style.display = "block";
         switchReset();
         changeValue();
     } else {
@@ -121,53 +122,49 @@ function updateLoadSelect() {
     }
 }
 
-//回路削除ポップアップ表示
-document.getElementById('deleteButton').addEventListener('click', function() {
-    updateDeleteSelect();
-    document.getElementById('overlay').style.display = "block";
-    document.getElementById('deleteModal').style.display = "block";
-});
 
-// モーダルのボタンにイベントリスナーを追加
-document.querySelectorAll('.close').forEach(element => {
-    element.addEventListener('click', function() {
-        document.getElementById('overlay').style.display = "none";
-        document.getElementById('saveModal').style.display = "none";
-        document.getElementById('loadModal').style.display = "none";
-        document.getElementById('deleteModal').style.display = "none";
-    });
-});
+// //回路削除ポップアップ表示
+// document.getElementById('deleteButton').addEventListener('click', function() {
+//     updateDeleteSelect();
+//     document.getElementById('deleteModal').style.display = "block";
+// });
 
-// 削除ボタンのクリックイベント
-document.getElementById('deleteModalButton').addEventListener('click', function() {
-    const selectedSave = document.getElementById('modalDeleteSelect').value;
-    if (selectedSave) {
-        localStorage.removeItem(`circuitData_${selectedSave}`);
-        loadText.textContent = '削除しました';
-        updateLoadSelect();
-        updateDeleteSelect();
-        document.getElementById('deleteModal').style.display = "none";
-        document.getElementById('overlay').style.display = "none";
-    } else {
-        alert("削除する回路を選択してください");
-    }
-});
+// // モーダルのクローズボタンにイベントリスナーを追加
+// document.querySelectorAll('.close').forEach(element => {
+//     element.addEventListener('click', function() {
+//         document.getElementById('deleteModal').style.display = "none";
+//     });
+// });
 
-// 削除用のデータ一覧を更新する関数
-function updateDeleteSelect() {
-    const deleteSelect = document.getElementById('modalDeleteSelect');
-    deleteSelect.innerHTML = '';
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('circuitData_')) {
-            const saveName = key.replace('circuitData_', '');
-            const option = document.createElement('option');
-            option.value = saveName;
-            option.textContent = saveName;
-            deleteSelect.appendChild(option);
-        }
-    }
-}
+// // 削除ボタンのクリックイベント
+// document.getElementById('deleteModalButton').addEventListener('click', function() {
+//     const selectedSave = document.getElementById('modalDeleteSelect').value;
+//     if (selectedSave) {
+//         localStorage.removeItem(`circuitData_${selectedSave}`);
+//         loadText.textContent = '削除しました';
+//         updateLoadSelect();
+//         updateDeleteSelect();
+//         document.getElementById('deleteModal').style.display = "none";
+//     } else {
+//         alert("削除する回路を選択してください");
+//     }
+// });
+
+// // 削除用のデータ一覧を更新する関数
+// function updateDeleteSelect() {
+//     const deleteSelect = document.getElementById('modalDeleteSelect');
+//     deleteSelect.innerHTML = '';
+//     for (let i = 0; i < localStorage.length; i++) {
+//         const key = localStorage.key(i);
+//         if (key.startsWith('circuitData_')) {
+//             const saveName = key.replace('circuitData_', '');
+//             const option = document.createElement('option');
+//             option.value = saveName;
+//             option.textContent = saveName;
+//             deleteSelect.appendChild(option);
+//         }
+//     }
+// }
 
 // イベントリスナーの追加
 function addInputListeners() {
@@ -195,10 +192,10 @@ function handleInputChange(event, key) {
 
 // doButtonのクリックイベント
 function handleDoButtonClick() {
-    const inputA = document.querySelectorAll('div.toggle1 input[name="inputA"]');
-    const inputB = document.querySelectorAll('div.toggle2 input[name="inputB"]');
-    const inputC = document.querySelectorAll('div.toggle3 input[name="inputC"]');
-    const inputD = document.querySelectorAll('div.toggle4 input[name="inputD"]');
+    const inputA = document.querySelectorAll('input[name="inputA"]');
+    const inputB = document.querySelectorAll('input[name="inputB"]');
+    const inputC = document.querySelectorAll('input[name="inputC"]');
+    const inputD = document.querySelectorAll('input[name="inputD"]');
 
     for (const input of inputA) if (input.checked) inputs.A = parseInt(input.value);
     for (const input of inputB) if (input.checked) inputs.B = parseInt(input.value);
@@ -212,12 +209,8 @@ function handleDoButtonClick() {
 }
 
 // 初期状態の確認とリスナーの追加
-if (switchText.textContent === log) {
-    console.log(switchText.textContent);
-    addInputListeners();
-} else {
-    doButton.style.display = 'inline-block';
-}
+if (switchText.textContent === log) addInputListeners();
+else doButton.style.display = 'inline-block';
 
 // スイッチボタンのクリックイベント
 switchButton.addEventListener('click', function() {
@@ -235,6 +228,7 @@ switchButton.addEventListener('click', function() {
 
 // 常にdoButtonのクリックイベントを設定
 doButton.addEventListener('click', handleDoButtonClick);
+
 
 /*回路画像チェンジ*/
 function imgChange(id, fname){
@@ -293,8 +287,8 @@ function addselect(program_id, top, left) {
 
     // オプションを追加
     var options = [
-        { value: "", text: ""},
-        { value: "and", text: "AND"},
+        { value: "", text: "" },
+        { value: "and", text: "AND" },
         { value: "or", text: "OR" },
         { value: "xor", text: "XOR" },
         { value: "nand", text: "NAND" },
@@ -355,7 +349,6 @@ function calculateOutput(frame) {
             frame.outputValue = '';
             frame.outputValue1 = 0;
     }
-
     if(frame.outputLocate.includes('LED1')) {
         outputsExp.LED1 = frame.outputValue;
         outputs.LED1 = frame.outputValue1 ? 1 : 0;
@@ -419,7 +412,7 @@ function drawInputs() {
 // 格子
 function drawGrid() {
     ctx.strokeStyle = '#ccc';
-    for (let i = 0; i <= 60; i++) { // 横
+    for (let i = 0; i <= 80; i++) { // 横
         ctx.beginPath();
         ctx.moveTo(i * 20, 0);
         ctx.lineTo(i * 20, 720);
@@ -428,13 +421,13 @@ function drawGrid() {
     for (let i = 0; i <= 36; i++) { // 縦
         ctx.beginPath();
         ctx.moveTo(0, i * 20);
-        ctx.lineTo(1200, i * 20);
+        ctx.lineTo(1600, i * 20);
         ctx.stroke();
     }
     // "Tanaka-Lab" を描画
     ctx.fillStyle = 'blue'; 
     ctx.font = '20px Arial'; 
-    ctx.fillText('Tanaka-Lab', 1050, 30); 
+    ctx.fillText('Tanaka-Lab', 1450, 30); 
     //drawGridPoints();
 }
 
@@ -444,12 +437,17 @@ function initializeComponentFrames() {
     image.src = 'img/void.png';
 
     image.onload = function() {
-        const ids = ['program1', 'program2', 'program3', 'program4']; // 割り当てるIDの配列
+        const ids = [
+            'program1', 'program2', 'program3', 'program4',
+            'program5', 'program6', 'program7', 'program8',
+            'program9', 'program10', 'program11', 'program12',
+            'program13', 'program14', 'program15', 'program16'
+        ]; // 割り当てるIDの配列
         let idIndex = 0; // IDインデックスを初期化
 
         // 素子を配置する枠に画像を表示
-        for (let i = 16; i < 46; i += 20) {
-            for (let j = 8; j < 32; j += 12) {
+        for (let i = 12; i <= 60; i += 16) {
+            for (let j = 3; j <= 27; j += 8) {
                 if (idIndex >= ids.length) break; // すべてのIDが割り当てられたらループを終了
 
                 const frameX = i * 20;
@@ -463,7 +461,7 @@ function initializeComponentFrames() {
                 // IDを割り当て
                 const componentId = ids[idIndex++];
                 
-                addselect(componentId,`${frameY + 5}px`, `${frameX - 14}px`);
+                addselect(componentId,`${frameY + 5}px`, `${frameX - 18}px`);
 
                 // IDを含む情報をcomponentFramesに追加
                 componentFrames.push({
@@ -480,15 +478,16 @@ function initializeComponentFrames() {
                     ],
                     input: ['', ''], //入力論理式
                     inputValue: [0, 0], //入力値0or1
-                    inputLocate: ['', ''], //入力場所(A,B,C,0,1,2,3)
+                    inputLocate: ['', ''], //入力場所(A,B,C,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
                     output: {x: imageX + frameWidth, y: frameY + 60},
                     outputValue: '', //出力論理式
                     outputValue1: 0, //出力値0or1
-                    outputLocate: [] //出力場所(0,1,2,3,LED1,LED2,LED3)
+                    outputLocate: [] //出力場所(0,1,2,3,LED1,LED2,LED3,LED4)
                 });
             }
         }
         drawImage(); // 初期化時に画像を描画
+        console.log(componentFrames);
     };
 }
 
@@ -633,7 +632,6 @@ newWireButton.addEventListener('click', function() {
     newLine = true;
 });
 
-// スイッチのリセット
 function switchReset() {
     inputs.A = 0;
     inputs.B = 0;
@@ -652,9 +650,15 @@ function switchReset() {
     for(let i=0;i<componentFrames.length;i++) calculateOutput(componentFrames[i]);
 }
 
-// 回路クリアボタンの検出
+//回路クリアボタンの検出
 clearButton.addEventListener('click', function() {
-    window.location.reload();
+    switchReset();
+    for(let i=0;i<componentFrames.length;i++) calculateOutput(componentFrames[i]);
+    for(let i=0;i<componentFrames.length;i++) componentFrames[i].imageSrc = "img/void.png";
+    allLines = [];
+    currentLine = [];
+    drawPolyline();
+
 });
 
 // 点とつながっているか検出
@@ -662,8 +666,8 @@ function checkConnectPoints(points){
     // A,B,C,D
     console.log(points);
     if(points[0] != null){
-        for(let y=130;y<=610;y+=160){
-            if(points[0].x === 60 && points[0].y === y) {
+        for(let y=120;y<=600;y+=160){
+            if(points[0].x === 80 && points[0].y === y) {
                 for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
                     const com = componentFrames[i];
                     if(Math.abs(points[points.length-1].x - com.inputs[j].x) < 20 && Math.abs(points[points.length-1].y - com.inputs[j].y) < 20) {
@@ -803,7 +807,8 @@ function changeValue(){
                     com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
                     if(com.type != "") calculateOutput(com);
                 }
-            } 
+            }
+            
         }
     }
 }
@@ -817,7 +822,7 @@ function judgeInput(p1, p2) {
     if(x1 == 80 && y1 == 120) Line.s = "A"; //A: 80 120
     else if(x1 == 80 && y1 == 280) Line.s = "B"; //B: 80 280
     else if(x1 == 80 && y1 == 440) Line.s = "C"; //C: 80 440
-    else if(x1 == 80 && y1 == 600) Line.s = "D"; //C: 80 600
+    else if(x1 == 80 && y1 == 600) Line.s = "D"; //D: 80 600
 
     for(let i=0;i<componentFrames.length;i++) {
         const com = componentFrames[i];
@@ -844,23 +849,24 @@ function judgeInput(p1, p2) {
         }
     }
 
-    if(x2 == 1080 && y2 == 120) {
-        Line.e = "LED1"; //LED1: 1080 120
+    if(x2 == 1480 && y2 == 120) {
+        Line.e = "LED1"; //LED1: 1480 120
         outputs.LED1 = componentFrames[Line.s].outputValue1; 
         componentFrames[Line.s].outputLocate.push('LED1');
-    }else if(x2 == 1080 && y2 == 280) {
-        Line.e = "LED2"; //LED2: 1080 280
+    }else if(x2 == 1480 && y2 == 280) {
+        Line.e = "LED2"; //LED2: 1480 280
         outputs.LED2 = componentFrames[Line.s].outputValue1;
         componentFrames[Line.s].outputLocate.push('LED2');
-    }else if(x2 == 1080 && y2 == 440) {
-        Line.e = "LED3"; //LED3: 1080 440
+    }else if(x2 == 1480 && y2 == 440) {
+        Line.e = "LED3"; //LED3: 1480 440
         outputs.LED3 = componentFrames[Line.s].outputValue1;
         componentFrames[Line.s].outputLocate.push('LED3');
-    }else if(x2 == 1080 && y2 == 600) {
-        Line.e = "LED4"; //LED4: 1080 600
+    }else if(x2 == 1480 && y2 == 600) {
+        Line.e = "LED4"; //LED4: 1480 600
         outputs.LED4 = componentFrames[Line.s].outputValue1;
         componentFrames[Line.s].outputLocate.push('LED4');
     }
+    console.log(x1 + " " + y1);
 }
 
 // 一連の回路図を描く
@@ -896,7 +902,7 @@ function drawPolyline() {
 function generateTruthTable() {
     const selectedPartId = document.getElementById('partSelector').value;
     // console.log('Selected Part ID:', selectedPartId); // デバッグ用
-    
+
     selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
     if(selectedPartId == "led1" || selectedPartId == "led2" || selectedPartId == "led3" || selectedPartId == "led4") {
         selectedPart = componentFrames.find(frame => {
@@ -1004,7 +1010,6 @@ $(".toggle").on("click", function() {
     input.prop("checked", $(this).hasClass("checked"));
     input.trigger("change");
 });
-
 
 //出力を計算
 componentFrames.forEach(frame => calculateOutput(frame));
