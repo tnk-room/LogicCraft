@@ -35,11 +35,16 @@ const seq = "順序回路";
 
 //ポップアップ表示
 document.getElementById('saveButton').addEventListener('click', function() {
-    document.getElementById('overlay').style.display = "block";
     document.getElementById('saveModal').style.display = "block";
 });
 
-//保存ボタンのクリックイベント
+document.querySelectorAll('.close').forEach(element => {
+    element.addEventListener('click', function() {
+        document.getElementById('saveModal').style.display = "none";
+        document.getElementById('loadModal').style.display = "none";
+    });
+});
+
 document.getElementById('saveModalButton').addEventListener('click', function() {
     var saveName = document.getElementById('modalSaveName').value;
     if (saveName) {
@@ -51,7 +56,6 @@ document.getElementById('saveModalButton').addEventListener('click', function() 
         loadText.textContent = '保存しました';
         updateLoadSelect();
         document.getElementById('saveModal').style.display = "none";
-        document.getElementById('overlay').style.display = "none";
     } else {
         alert("保存名を入力してください");
     }
@@ -60,11 +64,9 @@ document.getElementById('saveModalButton').addEventListener('click', function() 
 // 回路復元ポップアップ表示
 document.getElementById('loadButton').addEventListener('click', function() {
     updateLoadSelectModal();
-    document.getElementById('overlay').style.display = "block";
     document.getElementById('loadModal').style.display = "block";
 });
 
-//復元ボタンのクリックイベント
 document.getElementById('loadModalButton').addEventListener('click', function() {
     const selectedSave = document.getElementById('modalLoadSelect').value;
     const saveName = document.getElementById('modalSaveName');
@@ -82,7 +84,6 @@ document.getElementById('loadModalButton').addEventListener('click', function() 
             loadText.textContent = '保存されたデータがありません';
         }
         document.getElementById('loadModal').style.display = "none";
-        document.getElementById('overlay').style.display = "none";
         switchReset();
         changeValue();
     } else {
@@ -121,54 +122,49 @@ function updateLoadSelect() {
     }
 }
 
-//回路削除ポップアップ表示
-document.getElementById('deleteButton').addEventListener('click', function() {
-    updateDeleteSelect();
-    document.getElementById('overlay').style.display = "block";
-    document.getElementById('deleteModal').style.display = "block";
-});
 
-// モーダルのボタンにイベントリスナーを追加
-document.querySelectorAll('.close').forEach(element => {
-    element.addEventListener('click', function() {
-        document.getElementById('overlay').style.display = "none";
-        document.getElementById('saveModal').style.display = "none";
-        document.getElementById('loadModal').style.display = "none";
-        document.getElementById('deleteModal').style.display = "none";
-    });
-});
+// //回路削除ポップアップ表示
+// document.getElementById('deleteButton').addEventListener('click', function() {
+//     updateDeleteSelect();
+//     document.getElementById('deleteModal').style.display = "block";
+// });
 
+// // モーダルのクローズボタンにイベントリスナーを追加
+// document.querySelectorAll('.close').forEach(element => {
+//     element.addEventListener('click', function() {
+//         document.getElementById('deleteModal').style.display = "none";
+//     });
+// });
 
-// 削除ボタンのクリックイベント
-document.getElementById('deleteModalButton').addEventListener('click', function() {
-    const selectedSave = document.getElementById('modalDeleteSelect').value;
-    if (selectedSave) {
-        localStorage.removeItem(`circuitData_${selectedSave}`);
-        loadText.textContent = '削除しました';
-        updateLoadSelect();
-        updateDeleteSelect();
-        document.getElementById('deleteModal').style.display = "none";
-        document.getElementById('overlay').style.display = "none";
-    } else {
-        alert("削除する回路を選択してください");
-    }
-});
+// // 削除ボタンのクリックイベント
+// document.getElementById('deleteModalButton').addEventListener('click', function() {
+//     const selectedSave = document.getElementById('modalDeleteSelect').value;
+//     if (selectedSave) {
+//         localStorage.removeItem(`circuitData_${selectedSave}`);
+//         loadText.textContent = '削除しました';
+//         updateLoadSelect();
+//         updateDeleteSelect();
+//         document.getElementById('deleteModal').style.display = "none";
+//     } else {
+//         alert("削除する回路を選択してください");
+//     }
+// });
 
-// 削除用のデータ一覧を更新する関数
-function updateDeleteSelect() {
-    const deleteSelect = document.getElementById('modalDeleteSelect');
-    deleteSelect.innerHTML = '';
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('circuitData_')) {
-            const saveName = key.replace('circuitData_', '');
-            const option = document.createElement('option');
-            option.value = saveName;
-            option.textContent = saveName;
-            deleteSelect.appendChild(option);
-        }
-    }
-}
+// // 削除用のデータ一覧を更新する関数
+// function updateDeleteSelect() {
+//     const deleteSelect = document.getElementById('modalDeleteSelect');
+//     deleteSelect.innerHTML = '';
+//     for (let i = 0; i < localStorage.length; i++) {
+//         const key = localStorage.key(i);
+//         if (key.startsWith('circuitData_')) {
+//             const saveName = key.replace('circuitData_', '');
+//             const option = document.createElement('option');
+//             option.value = saveName;
+//             option.textContent = saveName;
+//             deleteSelect.appendChild(option);
+//         }
+//     }
+// }
 
 // イベントリスナーの追加
 function addInputListeners() {
@@ -656,7 +652,13 @@ function switchReset() {
 
 //回路クリアボタンの検出
 clearButton.addEventListener('click', function() {
-    window.location.reload();
+    switchReset();
+    for(let i=0;i<componentFrames.length;i++) calculateOutput(componentFrames[i]);
+    for(let i=0;i<componentFrames.length;i++) componentFrames[i].imageSrc = "img/void.png";
+    allLines = [];
+    currentLine = [];
+    drawPolyline();
+
 });
 
 // 点とつながっているか検出

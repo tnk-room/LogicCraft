@@ -99,7 +99,7 @@ h1 {
 
 .checkbox1 {
     top: 38%;
-    left: -32%;
+    left: -38%;
 }
 
 .checkbox2 {
@@ -155,7 +155,6 @@ select {
 
 label {
     display: inline-block;
-    width: 60px;
     margin-right: 10px;
 }
 
@@ -258,7 +257,7 @@ input {
 }
 
 button {
-    padding: 10px 20px;
+    padding: 6px 10px;
     font-size: 16px;
     cursor: pointer;
 }
@@ -282,6 +281,9 @@ button {
 }
 .button:hover {
     background-color: #45a049; /* Darker green on hover */
+}
+#truthTable{
+    margin-bottom: 70px;
 }
 
 #output {

@@ -6,6 +6,18 @@ canvas {
 button {
     margin-top: 10px;
 }
+
+.topbar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: left;
+  font-size: xx-large;
+}
+
 #canvasContainer {
     position: relative;
     margin-top: 10px;
@@ -26,11 +38,23 @@ select.onCanvas {
     height: 40px;
     font-size: 13px;
 }
-    /* モーダルのスタイル */
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Ensure the overlay is above other elements */
+}
+
+/*モーダルのスタイル*/  
 .modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 1001; /* Ensure the modal is above the overlay */
     left: 0;
     top: 0;
     width: 100%;
@@ -100,27 +124,67 @@ select.onCanvas {
     box-sizing: border-box;
 }
 
+#saveButton, #loadButton, #clearButton, #deleteButton {
+position: relative;
+display: inline-block;
+}
+
+#saveButton::after, #loadButton::after, #clearButton::after, #deleteButton::after{
+position: absolute;
+left: 50%;
+bottom: -30px;
+transform: translateX(-50%);
+background-color: rgba(0, 0, 0);
+color: white;
+padding: 5px 10px;
+border-radius: 5px;
+opacity: 0;
+transition: opacity 0.3s, bottom 0.3s;
+white-space: nowrap;
+pointer-events: none;
+}
+
+#saveButton::after{
+content: 'save';
+}
+
+#loadButton::after{
+content: 'load';
+}
+
+#clearButton::after{
+content: 'clear';
+}
+
+#deleteButton::after{
+content: 'delete';
+}
+#saveButton:hover::after, #loadButton:hover::after, #clearButton:hover::after, #deleteButton:hover::after {
+opacity: 1;
+bottom: -50px;
+}
+
 .inputs {
   display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: black;
 }
 .toggle {
     position: relative;
     width: 78px;
     height: 48px;
-    margin: 40px 60px;
+    margin: 30px 40px 20px;
     border-radius: 50px;
     overflow: hidden;
     cursor: pointer;
-  }
-  input[type=checkbox] {
-    /* position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer; */
+}
+input[type=checkbox] {
     display: none;
-  }
-  .toggle:before {
+}
+.toggle:before {
     content: "";
     position: absolute;
     top: 0;
@@ -131,8 +195,8 @@ select.onCanvas {
     background: #f45e55;
     -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .toggle:after {
+}
+.toggle:after {
     content: "";
     position: absolute;
     top: 10px;
@@ -146,172 +210,15 @@ select.onCanvas {
     -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-sizing: border-box;
-  }
-  .toggle.checked:before {
+}
+.toggle.checked:before {
     background: #24e89c;
-  }
-  .toggle.checked:after {
+}
+.toggle.checked:after {
     left: 46px;
     width: 0px;
     background: #fff;
     box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.5);
-  }
+}
 
-  .toggle2 {
-    position: relative;
-    width: 78px;
-    height: 48px;
-    margin: 40px 60px;
-    border-radius: 50px;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .toggle2 input[type=checkbox] {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0; /* 完全に透明にして表示させる */
-    cursor: pointer;
-  }
-  .toggle2:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    background: #f45e55;
-    -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .toggle2:after {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 12px;
-    width: 28px;
-    height: 28px;
-    display: block;
-    border-radius: 50px;
-    border: 6px solid #fff;
-    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.3);
-    -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-sizing: border-box;
-  }
-  .toggle2.checked:before {
-    background: #24e89c;
-  }
-  .toggle2.checked:after {
-    left: 46px;
-    width: 0px;
-    background: #fff;
-    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.5);
-  }
-
-  .toggle3 {
-    position: relative;
-    width: 78px;
-    height: 48px;
-    margin: 40px 60px;
-    border-radius: 50px;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .toggle3 input[type=checkbox] {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0; /* 完全に透明にして表示させる */
-    cursor: pointer;
-  }
-  .toggle3:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    background: #f45e55;
-    -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .toggle3:after {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 12px;
-    width: 28px;
-    height: 28px;
-    display: block;
-    border-radius: 50px;
-    border: 6px solid #fff;
-    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.3);
-    -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-sizing: border-box;
-  }
-  .toggle3.checked:before {
-    background: #24e89c;
-  }
-  .toggle3.checked:after {
-    left: 46px;
-    width: 0px;
-    background: #fff;
-    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.5);
-  }
-
-  .toggle4 {
-    position: relative;
-    width: 78px;
-    height: 48px;
-    margin: 40px 60px;
-    border-radius: 50px;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .toggle4 input[type=checkbox] {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0; /* 完全に透明にして表示させる */
-    cursor: pointer;
-  }
-  .toggle4:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    background: #f45e55;
-    -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .toggle4:after {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 12px;
-    width: 28px;
-    height: 28px;
-    display: block;
-    border-radius: 50px;
-    border: 6px solid #fff;
-    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.3);
-    -webkit-transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-sizing: border-box;
-  }
-  .toggle4.checked:before {
-    background: #24e89c;
-  }
-  .toggle4.checked:after {
-    left: 46px;
-    width: 0px;
-    background: #fff;
-    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.5);
-  }
+  

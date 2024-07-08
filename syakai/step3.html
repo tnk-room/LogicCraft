@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>step1 ー 論理回路を知ろう！ ー</title>
+<title>step3 ー 論理回路を作成しよう！ ー</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
@@ -34,7 +34,7 @@
             z-index: 10;  /* canvasの上に表示するため */
             background: #45454500;
             font-size: 20px;
-            width: 140px;
+            width: 130px;
             height: 113px; 
             border: none;
             appearance: none; /* 標準のスタイルを無効にする */
@@ -66,54 +66,101 @@
             <main>
                 <h1>論理回路シミュレーション3</h1>
                 <h3>論理回路を描いてみよう</h3>
+                <!-- <div class="switch-button">
+                    <input class="switch-button-checkbox" type="checkbox" id="switchButtonCheckbox">
+                    <label class="switch-button-label" for="switchButtonCheckbox"><span id="switchButton" class="switch-button-label-span">組み合わせ回路</span></label>
+                </div> -->
                 <button id="switchButton">組み合わせ回路</button>
+                <ul class = "topbar-list">
+                    <li>
+                        <input type="text" id="saveName" placeholder="保存名を入力">
+                        <button id="saveButton">
+                            <img src="img/saveicon.png" width="40" height="40">
+                        </button>
+                    </li>
 
-                <input type="text" id="saveName" placeholder="保存名を入力">
-                <button id="saveButton">
-                    <img src = "img/saveicon.png" width = "40" height = "40">
-                </button>
+                    <div id = "overlay" class = "overlay"></div>
 
-                <div id="saveModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <div class="modal-header">
-                            <h2>保存名を入力してください</h2>
+                    <li>
+                        <div id="saveModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <div class="modal-header">
+                                    <h2>保存名を入力してください</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" id="modalSaveName" placeholder="保存名を入力">
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary close">キャンセル</button>
+                                    <button id="saveModalButton" class="btn btn-primary">保存</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <input type="text" id="modalSaveName" placeholder="保存名を入力">
+                    </li>
+                    <li>
+                        <div id="loadModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <div class="modal-header">
+                                    <h2>復元する回路を選択してください</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <select id="modalLoadSelect"></select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary close">キャンセル</button>
+                                    <button id="loadModalButton" class="btn btn-primary">復元</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary close">キャンセル</button>
-                            <button id="saveModalButton" class="btn btn-primary">保存</button>
+                    </li>
+                    <li>
+                        <select id="loadSelect" style="display: none;"></select>
+                        <button id="loadButton">
+                            <img src="img/restoration.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <button id="clearButton">
+                            <img src="img/clear.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <div id="deleteModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <div class="modal-header">
+                                    <h2>削除する回路を選択してください</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <select id="modalDeleteSelect"></select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary close">キャンセル</button>
+                                    <button id="deleteModalButton" class="btn btn-primary">削除</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <div id="loadModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <div class="modal-header">
-                            <h2>復元する回路を選択してください</h2>
-                        </div>
-                        <div class="modal-body">
-                            <select id="modalLoadSelect"></select>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary close">キャンセル</button>
-                            <button id="loadModalButton" class="btn btn-primary">復元</button>
-                        </div>
-                    </div>
-                </div>
-
-                <select id="loadSelect" style="display: none;"></select>
-                <button id="loadButton">
-                    <img src = "img/restoration.png" width = "40" height = "40">
-                </button>
+                    </li>
+                    <li>
+                        <button id="deleteButton">
+                            <img src="img/garbagecan.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <button id="eleButton1"  onclick="location.href='step3.html'">2×2</button>
+                    </li>
+                    <li>
+                        <button id="eleButton2"  onclick="location.href='step3-2.html'">4×4</button>
+                    </li>
+                    <li>
+                        <button id="eleButton3"  onclick="location.href='step3-rolemodel.html'">Role Model</button>
+                    </li>
+                </ul>
             
-                <button id="clearButton">すべて削除</button>
+                
 
-                <a id="eleButton1"  href="step3.html">2×2</a>
-                <a id="eleButton2"  href="step3-2.html">4×4</a>
 
                 <div id="canvasContainer">
                     <canvas id="gridCanvas" width="1200" height="720"></canvas>
