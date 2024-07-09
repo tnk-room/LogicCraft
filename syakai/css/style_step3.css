@@ -176,13 +176,21 @@ bottom: -50px;
     position: relative;
     width: 78px;
     height: 48px;
-    margin: 30px 40px 20px;
+    margin: 0 20px;
     border-radius: 50px;
     overflow: hidden;
     cursor: pointer;
 }
 input[type=checkbox] {
     display: none;
+}
+.input {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 40px 20px;
+    font-size: 2rem;
 }
 .toggle:before {
     content: "";
