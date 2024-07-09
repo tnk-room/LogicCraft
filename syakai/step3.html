@@ -7,11 +7,11 @@
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
     <link rel="stylesheet" type="text/css" href="css/style_step3.css">
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script>
         var ws = new WebSocket("ws://172.20.10.5:5555/");
         ws.onopen = function () {
-            ws.send('step1');
+            ws.send('step3');
         };
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -159,7 +159,7 @@
                     </li>
                 </ul>
             
-                
+                <button id="ledSwitchButton">LED</button>
 
 
                 <div id="canvasContainer">
@@ -171,19 +171,23 @@
                 <br>
                 <div id="loadText"></div>
                 <div class="inputs">
-                    <div>
+                    <div class="input">
+                        A
                         <input type="checkbox" name="inputA" id="inputA"/>
                         <label class="toggle" for="inputA"></label>
                     </div>
-                    <div>
+                    <div class="input">
+                        B
                         <input type="checkbox" name="inputB" id="inputB"/>
                         <label class="toggle" for="inputB"></label>
                     </div>
-                    <div>
+                    <div class="input">
+                        C
                         <input type="checkbox" name="inputC" id="inputC"/>
                         <label class="toggle" for="inputC"></label>
                     </div>
-                    <div>
+                    <div class="input">
+                        D
                         <input type="checkbox" name="inputD" id="inputD"/>
                         <label class="toggle" for="inputD"></label>
                     </div>

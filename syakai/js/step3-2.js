@@ -1002,12 +1002,18 @@ function generateCombinations(n) {
 }
 
 // toggleボタン
-$(".toggle").on("click", function() {
-    $(this).toggleClass("checked");
-    let input = $(this).prev("input[type=checkbox]");
-    input.prop("checked", $(this).hasClass("checked"));
-    input.trigger("change");
+document.querySelectorAll(".toggle").forEach(function(toggle) {
+    toggle.addEventListener("click", function() {
+        this.classList.toggle("checked");
+        let input = this.previousElementSibling;
+        if (input && input.type === "checkbox") {
+            input.checked = this.classList.contains("checked");
+            var event = new Event('change');
+            input.dispatchEvent(event);
+        }
+    });
 });
+
 
 //出力を計算
 componentFrames.forEach(frame => calculateOutput(frame));

@@ -14,6 +14,8 @@ const outputsExp = {LED1: '', LED2: '', LED3: '', LED4: ''}; // 出力の論理�
 let Lines = [];
 let Line = [];
 
+var ws = new WebSocket("wss://192.168.10.46:5555/");
+
 const inputPositions = {
     A: { x: 60, y: 130 },
     B: { x: 60, y: 290 },
@@ -29,9 +31,12 @@ const outputPositions = {
 };
 
 const switchText = document.getElementById('switchButton');
+const ledSwitchText = document.getElementById('ledSwitchButton');
 const doButton = document.getElementById('doButton');
 const log = "組み合わせ回路";
 const seq = "順序回路";
+const led = "LED";
+const seg = "7seg";
 
 //回路保存ポップアップ表示
 document.getElementById('saveButton').addEventListener('click', function() {
@@ -51,7 +56,7 @@ document.getElementById('saveModalButton').addEventListener('click', function() 
         loadText.textContent = '保存しました';
         updateLoadSelect();
         document.getElementById('saveModal').style.display = "none";
-        document.getElementById('overlay').style.display = "block";
+        document.getElementById('overlay').style.display = "none";
     } else {
         alert("保存名を入力してください");
     }
@@ -82,7 +87,7 @@ document.getElementById('loadModalButton').addEventListener('click', function() 
             loadText.textContent = '保存されたデータがありません';
         }
         document.getElementById('loadModal').style.display = "none";
-        document.getElementById('overlay').style.display = "block";
+        document.getElementById('overlay').style.display = "none";
         switchReset();
         changeValue();
     } else {
@@ -189,6 +194,20 @@ function removeInputListeners() {
 // handleInputChange関数
 function handleInputChange(event, key) {
     inputs[key] = event.target.checked ? 0 : 1;
+    let message = '';
+    if (ledSwitchText.textContent === led) {
+        if(inputs[key] == 0) message = `input${key}_off`;
+        else message = `input${key}_on`;   
+        ws.send(message);
+        console.log("送信:segED_LED");
+        console.log(message);
+    } else {
+        if(inputs[key] == 0) message = `input${key}_off`;
+        else message = `input${key}_on`;
+        ws.send(message); 
+        console.log("送信:segED_seg");
+        console.log(message);
+    }
     drawPolyline();
     changeValue();
 }   
@@ -231,6 +250,19 @@ switchButton.addEventListener('click', function() {
         addInputListeners();
     }
     switchReset();
+});
+
+ledSwitchButton.addEventListener('click', function() {
+    if (ledSwitchText.textContent === led) {
+        ledSwitchText.textContent = seg;
+        ws.send('segED_seg');
+        console.log("送信:segED_seg");
+
+    } else {
+        ledSwitchText.textContent = led;
+        ws.send('segED_LED');
+        console.log("送信:segED_LED");
+    }
 });
 
 // 常にdoButtonのクリックイベントを設定
@@ -321,6 +353,7 @@ function addselect(program_id, top, left) {
 function calculateOutput(frame) {
     const input1 = (frame.input[0] == 'A' || frame.input[0] == 'B' || frame.input[0] == 'C' || frame.input[0] == 'D') ? `${frame.input[0]}` : `(${frame.input[0]})`;
     const input2 = (frame.input[1] == 'A' || frame.input[1] == 'B' || frame.input[1] == 'C' || frame.input[1] == 'D') ? `${frame.input[1]}` : `(${frame.input[1]})`;
+    let message = '';
 
     switch (frame.type) {
         case 'and':
@@ -359,19 +392,25 @@ function calculateOutput(frame) {
     if(frame.outputLocate.includes('LED1')) {
         outputsExp.LED1 = frame.outputValue;
         outputs.LED1 = frame.outputValue1 ? 1 : 0;
+        message = `output1_${outputs.LED1}`;
     }
     if(frame.outputLocate.includes('LED2')) {
         outputsExp.LED2 = frame.outputValue;
         outputs.LED2 = frame.outputValue1 ? 1 : 0;
+        message = `output2_${outputs.LED2}`;
     }
     if(frame.outputLocate.includes('LED3')) {
         outputsExp.LED3 = frame.outputValue;
         outputs.LED3 = frame.outputValue1 ? 1 : 0;
+        message = `output3_${outputs.LED3}`;
     }
     if(frame.outputLocate.includes('LED4')) {
         outputsExp.LED4 = frame.outputValue;
         outputs.LED4 = frame.outputValue1 ? 1 : 0;
+        message = `output4_${outputs.LED4}`;
     }
+    ws.send(message);
+    console.log(message);
     drawLEDs();
 }
 
@@ -649,7 +688,16 @@ function switchReset() {
     });
 
     drawPolyline();
-    for(let i=0;i<componentFrames.length;i++) calculateOutput(componentFrames[i]);
+    for(let i=0;i<componentFrames.length;i++) {
+        let frame = componentFrames[i];
+        calculateOutput(frame);
+        if(frame.outputLocate.includes('LED1')) message = `output1_${outputs.LED1}`;
+        if(frame.outputLocate.includes('LED2')) message = `output2_${outputs.LED2}`;
+        if(frame.outputLocate.includes('LED3')) message = `output3_${outputs.LED3}`;
+        if(frame.outputLocate.includes('LED4')) message = `output4_${outputs.LED4}`;
+        ws.send(message);
+        console.log(message);
+    }
 }
 
 // 回路クリアボタンの検出
@@ -998,12 +1046,18 @@ function generateCombinations(n) {
 }
 
 // toggleボタン
-$(".toggle").on("click", function() {
-    $(this).toggleClass("checked");
-    let input = $(this).prev("input[type=checkbox]");
-    input.prop("checked", $(this).hasClass("checked"));
-    input.trigger("change");
+document.querySelectorAll(".toggle").forEach(function(toggle) {
+    toggle.addEventListener("click", function() {
+        this.classList.toggle("checked");
+        let input = this.previousElementSibling;
+        if (input && input.type === "checkbox") {
+            input.checked = this.classList.contains("checked");
+            var event = new Event('change');
+            input.dispatchEvent(event);
+        }
+    });
 });
+
 
 
 //出力を計算

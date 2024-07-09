@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script>
         var ws = new WebSocket("ws://172.20.10.5:5555/");
         ws.onopen = function () {
@@ -185,6 +185,9 @@
                             <option value="nand">NAND</option>
                             <option value="nor">NOR</option>
                         </select>
+                        <button onclick="validateInputs()">
+                            <img src="img/check.png" width="20" height="20">
+                        </button>
                     </div>
                     <table id="Table">
                         <thead>
@@ -242,7 +245,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button onclick="validateInputs()">Validate</button>
                 </div>
             </main>
             <script type="text/javascript" src="js/step.js"></script>
