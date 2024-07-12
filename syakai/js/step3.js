@@ -14,7 +14,7 @@ const outputsExp = {LED1: '', LED2: '', LED3: '', LED4: ''}; // 出力の論理�
 let Lines = [];
 let Line = [];
 
-var ws = new WebSocket("wss://192.168.10.46:5555/");
+var ws = new WebSocket("ws://192.168.10.46:5555/");
 
 const inputPositions = {
     A: { x: 60, y: 130 },
@@ -198,9 +198,9 @@ function handleInputChange(event, key) {
     if (ledSwitchText.textContent === led) {
         if(inputs[key] == 0) message = `input${key}_off`;
         else message = `input${key}_on`;   
-        ws.send(message);
-        console.log("送信:segED_LED");
-        console.log(message);
+        // ws.send(message);
+        // console.log("送信:segED_LED");
+        // console.log(message);
     } else {
         if(inputs[key] == 0) message = `input${key}_off`;
         else message = `input${key}_on`;
@@ -209,6 +209,7 @@ function handleInputChange(event, key) {
         console.log(message);
     }
     drawPolyline();
+    changeValue();
     changeValue();
 }   
 
@@ -224,19 +225,15 @@ function handleDoButtonClick() {
     for (const input of inputC) if (input.checked) inputs.C = parseInt(input.value);
     for (const input of inputD) if (input.checked) inputs.D = parseInt(input.value);
 
-    drawPolyline();
     changeValue();
     drawPolyline();
     changeValue();
+    drawPolyline();
 }
 
 // 初期状態の確認とリスナーの追加
-if (switchText.textContent === log) {
-    console.log(switchText.textContent);
-    addInputListeners();
-} else {
-    doButton.style.display = 'inline-block';
-}
+if (switchText.textContent === log) addInputListeners();
+else doButton.style.display = 'inline-block';
 
 // スイッチボタンのクリックイベント
 switchButton.addEventListener('click', function() {
@@ -409,8 +406,10 @@ function calculateOutput(frame) {
         outputs.LED4 = frame.outputValue1 ? 1 : 0;
         message = `output4_${outputs.LED4}`;
     }
-    ws.send(message);
-    console.log(message);
+    // if(message!=''){
+    //     ws.send(message);
+    //     console.log(message);
+    // }
     drawLEDs();
 }
 
@@ -651,7 +650,7 @@ canvas.addEventListener('dblclick', function(event) {
     }
 
     if (lineToRemove !== -1) {
-        if(allLines.length > 0) checkConnectPoints(allLines[lineToRemove]);
+        checkConnectPoints(allLines[lineToRemove]);
         allLines.splice(lineToRemove, 1);
         drawPolyline();
     }
@@ -710,14 +709,29 @@ function checkConnectPoints(points){
     // A,B,C,D
     console.log(points);
     if(points[0] != null){
-        for(let y=130;y<=610;y+=160){
-            if(points[0].x === 60 && points[0].y === y) {
+        for(let y=120;y<=600;y+=160){
+            let x;
+            x=80;
+            if(points[0].x === x && points[0].y === y) {
                 for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
                     const com = componentFrames[i];
                     if(Math.abs(points[points.length-1].x - com.inputs[j].x) < 20 && Math.abs(points[points.length-1].y - com.inputs[j].y) < 20) {
                         com.input[j] = '';
                         com.inputLocate[j] = '';
                         com.inputValue[j] = 0;
+                        calculateOutput(com);
+                    }
+                }
+            }
+            x=1080;
+            if(points[points.length-1].x === x && points[points.length-1].y === y) {
+                for(let i=0;i<4;i++) {
+                    const com = componentFrames[i];
+                    if(Math.abs(points[0].x - com.output.x) < 20 && Math.abs(points[0].y - com.output.y) < 20) {
+                        if(y === 120) com.outputLocate.splice('LED1', 1);
+                        if(y === 280) com.outputLocate.splice('LED2', 1);
+                        if(y === 340) com.outputLocate.splice('LED3', 1);
+                        if(y === 600) com.outputLocate.splice('LED4', 1);
                         calculateOutput(com);
                     }
                 }
@@ -847,8 +861,8 @@ function changeValue(){
             }
             for(let k=0;k<componentFrames.length;k++){
                 if(com.inputLocate[j] === k) {
-                    com.input[j] = componentFrames[com.inputLocate[j]].outputValue;
-                    com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
+                    com.input[j] = componentFrames[k].outputValue;
+                    com.inputValue[j] = componentFrames[k].outputValue1;
                     if(com.type != "") calculateOutput(com);
                 }
             } 

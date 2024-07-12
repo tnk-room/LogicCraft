@@ -23,10 +23,13 @@ def nor_gate(input1, input2):
 def not_gate(input1):
     return int(not input1)
 
-if __name__ == '__main__':
-    input1 = [0, 0, 1, 1]
-    input2 = [0, 1, 0, 1]
+def test_gate(gate, inputs, expected_outputs):
+    return (check_answer(gate, inputs[0][0], inputs[0][1], expected_outputs[0]) +
+            check_answer(gate, inputs[1][0], inputs[1][1], expected_outputs[1]) +
+            check_answer(gate, inputs[2][0], inputs[2][1], expected_outputs[2]) +
+            check_answer(gate, inputs[3][0], inputs[3][1], expected_outputs[3]))
 
+def run_tests():
     gates = [
         (and_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1]),
         (or_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1]),
@@ -35,22 +38,19 @@ if __name__ == '__main__':
         (nor_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0])
     ]
 
-    for gate, inputs, expected_outputs in gates:
-        correct = 0
-        for (i1, i2), expected in zip(inputs, expected_outputs):
-            correct += check_answer(gate, i1, i2, expected)
-        if correct == len(inputs):
-            print(f"{gate.__name__} => OK")
-        else:
-            print(f"{gate.__name__} => NG")
+    results = [
+        f"{gate[0].__name__} => OK" if test_gate(gate[0], gate[1], gate[2]) == 4 else f"{gate[0].__name__} => NG"
+        for gate in gates
+    ]
 
-    # NOTゲートのテストは別途行う
-    not_inputs = [0, 1]
-    not_expected = [1, 0]
-    correct = 0
-    for i, expected in zip(not_inputs, not_expected):
-        correct += check_answer(not_gate, i, None, expected)
-    if correct == len(not_inputs):
-        print("not_gate => OK")
-    else:
-        print("not_gate => NG")
+    correct_not = (check_answer(not_gate, 0, None, 1) +
+                    check_answer(not_gate, 1, None, 0))
+    results.append("not_gate => OK" if correct_not == 2 else "not_gate => NG")
+
+    results = "\n".join(results)
+
+    return results
+
+# 実行例
+test_results = run_tests()
+print(test_results)
