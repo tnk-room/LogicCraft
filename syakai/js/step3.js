@@ -230,17 +230,10 @@ function handleInputChange(event, key) {
     let message = '';
     if (ledSwitchText.textContent === led) {
         if(inputs[key] == 0) message = `input${key}_off`;
-<<<<<<< HEAD
         else message = `input${key}_on`;
         // ws.send(message);
         console.log("送信:segED_LED");
         console.log(message);
-=======
-        else message = `input${key}_on`;   
-        // ws.send(message);
-        // console.log("送信:segED_LED");
-        // console.log(message);
->>>>>>> f89055e89d4f48027b16774190327b4c252e452a
     } else {
         if(inputs[key] == 0) message = `input${key}_off`;
         else message = `input${key}_on`;
@@ -251,11 +244,7 @@ function handleInputChange(event, key) {
     drawPolyline();
     changeValue();
     changeValue();
-<<<<<<< HEAD
 }
-=======
-}   
->>>>>>> f89055e89d4f48027b16774190327b4c252e452a
 
 // doButtonのクリックイベント
 function handleDoButtonClick() {
@@ -458,13 +447,6 @@ function calculateOutput(frame) {
         // ws.send(message);
         console.log(message);
     }
-<<<<<<< HEAD
-=======
-    // if(message!=''){
-    //     ws.send(message);
-    //     console.log(message);
-    // }
->>>>>>> f89055e89d4f48027b16774190327b4c252e452a
     drawLEDs();
 }
 
@@ -827,34 +809,8 @@ function deleteMode() {
                 drawPolyline();
             }
         }
-<<<<<<< HEAD
     });
 } 
-=======
-    }
-
-    if (lineToRemove !== -1) {
-        checkConnectPoints(allLines[lineToRemove]);
-        allLines.splice(lineToRemove, 1);
-        drawPolyline();
-    }
-
-    // ライン上のダブルクリックでライン消去
-    if (isPointOnPolyline(x, y, currentLine)) {
-        currentLine = [];
-        drawPolyline();
-    }
-});
-
-// 別の配線ボタンの検出
-newWireButton.addEventListener('click', function() {
-    if (currentLine.length > 0) {
-        allLines.push([...currentLine]);
-        currentLine = [];
-    }
-    newLine = true;
-});
->>>>>>> f89055e89d4f48027b16774190327b4c252e452a
 
 // スイッチのリセット
 function switchReset() {
