@@ -16,17 +16,7 @@ let Line = [];
 let isDrawing = false;
 let isDeleting = false;
 
-var ws = new WebSocket("wss://raspberrypi.ddns.net:443/");
-ws.onopen = function () {
-    ws.send('step3');
-    console.log("Websocket success");
-}
-ws.onerror = function(error) {
-    console.log("Websocket error:", error);
-}
-ws.onclose = function() {
-    console.log("Websocket close");
-}
+var ws = new WebSocket("wss://192.168.10.46:5555/");
 
 const inputPositions = {
     A: { x: 60, y: 130 },
@@ -229,8 +219,8 @@ function handleInputChange(event, key) {
     let message = '';
     if (ledSwitchText.textContent === led) {
         if(inputs[key] == 0) message = `input${key}_off`;
-        else message = `input${key}_on`;
-        // ws.send(message);
+        else message = `input${key}_on`;   
+        ws.send(message);
         console.log("送信:segED_LED");
         console.log(message);
     } else {
@@ -242,8 +232,7 @@ function handleInputChange(event, key) {
     }
     drawPolyline();
     changeValue();
-    changeValue();
-}
+}   
 
 // doButtonのクリックイベント
 function handleDoButtonClick() {
@@ -436,16 +425,10 @@ function calculateOutput(frame) {
     if(frame.outputLocate.includes('LED4')) {
         outputsExp.LED4 = frame.outputValue;
         outputs.LED4 = frame.outputValue1 ? 1 : 0;
-        if (ledSwitchText.textContent === led) message = `output4_${outputs.LED4}`;
-    }  
-
-    let bitotal = 0;
-    if(ledSwitchText.textContent !== led){
-        bitotal = outputs.LED1 + outputs.LED2 * 2 + outputs.LED3 * 4 + outputs.LED4 * 8;
-        message = `seg_${bitotal}`;
-        // ws.send(message);
-        console.log(message);
+        message = `output4_${outputs.LED4}`;
     }
+    ws.send(message);
+    console.log(message);
     drawLEDs();
 }
 
@@ -747,69 +730,49 @@ function drawMode() {
             startY = y;
             drawPolyline();
         }
-    });
-    
-     // マウスを動かした時の処理（リアルタイムで仮のラインを表示）
-    canvas.addEventListener("mousemove", (e) => {
-        if (!isDrawing) return;
-    
-         // 現在のマウス位置を仮の終点として描画
-        const endX = e.offsetX;
-        const endY = e.offsetY;
-    
-         // キャンバスをクリアして過去の線を再描画
-        drawPolyline();
-    
-         // 仮の線を描画
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = "rgba(0, 0, 0, 0.5)"; // 仮の線を半透明にする
-        ctx.stroke();
-    });
-    
-     // マウスがキャンバス外に出たときに描画を終了
-    canvas.addEventListener("mouseleave", () => {
-        isDrawing = false;
-         clickCount = 0; // カウントをリセット
-    });
-}
+    }, 250); // ダブルクリックは250ms以内
+});
 
-//
-function deleteMode() {
-    canvas.addEventListener('dblclick', function(event) {
-        if(isDeleting){
-            if (clickTimeout) {
-                clearTimeout(clickTimeout);
-                clickTimeout = null;
-            }
-    
-            const rect = canvas.getBoundingClientRect();
-            const x = Math.round((event.clientX - rect.left) / 20) * 20;
-            const y = Math.round((event.clientY - rect.top) / 20) * 20;
-    
-            let lineToRemove = -1;
-            for (let i = 0; i < allLines.length; i++) {
-                if (isPointOnPolyline(x, y, allLines[i])) {
-                    lineToRemove = i;
-                    break;
-                }
-            }
-    
-            if (lineToRemove !== -1) {
-                checkConnectPoints(allLines[lineToRemove]);
-                allLines.splice(lineToRemove, 1);
-                drawPolyline();
-            }
-    
-            // ライン上のダブルクリックでライン消去
-            if (isPointOnPolyline(x, y, currentLine)) {
-                currentLine = [];
-                drawPolyline();
-            }
+// ダブルクリック検出
+canvas.addEventListener('dblclick', function(event) {
+    if (clickTimeout) {
+        clearTimeout(clickTimeout);
+        clickTimeout = null;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.round((event.clientX - rect.left) / 20) * 20;
+    const y = Math.round((event.clientY - rect.top) / 20) * 20;
+
+    let lineToRemove = -1;
+    for (let i = 0; i < allLines.length; i++) {
+        if (isPointOnPolyline(x, y, allLines[i])) {
+            lineToRemove = i;
+            break;
         }
-    });
-} 
+    }
+
+    if (lineToRemove !== -1) {
+        if(allLines.length > 0) checkConnectPoints(allLines[lineToRemove]);
+        allLines.splice(lineToRemove, 1);
+        drawPolyline();
+    }
+
+    // ライン上のダブルクリックでライン消去
+    if (isPointOnPolyline(x, y, currentLine)) {
+        currentLine = [];
+        drawPolyline();
+    }
+});
+
+// 別の配線ボタンの検出
+newWireButton.addEventListener('click', function() {
+    if (currentLine.length > 0) {
+        allLines.push([...currentLine]);
+        currentLine = [];
+    }
+    newLine = true;
+});
 
 // スイッチのリセット
 function switchReset() {

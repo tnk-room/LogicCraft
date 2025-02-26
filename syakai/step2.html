@@ -53,7 +53,7 @@
     </style>
 </head>
 
-<body onload="brython()">
+<body>
   <div class="contain">
     <header>
       <a class="header-logo" href="index.html">LogicCraft</a>
@@ -65,37 +65,122 @@
       <main>
         <h1>論理回路シミュレーション2</h1>
         <h3>論理素子の関数をコーディングしていこう！</h3>
-        <div id="editor" style="height: 600px; width: 100%;">def check_answer(func, input1, input2, expected):
-    try:
-        result = func(input1, input2)
-        assert result == expected
-        return "Test passed!"
-    except AssertionError:
-        return f"Test failed: {func.__name__}({input1}, {input2}) returned {result} instead of {expected}"
-    except Exception as e:
-        return f"Test failed with error: {e}"
-    except SyntaxError:
-        return "SyntaxError: Check your code for syntax errors."
-
+        <div id="editor" style="height: 600px; width: 100%;">
 def and_gate(input1, input2):
-    return input1 & input2
+    return input1 ? input2
 
 def or_gate(input1, input2):
-    return input1 | input2
+    return input1 ? input2
 
 def xor_gate(input1, input2):
-    return input1 ^ input2
+    return input1 ? input2
 
 def nand_gate(input1, input2):
-    return not (input1 & input2)
+    return int(? (input1 ? input2))
 
 def nor_gate(input1, input2):
-    return not (input1 | input2)
+    return int(? (input1 ? input2))
 
 def not_gate(input1):
-    return not input1
+    return int(? input1)
 
-check_answer(and_gate, 1, 1, 1)
+def xnor_gate(input1, input2):
+    return int(? (input1 ? input2))
+
+def half_adder(input1, input2):
+    sum_ = ?_gate(input1, input2)
+    carry = ?_gate(input1, input2)
+    return (sum_, carry)
+
+def full_adder(input1, input2, carry_in):
+    sum1, carry1 = half_adder(input1, input2)
+    final_sum, carry2 = half_adder(sum1, carry_in)
+    final_carry = or_gate(carry1, carry2)
+    return (final_sum, final_carry)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################
+#################いじるな危険####################
+#################################################
+
+def check_answer(func, input1, input2, expected):
+    if func.__name__ == "not_gate":
+        result = func(input1)
+    else:
+        result = func(input1, input2)
+    return 1 if result == expected else 0
+
+def test_gate(gate, inputs, expected_outputs):
+    return (check_answer(gate, inputs[0][0], inputs[0][1], expected_outputs[0]) +
+            check_answer(gate, inputs[1][0], inputs[1][1], expected_outputs[1]) +
+            check_answer(gate, inputs[2][0], inputs[2][1], expected_outputs[2]) +
+            check_answer(gate, inputs[3][0], inputs[3][1], expected_outputs[3]))
+
+def run_tests():
+    gates = [
+        (and_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1]),
+        (or_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1]),
+        (xor_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 0]),
+        (nand_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [1, 1, 1, 0]),
+        (nor_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0]),
+        (xnor_gate, [(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 1])
+    ]
+
+    results = [
+        f"{gate[0].__name__} => OK" if test_gate(gate[0], gate[1], gate[2]) == 4 else f"{gate[0].__name__} => NG"
+        for gate in gates
+    ]
+
+    correct_not = (check_answer(not_gate, 0, None, 1) +
+                    check_answer(not_gate, 1, None, 0))
+    results.append("not_gate => OK" if correct_not == 2 else "not_gate => NG")
+
+    # 半加算器のテスト
+    half_adder_tests = [
+        ((0, 0), (0, 0)),
+        ((0, 1), (1, 0)),
+        ((1, 0), (1, 0)),
+        ((1, 1), (0, 1))
+    ]
+    correct_half_adder = sum([1 if half_adder(inputs[0], inputs[1]) == expected else 0 for inputs, expected in half_adder_tests])
+    results.append("half_adder => OK" if correct_half_adder == 4 else "half_adder => NG")
+
+    # 全加算器のテスト
+    full_adder_tests = [
+        ((0, 0, 0), (0, 0)),
+        ((0, 1, 0), (1, 0)),
+        ((1, 0, 0), (1, 0)),
+        ((1, 1, 0), (0, 1)),
+        ((0, 0, 1), (1, 0)),
+        ((0, 1, 1), (0, 1)),
+        ((1, 0, 1), (0, 1)),
+        ((1, 1, 1), (1, 1))
+    ]
+    correct_full_adder = sum([1 if full_adder(inputs[0], inputs[1], inputs[2]) == expected else 0 for inputs, expected in full_adder_tests])
+    results.append("full_adder => OK" if correct_full_adder == 8 else "full_adder => NG")
+
+    results = "\n".join(results)
+
+    return results
+
+run_tests()
+
+
         </div>
         <input class="button" id="runBtn" type="button" value="Run" onclick="RunCode();" />
         <textarea id="output" style="width: 60%;" rows="6" disabled></textarea>
@@ -164,7 +249,7 @@ check_answer(and_gate, 1, 1, 1)
     var code = editor.getValue();
 
     function addToOutput(s) {
-      output.value += '>>>' + s + '\n';
+      output.value += '--------------------\n' + s + '\n--------------------\n';
     }
 
     async function main(){
