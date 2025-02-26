@@ -16,7 +16,6 @@ let Line = [];
 let isDrawing = false;
 let isDeleting = false;
 
-<<<<<<< HEAD
 var ws = new WebSocket("wss://raspberrypi.ddns.net:443/");
 ws.onopen = function () {
     ws.send('step3');
@@ -28,9 +27,7 @@ ws.onerror = function(error) {
 ws.onclose = function() {
     console.log("Websocket close");
 }
-=======
-var ws = new WebSocket("ws://192.168.10.46:5555/");
->>>>>>> f89055e89d4f48027b16774190327b4c252e452a
+// var ws = new WebSocket("ws://192.168.10.46:5555/");
 
 const inputPositions = {
     A: { x: 60, y: 130 },
