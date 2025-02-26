@@ -9,10 +9,37 @@
     <link rel="stylesheet" type="text/css" href="css/style_step3.css">
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script>
-        var ws = new WebSocket("ws://172.20.10.5:5555/");
-        ws.onopen = function () {
-            ws.send('step3');
-        };
+        var ws = new WebSocket("wss://raspberrypi.ddns.net:443/");
+
+        // WebSocketが接続されるまでリトライする方法（オプション）
+        function waitForOpenConnection(socket) {
+            return new Promise((resolve, reject) => {
+                const maxAttempts = 10; // 最大試行回数
+                let attempts = 0;
+
+                const interval = setInterval(() => {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        clearInterval(interval);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        reject(new Error("WebSocketがOPEN状態になりませんでした。"));
+                    }
+                    attempts++;
+                }, 100); // 100msごとに状態を確認
+            });
+        }
+
+        // 接続を待ってからメッセージを送信
+        waitForOpenConnection(ws)
+            .then(() => {
+                ws.send('step3');
+                console.log("接続確立後にメッセージを送信しました: step3");
+            })
+            .catch((error) => {
+                console.error("WebSocket接続の待機中にエラーが発生しました:", error);
+            });
+                
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logic Circuit Editor Base</title>
@@ -35,10 +62,10 @@
             background: #45454500;
             font-size: 20px;
             width: 130px;
-            height: 113px; 
+            height: 113px;
             border: none;
             appearance: none; /* 標準のスタイルを無効にする */
-            
+
         }
         #saveName {
             width: 90px;
@@ -61,7 +88,7 @@
             <a href="step2.html">step2</a>
             <a href="step3.html">step3</a>
         </header>
-        
+
         <div class="container">
             <main>
                 <h1>論理回路シミュレーション3</h1>
@@ -97,6 +124,16 @@
                                 </div>
                             </div>
                         </div>
+                    </li>
+                    <li>
+                        <button id="drawWiringModeButton">
+                            <img src="img/drawLine.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <button id="deleteWiringModeButton">
+                            <img src="img/disconnect.png" width="40" height="40">
+                        </button>
                     </li>
                     <li>
                         <div id="loadModal" class="modal">
@@ -158,7 +195,7 @@
                         <button id="eleButton3"  onclick="location.href='step3-rolemodel.html'">Role Model</button>
                     </li>
                 </ul>
-            
+
                 <button id="ledSwitchButton">LED</button>
 
 
@@ -193,10 +230,10 @@
                     </div>
                 </div>
                 <div class="input-container">
-                    <label for="partSelector">パーツを選択:</Dabel>
+                    <label for="partSelector">パーツを選択:</label>
                     <select id="partSelector">
                         <option value="program1">素子1</option>
-                        <option value="program2">素子2</oDtion>
+                        <option value="program2">素子2</option>
                         <option value="program3">素子3</option>
                         <option value="program4">素子4</option>
                         <option value="led1">LED1</option>

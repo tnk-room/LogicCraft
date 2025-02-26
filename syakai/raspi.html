@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket クライアント</title>
+</head>
+<body>
+    <h2>WebSocket クライアント</h2>
+    <div id="log"></div>
+    
+    <script>
+        function logMessage(message, isError = false) {
+            const logDiv = document.getElementById("log");
+            const msgElement = document.createElement("p");
+            msgElement.textContent = message;
+            if (isError) {
+                msgElement.style.color = "red";
+            }
+            logDiv.appendChild(msgElement);
+        }
+
+        const ws = new WebSocket("wss://raspberrypi.ddns.net/");
+
+        ws.onopen = () => {
+            console.log("✅ WebSocket 接続成功");
+            logMessage("✅ WebSocket 接続成功");
+        };
+
+        ws.onerror = (event) => {
+            console.error("❌ WebSocket エラー:", event);
+            logMessage(`❌ WebSocket エラー: ${JSON.stringify(event, null, 2)}`, true);
+        };
+
+        ws.onmessage = (msg) => {
+            console.log("📩 受信:", msg.data);
+            logMessage(`📩 メッセージ受信: ${msg.data}`);
+        };
+
+        ws.onclose = (event) => {
+            console.warn(`🔴 WebSocket 切断 (コード: ${event.code}, 理由: ${event.reason || "なし"}, クリーン終了: ${event.wasClean})`);
+            logMessage(`🔴 WebSocket 切断 (コード: ${event.code}, 理由: ${event.reason || "なし"}, クリーン終了: ${event.wasClean})`, true);
+        };
+    </script>
+</body>
+</html>

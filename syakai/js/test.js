@@ -19,7 +19,7 @@ const input1 = document.getElementById("input1");
                             gatesOutput.innerText = orResult ? "1" : "0";
                             break;
                         case 'xor':
-                            const xorResult = (isInput1Checked || isInput2Checked) && !(isInput1Checked && isInput2Checked);
+                            const xorResult = isInput1Checked ^ isInput2Checked;
                             gatesOutput.innerText = xorResult ? "1" : "0";
                             break;
                         case 'nand':
@@ -29,6 +29,14 @@ const input1 = document.getElementById("input1");
                         case 'nor':
                             const norResult = !(isInput1Checked || isInput2Checked);
                             gatesOutput.innerText = norResult ? "1" : "0";
+                            break;
+                        case 'xor':
+                            const xnorResult = !(isInput1Checked ^ isInput2Checked);
+                            gatesOutput.innerText = xnorResult ? "1" : "0";
+                            break;
+                        case 'xor':
+                            const notResult = !isInput1Checked;
+                            gatesOutput.innerText = notResult ? "1" : "0";
                             break;
                     }
 

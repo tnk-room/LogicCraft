@@ -32,6 +32,15 @@ select.onCanvas {
     border: none;
     appearance: none; /* 標準のスタイルを無効にする */
 }
+
+/* ボタン */
+.topbar-list li > button {
+    background-color: transparent;
+}
+button.push {
+    background-color: gray !important;
+}
+
 #saveName {
     display: none;/*非表示にする*/
     width: 90px;
@@ -90,8 +99,16 @@ select.onCanvas {
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
 }
+.modal-header h2 {
+    font-size: 2.5rem;
+}
 .modal-body {
     padding: 20px 0;
+    text-align: center;
+}
+.modal-body #modalLoadSelect {
+    height: 50px;
+    font-size: 25px;
 }
 .modal-footer {
     padding: 10px 0;

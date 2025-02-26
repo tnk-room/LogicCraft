@@ -7,10 +7,36 @@
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script>
-        var ws = new WebSocket("ws://172.20.10.5:5555/");
-        ws.onopen = function () {
-            ws.send('step1');
-        };
+        var ws = new WebSocket("ws://192.168.10.53:5555/");
+
+        // WebSocketが接続されるまでリトライする方法（オプション）
+        function waitForOpenConnection(socket) {
+            return new Promise((resolve, reject) => {
+                const maxAttempts = 10; // 最大試行回数
+                let attempts = 0;
+
+                const interval = setInterval(() => {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        clearInterval(interval);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        reject(new Error("WebSocketがOPEN状態になりませんでした。"));
+                    }
+                    attempts++;
+                }, 100); // 100msごとに状態を確認
+            });
+        }
+
+        // 接続を待ってからメッセージを送信
+        waitForOpenConnection(ws)
+            .then(() => {
+                ws.send('step1');
+                console.log("接続確立後にメッセージを送信しました: step1");
+            })
+            .catch((error) => {
+                console.error("WebSocket接続の待機中にエラーが発生しました:", error);
+            });
     </script>
 </head>
 <body>
@@ -184,6 +210,8 @@
                             <option value="xor">XOR</option>
                             <option value="nand">NAND</option>
                             <option value="nor">NOR</option>
+                            <option value="xnor">XNOR</option>
+                            <option value="not">NOT</option>
                         </select>
                         <button onclick="validateInputs()">
                             <img src="img/check.png" width="20" height="20">

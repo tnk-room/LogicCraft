@@ -13,8 +13,20 @@ const outputs = {LED1: 0, LED2: 0, LED3: 0, LED4: 0}; // 出力の値を保持�
 const outputsExp = {LED1: '', LED2: '', LED3: '', LED4: ''}; // 出力の論理式を保持するオブジェクト
 let Lines = [];
 let Line = [];
+let isDrawing = false;
+let isDeleting = false;
 
-var ws = new WebSocket("wss://192.168.10.46:5555/");
+var ws = new WebSocket("wss://raspberrypi.ddns.net:443/");
+ws.onopen = function () {
+    ws.send('step3');
+    console.log("Websocket success");
+}
+ws.onerror = function(error) {
+    console.log("Websocket error:", error);
+}
+ws.onclose = function() {
+    console.log("Websocket close");
+}
 
 const inputPositions = {
     A: { x: 60, y: 130 },
@@ -37,6 +49,26 @@ const log = "組み合わせ回路";
 const seq = "順序回路";
 const led = "LED";
 const seg = "7seg";
+
+// "drawWiringModeButton" ボタンにイベントリスナーを追加
+document.getElementById('drawWiringModeButton').addEventListener('click', function () {
+    canvas.classList.toggle('drawmode'); // drawmodeをトグル
+    canvas.classList.remove('deletemode'); // deletemodeを必ず削除
+    this.classList.toggle('push');
+    document.getElementById('deleteWiringModeButton').className = '';
+    isDeleting = false;
+    drawMode();
+});
+
+// "deleteWiringModeButton" ボタンにイベントリスナーを追加
+document.getElementById('deleteWiringModeButton').addEventListener('click', function () {
+    canvas.classList.toggle('deletemode'); // deletemodeをトグル
+    canvas.classList.remove('drawmode'); // drawmodeを必ず削除
+    this.classList.toggle('push'); // drawing クラスをトグル
+    document.getElementById('drawWiringModeButton').className = '';
+    isDeleting = true;
+    deleteMode();
+});
 
 //回路保存ポップアップ表示
 document.getElementById('saveButton').addEventListener('click', function() {
@@ -197,20 +229,21 @@ function handleInputChange(event, key) {
     let message = '';
     if (ledSwitchText.textContent === led) {
         if(inputs[key] == 0) message = `input${key}_off`;
-        else message = `input${key}_on`;   
-        ws.send(message);
+        else message = `input${key}_on`;
+        // ws.send(message);
         console.log("送信:segED_LED");
         console.log(message);
     } else {
         if(inputs[key] == 0) message = `input${key}_off`;
         else message = `input${key}_on`;
-        ws.send(message); 
+        // ws.send(message);
         console.log("送信:segED_seg");
         console.log(message);
     }
     drawPolyline();
     changeValue();
-}   
+    changeValue();
+}
 
 // doButtonのクリックイベント
 function handleDoButtonClick() {
@@ -224,19 +257,15 @@ function handleDoButtonClick() {
     for (const input of inputC) if (input.checked) inputs.C = parseInt(input.value);
     for (const input of inputD) if (input.checked) inputs.D = parseInt(input.value);
 
-    drawPolyline();
     changeValue();
     drawPolyline();
     changeValue();
+    drawPolyline();
 }
 
 // 初期状態の確認とリスナーの追加
-if (switchText.textContent === log) {
-    console.log(switchText.textContent);
-    addInputListeners();
-} else {
-    doButton.style.display = 'inline-block';
-}
+if (switchText.textContent === log) addInputListeners();
+else doButton.style.display = 'inline-block';
 
 // スイッチボタンのクリックイベント
 switchButton.addEventListener('click', function() {
@@ -255,12 +284,12 @@ switchButton.addEventListener('click', function() {
 ledSwitchButton.addEventListener('click', function() {
     if (ledSwitchText.textContent === led) {
         ledSwitchText.textContent = seg;
-        ws.send('segED_seg');
+        // ws.send('segED_seg');
         console.log("送信:segED_seg");
 
     } else {
         ledSwitchText.textContent = led;
-        ws.send('segED_LED');
+        // ws.send('segED_LED');
         console.log("送信:segED_LED");
     }
 });
@@ -272,7 +301,7 @@ doButton.addEventListener('click', handleDoButtonClick);
 function imgChange(id, fname){
     const frame = componentFrames.find(frame => frame.id === id);
     if (!frame) return;
-    
+
     let imageSrc;
     switch (fname) {
         case '':
@@ -392,25 +421,31 @@ function calculateOutput(frame) {
     if(frame.outputLocate.includes('LED1')) {
         outputsExp.LED1 = frame.outputValue;
         outputs.LED1 = frame.outputValue1 ? 1 : 0;
-        message = `output1_${outputs.LED1}`;
+        if (ledSwitchText.textContent === led) message = `output1_${outputs.LED1}`;
     }
     if(frame.outputLocate.includes('LED2')) {
         outputsExp.LED2 = frame.outputValue;
         outputs.LED2 = frame.outputValue1 ? 1 : 0;
-        message = `output2_${outputs.LED2}`;
+        if (ledSwitchText.textContent === led) message = `output2_${outputs.LED2}`;
     }
     if(frame.outputLocate.includes('LED3')) {
         outputsExp.LED3 = frame.outputValue;
         outputs.LED3 = frame.outputValue1 ? 1 : 0;
-        message = `output3_${outputs.LED3}`;
+        if (ledSwitchText.textContent === led) message = `output3_${outputs.LED3}`;
     }
     if(frame.outputLocate.includes('LED4')) {
         outputsExp.LED4 = frame.outputValue;
         outputs.LED4 = frame.outputValue1 ? 1 : 0;
-        message = `output4_${outputs.LED4}`;
+        if (ledSwitchText.textContent === led) message = `output4_${outputs.LED4}`;
+    }  
+
+    let bitotal = 0;
+    if(ledSwitchText.textContent !== led){
+        bitotal = outputs.LED1 + outputs.LED2 * 2 + outputs.LED3 * 4 + outputs.LED4 * 8;
+        message = `seg_${bitotal}`;
+        // ws.send(message);
+        console.log(message);
     }
-    ws.send(message);
-    console.log(message);
     drawLEDs();
 }
 
@@ -598,79 +633,183 @@ function drawLEDs() {
     ctx.fill();
 }
 
-// クリック検出
-canvas.addEventListener('click', function(event) {
-    if (clickTimeout) {
-        clearTimeout(clickTimeout);
-        clickTimeout = null;
-    }
+// // クリック検出
+// canvas.addEventListener('click', function(event) {
+//     if (clickTimeout) {
+//         clearTimeout(clickTimeout);
+//         clickTimeout = null;
+//     }
 
-    clickTimeout = setTimeout(function() {
+//     clickTimeout = setTimeout(function() {
+//         const rect = canvas.getBoundingClientRect();
+//         const x = Math.round((event.clientX - rect.left) / 20) * 20;
+//         const y = Math.round((event.clientY - rect.top) / 20) * 20;
+
+//         if (newLine) {
+//             if (currentLine.length > 0) {
+//                 allLines.push([...currentLine]);
+//             }
+//             currentLine = [];
+//             newLine = false;
+//         }
+
+//         if (!isPointInComponentFrame(x, y) && (currentLine.length === 0 || !isLineIntersectingComponent(currentLine[currentLine.length - 1], { x, y }))) {
+//             if(currentLine.length > 0) judgeInput(currentLine[currentLine.length - 1], { x, y });
+//             currentLine.push({ x, y });
+//             if(Line.s != null && Line.e != null) {
+//                 Lines.push(Line);
+//                 newWireButton.click();
+//                 Line = [];
+//             }
+//             drawPolyline();
+//         }
+//     }, 250); // ダブルクリックは250ms以内
+// });
+
+// // ダブルクリック検出
+// canvas.addEventListener('dblclick', function(event) {
+//     if (clickTimeout) {
+//         clearTimeout(clickTimeout);
+//         clickTimeout = null;
+//     }
+
+//     const rect = canvas.getBoundingClientRect();
+//     const x = Math.round((event.clientX - rect.left) / 20) * 20;
+//     const y = Math.round((event.clientY - rect.top) / 20) * 20;
+
+//     let lineToRemove = -1;
+//     for (let i = 0; i < allLines.length; i++) {
+//         if (isPointOnPolyline(x, y, allLines[i])) {
+//             lineToRemove = i;
+//             break;
+//         }
+//     }
+
+//     if (lineToRemove !== -1) {
+//         checkConnectPoints(allLines[lineToRemove]);
+//         allLines.splice(lineToRemove, 1);
+//         drawPolyline();
+//     }
+
+//     // ライン上のダブルクリックでライン消去
+//     if (isPointOnPolyline(x, y, currentLine)) {
+//         currentLine = [];
+//         drawPolyline();
+//     }
+// });
+
+//線描画モード
+function drawMode() {
+    // 描画の開始地点と状態を保持する変数
+    let startX, startY;
+    let clickCount = 0; // クリック回数をカウントする変数
+    isDrawing = false;
+    
+    // マウス押下時に描画開始または次の直線を描画
+    canvas.addEventListener("mousedown", (event) => {
         const rect = canvas.getBoundingClientRect();
         const x = Math.round((event.clientX - rect.left) / 20) * 20;
         const y = Math.round((event.clientY - rect.top) / 20) * 20;
-
-        if (newLine) {
-            if (currentLine.length > 0) {
+    
+        if (!isDrawing) {
+             // 初回クリックで始点を設定し、描画モードに入る
+            if(startX == x && startY == y) {
+                isDrawing = false;
+            }else{
+                startX = x;
+                startY = y;
+                isDrawing = true;
+                clickCount = 1; // 1回目のクリックとカウント
+                currentLine.push({ x: startX, y: startY });
                 allLines.push([...currentLine]);
+                drawPolyline();
             }
-            currentLine = [];
-            newLine = false;
-        }
-
-        if (!isPointInComponentFrame(x, y) && (currentLine.length === 0 || !isLineIntersectingComponent(currentLine[currentLine.length - 1], { x, y }))) {
-            if(currentLine.length > 0) judgeInput(currentLine[currentLine.length - 1], { x, y });
+        } else {
+            // 2回目のクリックで新しい線を確定描画
+            clickCount++;
+             
+             if (!isLineIntersectingComponent(currentLine[currentLine.length - 1], { x, y })) {
+                if(currentLine.length > 0) judgeInput(currentLine[currentLine.length - 1], { x, y });
+                currentLine.push({ x, y });
+            }
+                
             currentLine.push({ x, y });
-            if(Line.s != null && Line.e != null) {
-                Lines.push(Line);
-                newWireButton.click();
-                Line = [];
+             // 同じ座標でのクリックで描画モードを終了
+            if (startX == x && startY == y) {
+                if(clickCount == 1) clickCount = 1;
+                isDrawing = false;
+                allLines.push([...currentLine]);
+                currentLine = [];
             }
+    
+             // 次の直線の始点を更新
+            startX = x;
+            startY = y;
             drawPolyline();
         }
-    }, 250); // ダブルクリックは250ms以内
-});
+    });
+    
+     // マウスを動かした時の処理（リアルタイムで仮のラインを表示）
+    canvas.addEventListener("mousemove", (e) => {
+        if (!isDrawing) return;
+    
+         // 現在のマウス位置を仮の終点として描画
+        const endX = e.offsetX;
+        const endY = e.offsetY;
+    
+         // キャンバスをクリアして過去の線を再描画
+        drawPolyline();
+    
+         // 仮の線を描画
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.5)"; // 仮の線を半透明にする
+        ctx.stroke();
+    });
+    
+     // マウスがキャンバス外に出たときに描画を終了
+    canvas.addEventListener("mouseleave", () => {
+        isDrawing = false;
+         clickCount = 0; // カウントをリセット
+    });
+}
 
-// ダブルクリック検出
-canvas.addEventListener('dblclick', function(event) {
-    if (clickTimeout) {
-        clearTimeout(clickTimeout);
-        clickTimeout = null;
-    }
-
-    const rect = canvas.getBoundingClientRect();
-    const x = Math.round((event.clientX - rect.left) / 20) * 20;
-    const y = Math.round((event.clientY - rect.top) / 20) * 20;
-
-    let lineToRemove = -1;
-    for (let i = 0; i < allLines.length; i++) {
-        if (isPointOnPolyline(x, y, allLines[i])) {
-            lineToRemove = i;
-            break;
+//
+function deleteMode() {
+    canvas.addEventListener('dblclick', function(event) {
+        if(isDeleting){
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+                clickTimeout = null;
+            }
+    
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.round((event.clientX - rect.left) / 20) * 20;
+            const y = Math.round((event.clientY - rect.top) / 20) * 20;
+    
+            let lineToRemove = -1;
+            for (let i = 0; i < allLines.length; i++) {
+                if (isPointOnPolyline(x, y, allLines[i])) {
+                    lineToRemove = i;
+                    break;
+                }
+            }
+    
+            if (lineToRemove !== -1) {
+                checkConnectPoints(allLines[lineToRemove]);
+                allLines.splice(lineToRemove, 1);
+                drawPolyline();
+            }
+    
+            // ライン上のダブルクリックでライン消去
+            if (isPointOnPolyline(x, y, currentLine)) {
+                currentLine = [];
+                drawPolyline();
+            }
         }
-    }
-
-    if (lineToRemove !== -1) {
-        if(allLines.length > 0) checkConnectPoints(allLines[lineToRemove]);
-        allLines.splice(lineToRemove, 1);
-        drawPolyline();
-    }
-
-    // ライン上のダブルクリックでライン消去
-    if (isPointOnPolyline(x, y, currentLine)) {
-        currentLine = [];
-        drawPolyline();
-    }
-});
-
-// 別の配線ボタンの検出
-newWireButton.addEventListener('click', function() {
-    if (currentLine.length > 0) {
-        allLines.push([...currentLine]);
-        currentLine = [];
-    }
-    newLine = true;
-});
+    });
+} 
 
 // スイッチのリセット
 function switchReset() {
@@ -688,16 +827,26 @@ function switchReset() {
     });
 
     drawPolyline();
-    for(let i=0;i<componentFrames.length;i++) {
-        let frame = componentFrames[i];
-        calculateOutput(frame);
-        if(frame.outputLocate.includes('LED1')) message = `output1_${outputs.LED1}`;
-        if(frame.outputLocate.includes('LED2')) message = `output2_${outputs.LED2}`;
-        if(frame.outputLocate.includes('LED3')) message = `output3_${outputs.LED3}`;
-        if(frame.outputLocate.includes('LED4')) message = `output4_${outputs.LED4}`;
-        ws.send(message);
-        console.log(message);
-    }
+    ws.onopen = function () {
+        console.log("WebSocket接続が確立しました。");
+        // WebSocketがOPEN状態であることを確認してメッセージを送信
+        for (let i = 0; i < componentFrames.length; i++) {
+            let frame = componentFrames[i];
+            calculateOutput(frame);
+    
+            let message = "";
+            if (frame.outputLocate.includes('LED1')) message = `output1_${outputs.LED1}`;
+            if (frame.outputLocate.includes('LED2')) message = `output2_${outputs.LED2}`;
+            if (frame.outputLocate.includes('LED3')) message = `output3_${outputs.LED3}`;
+            if (frame.outputLocate.includes('LED4')) message = `output4_${outputs.LED4}`;
+    
+            if (message) {
+                // ws.send(message); // メッセージを送信
+                console.log("送信されたメッセージ:", message);
+            }
+        }
+    };
+    
 }
 
 // 回路クリアボタンの検出
@@ -710,14 +859,29 @@ function checkConnectPoints(points){
     // A,B,C,D
     console.log(points);
     if(points[0] != null){
-        for(let y=130;y<=610;y+=160){
-            if(points[0].x === 60 && points[0].y === y) {
+        for(let y=120;y<=600;y+=160){
+            let x;
+            x=80;
+            if(points[0].x === x && points[0].y === y) {
                 for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
                     const com = componentFrames[i];
                     if(Math.abs(points[points.length-1].x - com.inputs[j].x) < 20 && Math.abs(points[points.length-1].y - com.inputs[j].y) < 20) {
                         com.input[j] = '';
                         com.inputLocate[j] = '';
                         com.inputValue[j] = 0;
+                        calculateOutput(com);
+                    }
+                }
+            }
+            x=1080;
+            if(points[points.length-1].x === x && points[points.length-1].y === y) {
+                for(let i=0;i<4;i++) {
+                    const com = componentFrames[i];
+                    if(Math.abs(points[0].x - com.output.x) < 20 && Math.abs(points[0].y - com.output.y) < 20) {
+                        if(y === 120) com.outputLocate.splice('LED1', 1);
+                        if(y === 280) com.outputLocate.splice('LED2', 1);
+                        if(y === 340) com.outputLocate.splice('LED3', 1);
+                        if(y === 600) com.outputLocate.splice('LED4', 1);
                         calculateOutput(com);
                     }
                 }
@@ -847,11 +1011,11 @@ function changeValue(){
             }
             for(let k=0;k<componentFrames.length;k++){
                 if(com.inputLocate[j] === k) {
-                    com.input[j] = componentFrames[com.inputLocate[j]].outputValue;
-                    com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
+                    com.input[j] = componentFrames[k].outputValue;
+                    com.inputValue[j] = componentFrames[k].outputValue1;
                     if(com.type != "") calculateOutput(com);
                 }
-            } 
+            }
         }
     }
 }
@@ -944,7 +1108,7 @@ function drawPolyline() {
 function generateTruthTable() {
     const selectedPartId = document.getElementById('partSelector').value;
     // console.log('Selected Part ID:', selectedPartId); // デバッグ用
-    
+
     selectedPart = componentFrames.find(frame => frame.id === selectedPartId);
     if(selectedPartId == "led1" || selectedPartId == "led2" || selectedPartId == "led3" || selectedPartId == "led4") {
         selectedPart = componentFrames.find(frame => {
@@ -970,7 +1134,7 @@ function generateTruthTable() {
     else if(selectedPart == "led4") expression = outputsExp.LED4;
     else expression = selectedPart.outputValue;
     // console.log('Initial Expression:',  expression); // デバッグ用
-    
+
     const usedVariables = ['A', 'B', 'C', 'D'].filter(variable => {
         const regex = new RegExp(`\\b${variable}\\b`);
         return regex.test(expression);

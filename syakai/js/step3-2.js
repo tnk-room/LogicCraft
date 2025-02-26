@@ -14,6 +14,8 @@ const outputsExp = {LED1: '', LED2: '', LED3: '', LED4: ''}; // 出力の論理�
 let Lines = [];
 let Line = [];
 
+var ws = new WebSocket("ws://192.168.10.46:5555/");
+
 const inputPositions = {
     A: { x: 60, y: 130 },
     B: { x: 60, y: 290 },
@@ -29,9 +31,12 @@ const outputPositions = {
 };
 
 const switchText = document.getElementById('switchButton');
+const ledSwitchText = document.getElementById('ledSwitchButton');
 const doButton = document.getElementById('doButton');
 const log = "組み合わせ回路";
 const seq = "順序回路";
+const led = "LED";
+const seg = "7seg";
 
 //ポップアップ表示
 document.getElementById('saveButton').addEventListener('click', function() {
@@ -190,9 +195,24 @@ function removeInputListeners() {
 // handleInputChange関数
 function handleInputChange(event, key) {
     inputs[key] = event.target.checked ? 0 : 1;
+    let message = '';
+    if (ledSwitchText.textContent === led) {
+        if(inputs[key] == 0) message = `input${key}_off`;
+        else message = `input${key}_on`;   
+        // ws.send(message);
+        // console.log("送信:segED_LED");
+        // console.log(message);
+    } else {
+        if(inputs[key] == 0) message = `input${key}_off`;
+        else message = `input${key}_on`;
+        ws.send(message); 
+        console.log("送信:segED_seg");
+        console.log(message);
+    }
     drawPolyline();
     changeValue();
-}   
+    changeValue();
+}  
 
 // doButtonのクリックイベント
 function handleDoButtonClick() {
@@ -228,6 +248,19 @@ switchButton.addEventListener('click', function() {
         addInputListeners();
     }
     switchReset();
+});
+
+ledSwitchButton.addEventListener('click', function() {
+    if (ledSwitchText.textContent === led) {
+        ledSwitchText.textContent = seg;
+        ws.send('segED_seg');
+        console.log("送信:segED_seg");
+
+    } else {
+        ledSwitchText.textContent = led;
+        ws.send('segED_LED');
+        console.log("送信:segED_LED");
+    }
 });
 
 // 常にdoButtonのクリックイベントを設定
@@ -356,19 +389,27 @@ function calculateOutput(frame) {
     if(frame.outputLocate.includes('LED1')) {
         outputsExp.LED1 = frame.outputValue;
         outputs.LED1 = frame.outputValue1 ? 1 : 0;
+        message = `output1_${outputs.LED1}`;
     }
     if(frame.outputLocate.includes('LED2')) {
         outputsExp.LED2 = frame.outputValue;
         outputs.LED2 = frame.outputValue1 ? 1 : 0;
+        message = `output2_${outputs.LED2}`;
     }
     if(frame.outputLocate.includes('LED3')) {
         outputsExp.LED3 = frame.outputValue;
         outputs.LED3 = frame.outputValue1 ? 1 : 0;
+        message = `output3_${outputs.LED3}`;
     }
     if(frame.outputLocate.includes('LED4')) {
         outputsExp.LED4 = frame.outputValue;
         outputs.LED4 = frame.outputValue1 ? 1 : 0;
+        message = `output4_${outputs.LED4}`;
     }
+    // if(message!=''){
+    //     ws.send(message);
+    //     console.log(message);
+    // }
     drawLEDs();
 }
 
@@ -651,7 +692,16 @@ function switchReset() {
     });
 
     drawPolyline();
-    for(let i=0;i<componentFrames.length;i++) calculateOutput(componentFrames[i]);
+    for(let i=0;i<componentFrames.length;i++) {
+        let frame = componentFrames[i];
+        calculateOutput(frame);
+        if(frame.outputLocate.includes('LED1')) message = `output1_${outputs.LED1}`;
+        if(frame.outputLocate.includes('LED2')) message = `output2_${outputs.LED2}`;
+        if(frame.outputLocate.includes('LED3')) message = `output3_${outputs.LED3}`;
+        if(frame.outputLocate.includes('LED4')) message = `output4_${outputs.LED4}`;
+        ws.send(message);
+        console.log(message);
+    }
 }
 
 //回路クリアボタンの検出
@@ -664,8 +714,10 @@ function checkConnectPoints(points){
     // A,B,C,D
     console.log(points);
     if(points[0] != null){
+        let x;
+        x = 80;
         for(let y=120;y<=600;y+=160){
-            if(points[0].x === 80 && points[0].y === y) {
+            if(points[0].x === x && points[0].y === y) {
                 for(let i=0;i<4;i++) for(let j=0;j<2;j++) {
                     const com = componentFrames[i];
                     if(Math.abs(points[points.length-1].x - com.inputs[j].x) < 20 && Math.abs(points[points.length-1].y - com.inputs[j].y) < 20) {
@@ -674,6 +726,19 @@ function checkConnectPoints(points){
                         com.inputValue[j] = 0;
                         calculateOutput(com);
                     }
+                }
+            }
+        }
+        x=1480;
+        if(points[points.length-1].x === x && points[points.length-1].y === y) {
+            for(let i=0;i<4;i++) {
+                const com = componentFrames[i];
+                if(Math.abs(points[0].x - com.output.x) < 20 && Math.abs(points[0].y - com.output.y) < 20) {
+                    if(y === 120) com.outputLocate.splice('LED1', 1);
+                    if(y === 280) com.outputLocate.splice('LED2', 1);
+                    if(y === 340) com.outputLocate.splice('LED3', 1);
+                    if(y === 600) com.outputLocate.splice('LED4', 1);
+                    calculateOutput(com);
                 }
             }
         }
@@ -805,8 +870,7 @@ function changeValue(){
                     com.inputValue[j] = componentFrames[com.inputLocate[j]].outputValue1;
                     if(com.type != "") calculateOutput(com);
                 }
-            }
-            
+            } 
         }
     }
 }
@@ -864,7 +928,6 @@ function judgeInput(p1, p2) {
         outputs.LED4 = componentFrames[Line.s].outputValue1;
         componentFrames[Line.s].outputLocate.push('LED4');
     }
-    console.log(x1 + " " + y1);
 }
 
 // 一連の回路図を描く
