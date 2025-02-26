@@ -2,16 +2,44 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>step1 ー 論理回路を知ろう！ ー</title>
+<title>step3 ー 論理回路を作成しよう！ ー</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style_step3.css">
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script>
-        var ws = new WebSocket("ws://172.20.10.5:5555/");
-        ws.onopen = function () {
-            ws.send('step1');
-        };
+        var ws = new WebSocket("wss://raspberrypi.ddns.net:443/");
+
+        // WebSocketが接続されるまでリトライする方法（オプション）
+        function waitForOpenConnection(socket) {
+            return new Promise((resolve, reject) => {
+                const maxAttempts = 10; // 最大試行回数
+                let attempts = 0;
+
+                const interval = setInterval(() => {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        clearInterval(interval);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        reject(new Error("WebSocketがOPEN状態になりませんでした。"));
+                    }
+                    attempts++;
+                }, 100); // 100msごとに状態を確認
+            });
+        }
+
+        // 接続を待ってからメッセージを送信
+        waitForOpenConnection(ws)
+            .then(() => {
+                ws.send('step3');
+                console.log("接続確立後にメッセージを送信しました: step3");
+            })
+            .catch((error) => {
+                console.error("WebSocket接続の待機中にエラーが発生しました:", error);
+            });
+                
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logic Circuit Editor Base</title>
@@ -24,6 +52,32 @@
         button {
             margin-top: 10px;
         }
+        #canvasContainer, #canvasContainer2 {
+            position: relative;
+            margin-top: 10px;
+        }
+        select.onCanvas {
+            position: absolute;
+            z-index: 10;  /* canvasの上に表示するため */
+            background: #45454500;
+            font-size: 20px;
+            width: 130px;
+            height: 113px;
+            border: none;
+            appearance: none; /* 標準のスタイルを無効にする */
+
+        }
+        #saveName {
+            width: 90px;
+            height: 40px;
+            font-size: 13px;
+        }
+        .tab {
+            background: none;
+        }
+        .tab.active{
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -33,98 +87,166 @@
             <a href="step1.html">step1</a>
             <a href="step2.html">step2</a>
             <a href="step3.html">step3</a>
-            <a href="step4.html">step4</a>
         </header>
-        
+
         <div class="container">
             <main>
                 <h1>論理回路シミュレーション3</h1>
                 <h3>論理回路を描いてみよう</h3>
-                <canvas id="gridCanvas" width="1200%" height="720"></canvas>
-                
-                <button id="newWireButton">別の配線</button>
-                
-                <div class="input-container">
-                    <label class="input-label">入力A: </label>
-                    <label><input type="radio" name="inputA" value="0" checked> 0</label>
-                    <label><input type="radio" name="inputA" value="1"> 1</label>
-                </div>
-                <div class="input-container">
-                    <label class="input-label">入力B: </label>
-                    <label><input type="radio" name="inputB" value="0" checked> 0</label>
-                    <label><input type="radio" name="inputB" value="1"> 1</label>
-                </div>
-                <div class="input-container">
-                    <label class="input-label">入力C: </label>
-                    <label><input type="radio" name="inputC" value="0" checked> 0</label>
-                    <label><input type="radio" name="inputC" value="1"> 1</label>
-                </div>
-        
-            <select name="channel" size="1" id="gates-select1" onchange="imgChange('program1', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
-            
-            <select name="channel" size="1" id="gates-select2" onchange="imgChange('program2', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
-            
-            <select name="channel" size="1" id="gates-select3" onchange="imgChange('program3', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
-            
-            <select name="channel" size="1" id="gates-select4" onchange="imgChange('program4', this.value)">
-                <option value=""></option>
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="xor">XOR</option>
-                <option value="nand">NAND</option>
-                <option value="nor">NOR</option>
-                <option value="xnor">XNOR</option>
-                <!-- <option value="not">NOT</option> -->
-            </select>
+                <!-- <div class="switch-button">
+                    <input class="switch-button-checkbox" type="checkbox" id="switchButtonCheckbox">
+                    <label class="switch-button-label" for="switchButtonCheckbox"><span id="switchButton" class="switch-button-label-span">組み合わせ回路</span></label>
+                </div> -->
+                <button id="switchButton">組み合わせ回路</button>
+                <ul class = "topbar-list">
+                    <li>
+                        <input type="text" id="saveName" placeholder="保存名を入力">
+                        <button id="saveButton">
+                            <img src="img/saveicon.png" width="40" height="40">
+                        </button>
+                    </li>
 
-            <div class="input-container">
-                <label for="partSelector">パーツを選択:</label>
-                <select id="partSelector">
-                    <option value="program1">素子1</option>
-                    <option value="program2">素子2</option>
-                    <option value="program3">素子3</option>
-                    <option value="program4">素子4</option>
-                    <option value="led1">LED1</option>
-                    <option value="led2">LED2</option>
-                    <option value="led3">LED3</option>
-                </select>
-                <button onclick="generateTruthTable()">真理値表の表示</button>
-            </div>
-            <div id="truthTable"></div>
+                    <div id = "overlay" class = "overlay"></div>
 
+                    <li>
+                        <div id="saveModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <div class="modal-header">
+                                    <h2>保存名を入力してください</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" id="modalSaveName" placeholder="保存名を入力">
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary close">キャンセル</button>
+                                    <button id="saveModalButton" class="btn btn-primary">保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <button id="drawWiringModeButton">
+                            <img src="img/drawLine.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <button id="deleteWiringModeButton">
+                            <img src="img/disconnect.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <div id="loadModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <div class="modal-header">
+                                    <h2>復元する回路を選択してください</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <select id="modalLoadSelect"></select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary close">キャンセル</button>
+                                    <button id="loadModalButton" class="btn btn-primary">復元</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <select id="loadSelect" style="display: none;"></select>
+                        <button id="loadButton">
+                            <img src="img/restoration.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <button id="clearButton">
+                            <img src="img/clear.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <div id="deleteModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <div class="modal-header">
+                                    <h2>削除する回路を選択してください</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <select id="modalDeleteSelect"></select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary close">キャンセル</button>
+                                    <button id="deleteModalButton" class="btn btn-primary">削除</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <button id="deleteButton">
+                            <img src="img/garbagecan.png" width="40" height="40">
+                        </button>
+                    </li>
+                    <li>
+                        <button id="eleButton1"  onclick="location.href='step3.html'">2×2</button>
+                    </li>
+                    <li>
+                        <button id="eleButton2"  onclick="location.href='step3-2.html'">4×4</button>
+                    </li>
+                    <li>
+                        <button id="eleButton3"  onclick="location.href='step3-rolemodel.html'">Role Model</button>
+                    </li>
+                </ul>
+
+                <button id="ledSwitchButton">LED</button>
+
+
+                <div id="canvasContainer">
+                    <canvas id="gridCanvas" width="1200" height="720"></canvas>
+                </div>
+                <button id="doButton" style="display: none;">実行</button>
+                <button id="newWireButton" style="display: none;">別の配線</button>
+                <button id="resetButton" style="display: none;">スイッチリセット</button>
+                <br>
+                <div id="loadText"></div>
+                <div class="inputs">
+                    <div class="input">
+                        A
+                        <input type="checkbox" name="inputA" id="inputA"/>
+                        <label class="toggle" for="inputA"></label>
+                    </div>
+                    <div class="input">
+                        B
+                        <input type="checkbox" name="inputB" id="inputB"/>
+                        <label class="toggle" for="inputB"></label>
+                    </div>
+                    <div class="input">
+                        C
+                        <input type="checkbox" name="inputC" id="inputC"/>
+                        <label class="toggle" for="inputC"></label>
+                    </div>
+                    <div class="input">
+                        D
+                        <input type="checkbox" name="inputD" id="inputD"/>
+                        <label class="toggle" for="inputD"></label>
+                    </div>
+                </div>
+                <div class="input-container">
+                    <label for="partSelector">パーツを選択:</label>
+                    <select id="partSelector">
+                        <option value="program1">素子1</option>
+                        <option value="program2">素子2</option>
+                        <option value="program3">素子3</option>
+                        <option value="program4">素子4</option>
+                        <option value="led1">LED1</option>
+                        <option value="led2">LED2</option>
+                        <option value="led3">LED3</option>
+                        <option value="led4">LED4</option>
+                    </select>
+                    <button onclick="generateTruthTable()">真理値表の表示</button>
+                </div>
+                <div id="truthTable"></div>
             </main>
         <div>
-    
     </div>
-    
-    <script type="text/javascript" src="js/step3.js"></script>
-
+    <script type="text/javascript" src="obfuscatedjs/step3.obfuscated.js" defer></script>
 </body>
 </html>

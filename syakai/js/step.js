@@ -241,10 +241,11 @@ function validateInputs() {
 
     // 行ごとの計算と検証
     for (let row = 0; row < 4; row++) {
-        const a = parseInt(document.querySelector(`.userInput[data-row="${row}"][data-type="A"]`).value, 10);
-        const b = parseInt(document.querySelector(`.userInput[data-row="${row}"][data-type="B"]`).value, 10);
+        const a = document.querySelector(`.userInput[data-row="${row}"][data-type="A"]`).getAttribute('value');
+        const b = document.querySelector(`.userInput[data-row="${row}"][data-type="B"]`).getAttribute('value');
         const output = parseInt(document.querySelector(`.userInput[data-row="${row}"][data-type="out"]`).value, 10);
         const calculatedValue = calculate(a, b, selectGate);
+        console.log(a, b, output, calculatedValue);
 
         const resultElement = document.querySelector(`.result[data-row="${row}"]`);
 

@@ -5,12 +5,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/simcir.css">
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script>
-        var ws = new WebSocket("ws://172.20.10.5:5555/");
-        ws.onopen = function () {
-            ws.send('step1');
-        };
+        var ws = new WebSocket("ws://192.168.10.53:5555/");
+
+        // WebSocketが接続されるまでリトライする方法（オプション）
+        function waitForOpenConnection(socket) {
+            return new Promise((resolve, reject) => {
+                const maxAttempts = 10; // 最大試行回数
+                let attempts = 0;
+
+                const interval = setInterval(() => {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        clearInterval(interval);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        reject(new Error("WebSocketがOPEN状態になりませんでした。"));
+                    }
+                    attempts++;
+                }, 100); // 100msごとに状態を確認
+            });
+        }
+
+        // 接続を待ってからメッセージを送信
+        waitForOpenConnection(ws)
+            .then(() => {
+                ws.send('step1');
+                console.log("接続確立後にメッセージを送信しました: step1");
+            })
+            .catch((error) => {
+                console.error("WebSocket接続の待機中にエラーが発生しました:", error);
+            });
     </script>
 </head>
 <body>
@@ -20,7 +46,6 @@
             <a href="step1.html">step1</a>
             <a href="step2.html">step2</a>
             <a href="step3.html">step3</a>
-            <a href="step4.html">step4</a>
         </header>
         <div class="container">
             <main>
@@ -48,7 +73,7 @@
                         <div class="gate-select">
                             <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
                             <p>
-                                <select name="channel" size="1" id="gates-select1" onchange="imgChange1(this, 'program1')">
+                                <select name="channel" size="1" id="gates-select1" onchange="imgChanges(this, 'program1')">
                                     <option value="and">AND</option>
                                     <option value="or">OR</option>
                                     <option value="xor">XOR</option>
@@ -83,7 +108,7 @@
                         <div class="gate-select">
                             <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
                             <p>
-                                <select name="channel" size="1" id="gates-select2-1" onchange="imgChange2(this, 'program2')">
+                                <select name="channel" size="1" id="gates-select2-1" onchange="imgChanges(this, 'program2')">
                                     <option value="and">AND</option>
                                     <option value="or">OR</option>
                                     <option value="xor">XOR</option>
@@ -95,7 +120,7 @@
                             </p>
                             <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
                             <p>
-                                <select name="channel" size="1" id="gates-select2-2" onchange="imgChange3(this, 'program3')">
+                                <select name="channel" size="1" id="gates-select2-2" onchange="imgChanges(this, 'program3')">
                                     <option value="and">AND</option>
                                     <option value="or">OR</option>
                                     <option value="xor">XOR</option>
@@ -134,7 +159,7 @@
                         <div class="gate-select">
                              <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
                             <p>
-                                <select name="channel" size="1" id="gates-select3-1" onchange="imgChange4(this, 'program4')">
+                                <select name="channel" size="1" id="gates-select3-1" onchange="imgChanges(this, 'program4')">
                                     <option value="and">AND</option>
                                     <option value="or">OR</option>
                                     <option value="xor">XOR</option>
@@ -146,7 +171,7 @@
                             </p>
                             <!-- ドロップダウンメニューが変更されたら関数へ値を渡す -->
                             <p>
-                                <select name="channel" size="1" id="gates-select3-2" onchange="imgChange5(this, 'program5')">
+                                <select name="channel" size="1" id="gates-select3-2" onchange="imgChanges(this, 'program5')">
                                     AND
                                     <option value="and">AND</option>
                                     <option value="or">OR</option>
@@ -185,7 +210,12 @@
                             <option value="xor">XOR</option>
                             <option value="nand">NAND</option>
                             <option value="nor">NOR</option>
+                            <option value="xnor">XNOR</option>
+                            <option value="not">NOT</option>
                         </select>
+                        <button onclick="validateInputs()">
+                            <img src="img/check.png" width="20" height="20">
+                        </button>
                     </div>
                     <table id="Table">
                         <thead>
@@ -198,18 +228,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>
-                                    <select class="userInput" data-row="0" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="0" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
+                                <td class="userInput" data-row="0" data-type="A" value="0">0</td>
+                                <td class="userInput" data-row="0" data-type="B" value="0">0</td>
                                 <td>
                                     <select class="userInput" data-row="0" data-type="out">
                                         <option value="0">0</option>
@@ -219,18 +239,8 @@
                                 <td class="result" data-row="0"></td>
                             </tr>
                             <tr>
-                                <td>
-                                    <select class="userInput" data-row="1" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="1" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
+                                <td class="userInput" data-row="1" data-type="A" value="0">0</td>
+                                <td class="userInput" data-row="1" data-type="B" value="1">1</td>
                                 <td>
                                     <select class="userInput" data-row="1" data-type="out">
                                         <option value="0">0</option>
@@ -240,18 +250,8 @@
                                 <td class="result" data-row="1"></td>
                             </tr>
                             <tr>
-                                <td>
-                                    <select class="userInput" data-row="2" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="2" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
+                                <td class="userInput" data-row="2" data-type="A" value="1">1</td>
+                                <td class="userInput" data-row="2" data-type="B" value="0">0</td>
                                 <td>
                                     <select class="userInput" data-row="2" data-type="out">
                                         <option value="0">0</option>
@@ -261,18 +261,8 @@
                                 <td class="result" data-row="2"></td>
                             </tr>
                             <tr>
-                                <td>
-                                    <select class="userInput" data-row="3" data-type="A">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="userInput" data-row="3" data-type="B">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </select>
-                                </td>
+                                <td class="userInput" data-row="3" data-type="A" value="1">1</td>
+                                <td class="userInput" data-row="3" data-type="B" value="1">1</td>
                                 <td>
                                     <select class="userInput" data-row="3" data-type="out">
                                         <option value="0">0</option>
@@ -283,10 +273,9 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button onclick="validateInputs()">Validate</button>
                 </div>
             </main>
-            <script type="text/javascript" src="js/step.js"></script>
+            <script type="text/javascript" src="obfuscatedjs/step.obfuscated.js"></script>
         </div>
     </div>
 </body>
