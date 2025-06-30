@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSS WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Secure (WSS) テスト</h1>
+    <button onclick="sendMessage()">メッセージを送信</button>
+    <p id="status">ステータス: 未接続</p>
+    <p id="messages"></p>
+
+    <script>
+        // WebSocket 接続先
+        const ws = new WebSocket("wss://raspberrypi.ddns.net:443/");
+
+        ws.onopen = function() {
+            document.getElementById("status").innerText = "ステータス: 接続成功";
+            console.log("WebSocket 接続成功");
+        };
+
+        ws.onmessage = function(event) {
+            document.getElementById("messages").innerText += "受信: " + event.data + "\n";
+            console.log("受信メッセージ:", event.data);
+        };
+
+        ws.onerror = function(error) {
+            document.getElementById("status").innerText = "ステータス: エラー発生";
+            console.error("WebSocket エラー:", error);
+        };
+
+        ws.onclose = function() {
+            document.getElementById("status").innerText = "ステータス: 切断";
+            console.log("WebSocket 接続が切断されました");
+        };
+
+        function sendMessage() {
+            ws.send("Hello, Raspberry Pi!");
+            console.log("メッセージ送信: Hello, Raspberry Pi!");
+        }
+    </script>
+</body>
+</html>
